@@ -8,7 +8,8 @@ export function handleCanvasClick(event) {
     const y = Math.floor((event.clientY - rect.top) / 50) * 50;
 
     if (money >= 50) {
-        towers.push(new Tower(x, y));
+        let row = y / 50;
+        towers.push(new Tower(x, y, row));
         updateMoney("decrease", 50);
         document.getElementById("money").innerText = money;
     }

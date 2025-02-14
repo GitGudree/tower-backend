@@ -8,6 +8,7 @@ export class Enemy {
         this.health = 90 + (wave * 10); // maybe set to something like if (wave > 3){this.health = 100 + ((wave - 3) + 10)} + the else ofc. only an example of how to make start rounds easyer if they end up being hard
         this.width = 50;
         this.height = 50;
+        this.laneIndex = row;
     }
 
     move() {

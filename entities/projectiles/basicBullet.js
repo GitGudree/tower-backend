@@ -1,11 +1,12 @@
 export class BasicBullet {
-    constructor(x, y) {
+    constructor(x, y, row) {
         this.x = x;
         this.y = y;
         this.speed = 5;
         this.width = 5;
         this.height = 5;
         this.bulletDamage = 50;
+        this.laneIndex = row;
     }
 
     move() {

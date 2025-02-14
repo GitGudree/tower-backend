@@ -1,18 +1,19 @@
 import { BasicBullet } from "./projectiles/basicBullet.js";
 
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y, row) {
         this.x = x;
         this.y = y;
         this.range = 700;
         this.fireRate = 60;
         this.timer = 0;
+        this.laneIndex = row;
     }
     attack(enemies, bullets) {
         if (this.timer <= 0) {
             enemies.forEach(enemy => {
-                if (Math.abs(enemy.y - this.y) < 40 && Math.abs(enemy.x - this.x) < this.range) {
-                    bullets.push(new BasicBullet(this.x + 25, this.y + 25));
+                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    bullets.push(new BasicBullet(this.x + 25, this.y + 25, this.laneIndex));
                 }
             });
             this.timer = this.fireRate;

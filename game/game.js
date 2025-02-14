@@ -1,9 +1,9 @@
 import { enemies } from "../entities/enemy.js";
 import { towers } from "../entities/tower.js";
-import { BasicBullet } from "../entities/projectiles/basicBullet.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { drawGrid } from "./grid.js";
 import { spawnWave, startWaveButton } from "./wave.js";
+import { collision } from "./hitreg.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -66,24 +66,20 @@ export function projHandler(){
         
         // checks if projectile exists and is colliding with enemy, if true does damage, deletes projectile and reduces i by one to ensure a projectile is not skipped
         for (let j = 0; j < enemies.length; j++) {
-            if (enemies[j] && projectiles[i] && collision(enemies[j], projectiles[i]) ){
+            if (enemies[j] && projectiles[i] && collision(enemies[j], projectiles[i])){
                 projectiles[i].dealDamage(enemies[j])
                 projectiles.splice(i, 1);
-                i--
-                
+                i--  
             };
         }
-        if (BasicBullet.x > canvas.width - 10) {
+        /*
+        if (projectiles[i].x > canvas.width - 10) {
             projectiles.splice(i, 1);
             i--
         }
+            */
     }
 
-    function collision(enemy, projectile) {
-        if (projectile.x >= enemy.x && projectile.y >= enemy.y) {
-            return true
-        }
-    }
     
 }
 
