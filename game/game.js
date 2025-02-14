@@ -1,8 +1,9 @@
 import { enemies } from "../entities/enemy.js";
 import { towers } from "../entities/tower.js";
-import { bullets } from "../entities/bullet.js";
+import { projectiles } from "../entities/projectiles/projectiles.js";
 import { drawGrid } from "./grid.js";
 import { spawnWave, startWaveButton } from "./wave.js";
+import { collision } from "./hitreg.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -29,28 +30,12 @@ export function updateGame() {
         }
     });
 
+
     towers.forEach(tower => {
-        tower.attack(enemies, bullets);
+        tower.attack(enemies, projectiles);
         tower.draw(ctx);
     });
-
-    bullets.forEach((bullet, bulletIndex) => {
-        bullet.move();
-        bullet.draw(ctx);
-
-        enemies.forEach((enemy, enemyIndex) => {
-            if (bullet.x >= enemy.x &&
-                bullet.x <= enemy.x + 50
-            ) {
-                enemy.health -= 20;
-                bullets.splice(bulletIndex, 1)
-            }
-        })
-        // Bullets that go to the end of the canvas, goes away.
-        if (bullet.x > canvas.width) {
-            bullets.splice(bulletIndex, 1);
-        }
-    });
+    
 }
 
 export function updateMoney(action, amount) {
@@ -73,4 +58,30 @@ export function updateMoney(action, amount) {
 
     moneyDisplay.innerText = money;
 }
+
+export function projHandler(){
+    for (let i = 0; i < projectiles.length; i++){
+        projectiles[i].move();
+        projectiles[i].draw(ctx);
+        
+        // checks if projectile exists and is colliding with enemy, if true does damage, deletes projectile and reduces i by one to ensure a projectile is not skipped
+        for (let j = 0; j < enemies.length; j++) {
+            if (enemies[j] && projectiles[i] && collision(enemies[j], projectiles[i])){
+                projectiles[i].dealDamage(enemies[j])
+                projectiles.splice(i, 1);
+                i--  
+                break; // to prevent an edge case that causes crashes
+            };
+        }
+        
+        if (projectiles[i] && projectiles[i].x > canvas.width - 50) {
+            projectiles.splice(i, 1);
+            i--
+        }
+            
+    }
+
+    
+}
+
 
