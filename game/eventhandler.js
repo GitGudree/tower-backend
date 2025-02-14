@@ -12,4 +12,6 @@ export function handleCanvasClick(event) {
         updateMoney("decrease", 50);
         document.getElementById("money").innerText = money;
     }
+    
 }
+
