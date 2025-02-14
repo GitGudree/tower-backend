@@ -70,14 +70,15 @@ export function projHandler(){
                 projectiles[i].dealDamage(enemies[j])
                 projectiles.splice(i, 1);
                 i--  
+                break; // to prevent an edge case that causes crashes
             };
         }
-        /*
-        if (projectiles[i].x > canvas.width - 10) {
+        
+        if (projectiles[i] && projectiles[i].x > canvas.width - 50) {
             projectiles.splice(i, 1);
             i--
         }
-            */
+            
     }
 
     
