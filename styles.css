@@ -1,11 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #202020;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 canvas {
-    border: 2px solid black;
+    /* border: 2px solid black; */
     display: block;
-    margin: auto;
+    margin: 1rem auto auto;
     background-color: #f0f0f0;
 }
 
-#ui {
+.menu {
     text-align: center;
-    margin-top: 10px;
+    margin: auto;
+    padding: 1rem;
+    width: calc(900px - 2rem);
+    background-color: #ffa500;
+}
+
+.tower-upgrade-btn,
+.start-wave-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #0a0a23;
+    background-color: #feac32;
+    background-image: linear-gradient(#fecc4c, #ffac33);
+    border: 3px solid rgb(53, 49, 49);
+}
+
+
+
+.can-buy {
+    cursor: pointer;
+    color: #0a0a23;
+    border-radius: 5px;
+    background-color: #ff9900;
+    background-image: linear-gradient(#f0bc39, #b67a20);
+    border: 3px solid #0c0b09;
+    box-shadow: 0 0 5px #6200ea;
+    transition: all 0.3s ease-in-out;
+}
+
+.can-buy:hover {
+    box-shadow: 0 0 15px #6200ea, 0 0 30px #6200ea;
 }

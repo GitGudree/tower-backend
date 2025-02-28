@@ -10,9 +10,13 @@
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div id="ui">
-        <button onclick="startWaveButton()">Start Wave</button>
-        <p>Money: <span id="money">150</span></p>
+    <div class="menu">
+        <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
+        <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button>
+        <p>Money: <span class="money">150</span></p>
+        <p>Tower Information</p>
+        <p>Tower damage: <span class="tower-damage"></span></p>
+        <p>Tower upgrade price: <span class="tower-upgrade-price"></span></p>
     </div>
 </body>
 </html>
