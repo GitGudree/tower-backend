@@ -1,3 +1,11 @@
+/**
+ * normal Bullet class
+ *               
+ * @author:    Quetzalcoatl, ALLE ANDRE SOM HAR JOBBET PÅ DEN SKRIV NAVN HER
+ * Created:   25.01.2025
+ **/
+
+
 import { cellSize } from "../../game/grid.js";
 import { resources } from "../../game/game.js";
 
