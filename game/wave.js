@@ -1,6 +1,14 @@
 import { Enemy, enemies } from "../entities/enemy.js";
 import { rows } from "./grid.js"; // Trenger ikke topBar her
 
+/**
+ * Enemy class
+ *
+ * @constructor wave
+ * @author:    Anarox, Randomfevva
+ * Created:   25.01.2025
+ **/
+
 let wave = 1;
 
 export function spawnWave(waves) {
