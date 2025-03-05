@@ -1,4 +1,4 @@
-import { enemies } from "../entities/Enemy.js";
+import { enemies } from "../entities/enemy.js";
 import { towers } from "../entities/Tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar, rows, cellSize } from "./grid.js";

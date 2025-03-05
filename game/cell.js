@@ -1,7 +1,7 @@
 import { canvas, ctx } from "./game.js";
 import { cellSize } from "./grid.js";
 import { gridRectColission, mouse } from "./eventHandler.js";
-import { enemies } from "../entities/Enemy.js";
+import { enemies } from "../entities/enemy.js";
 
 /**
  * Tower Class

@@ -4,37 +4,56 @@ import { cellSize } from "../game/grid.js";
 /**
  * Enemy class
  *
-
- * @constructor row, wave
+ * @constructor row, wave, type
  * @author:    Anarox
  * Created:   25.01.2025
  **/
 export class Enemy {
-    constructor(row, wave, config) {
+    constructor(row, wave, type = "normal") {
         this.x = canvas.width;
-        this.y = row * 50;
-        this.speed = Math.random() * 0.2 + 0.4;
-        // maybe set to something like if (wave > 3){this.health = 100 + ((wave - 3) + 10)} + the else ofc. only an example of how to make start rounds easyer if they end up being hard
-        this.health = 100 + (wave - 1) * 20;
+        this.y = row * cellSize;
+        this.type = type;
+        this.laneIndex = row;
         this.width = cellSize;
         this.height = cellSize;
-        this.laneIndex = row;
-        this.movement = this.speed;
         this.isStopped = false;
+        
+        // Setter helse, fart og farge basert på type
+        switch (this.type) {
+            case "fast":
+                this.health = 50 + (wave - 1) * 10;
+                this.speed = 1.2; // Raskere enn vanlig fiende
+                this.background = "orange";
+                break;
+            case "tank":
+                this.health = 200 + (wave - 1) * 20;
+                this.speed = 0.5; // Saktere, men tanky
+                this.background = "darkblue";
+                break;
+            case "boss":
+                this.health = 500 + (wave - 1) * 50;
+                this.speed = 0.8;
+                this.background = "purple";
+                break;
+            default: // "normal"
+                this.health = 100 + (wave - 1) * 15;
+                this.speed = 0.8;
+                this.background = "red";
+                break;
+        }
+        this.movement = this.speed;
         this.damage = 2;
-        this.background = 'red';
     }
 
     move() {
-        if(!this.isStopped) {
+        if (!this.isStopped) {
             this.x -= this.movement;
         }
-        
     }
 
     stopMove() {
         this.isStopped = true;
-        this.x = cellSize * Math.ceil(this.x / 50);
+        this.x = cellSize * Math.ceil(this.x / cellSize);
     }
 
     resumeMove() {
@@ -56,3 +75,4 @@ export class Enemy {
 }
 
 export const enemies = [];
+
