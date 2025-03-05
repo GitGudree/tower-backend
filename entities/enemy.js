@@ -28,14 +28,14 @@ export class Enemy {
             case "tank":
                 this.health = 200 + (wave - 1) * 20;
                 this.speed = 0.5; // Saktere, men tanky
-                this.background = "darkblue";
+                this.background = "darkgreen";
                 break;
             case "boss":
                 this.health = 500 + (wave - 1) * 50;
                 this.speed = 0.8;
                 this.background = "purple";
                 break;
-            default: // "normal"
+            default: "normal"
                 this.health = 100 + (wave - 1) * 15;
                 this.speed = 0.8;
                 this.background = "red";
