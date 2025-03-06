@@ -9,7 +9,7 @@ import { money, updateMoney } from "../game/game.js";
  *
  * @constructor (x, y, row)
  * Author:    Anarox
- * @contributer: Randomfevva 
+ * @contributor: Randomfevva 
  * Created:   25.01.2025
  **/
 export class Tower {

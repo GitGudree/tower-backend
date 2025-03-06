@@ -2,7 +2,7 @@
  * Bullet classes
  *               
  * @author:    Quetzalcoatl, 
- * @contributer: Randomfevva 
+ * @contributor: Randomfevva 
  * Created:   25.01.2025
  **/
 
