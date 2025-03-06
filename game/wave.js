@@ -5,7 +5,8 @@ import { rows } from "./grid.js"; // Trenger ikke topBar her
  * Enemy class
  *
  * @constructor wave
- * @author:    Anarox, Randomfevva
+ * @author:    Anarox
+ * @contributor: Randomfevva 
  * Created:   25.01.2025
  **/
 
