@@ -1,4 +1,4 @@
-import { Bullet } from "./projectiles/Bullet.js";
+import { Bullet, LaserBullet, RocketBullet } from "./projectiles/Bullet.js";
 import { collision } from "../game/hitreg.js";
 import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../game/game.js";
 import { cellSize } from "../game/grid.js";
@@ -7,13 +7,12 @@ import { money, updateMoney } from "../game/game.js";
 /**
  * Tower Class
  *
-
  * @constructor (x, y, row)
  * Author:    Anarox
  * Created:   25.01.2025
  **/
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y) { // ✅ KONSTRUKTØREN ER UENDRET
         this.x = x;
         this.y = y;
         this.health = 100;
@@ -39,7 +38,11 @@ export class Tower {
         if (this.timer <= 0) {
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new Bullet(this.x, this.y, this.y);
+                    let bulletType = "normal"; // ✅ Standard prosjektil
+                    if (this.background === "brown") bulletType = "laser"; // ✅ Laser prosjektil for lasertårn
+                    if (this.background === "darkred") bulletType = "rocket"; // ✅ Rakett prosjektil for rakettårn
+                    
+                    const bullet = new Bullet(this.x, this.y, this.y, bulletType);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                 }
@@ -58,7 +61,6 @@ export class Tower {
                 this.deathMessageTimer = 60;
 
                 updateResources("decrease", 5);
-
 
                 for (let enemy of enemies) {
                     enemy.resumeMove();
@@ -85,7 +87,6 @@ export class Tower {
         ctx.font = '20px Impact';
         ctx.textAlign = 'center';
         ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
-        
     }
 
     upgrade() {
@@ -95,35 +96,31 @@ export class Tower {
         switch (this.upgrades) {
             case 0:
                 this.range += 50;
-                this.fireRate = 25; // lower = better
+                this.fireRate = 25;
                 this.background = "green";
-
                 this.upgradeCost = 300;
                 break;
             case 1:
                 this.range += 100;
-                this.fireRate = 20; // lower = better
+                this.fireRate = 20;
                 this.background = "yellow";
                 this.damage = 3;
-
                 this.upgradeCost = 1000;
                 break;
             case 2:
                 this.range += 150;
-                this.fireRate = 10; // lower = better
+                this.fireRate = 10;
                 this.background = "purple";
                 this.damage = 10;
-
                 this.upgradeCost = -1;
                 break;
             default:
                 return;
         }
         updateMoney('decrease', cost);
-
         this.health += 50;
         this.upgrades++;
-        
+
         towerDamageElement.textContent = this.damage;
         towerUpgradePriceElement.textContent = this.upgradeCost;
     }
