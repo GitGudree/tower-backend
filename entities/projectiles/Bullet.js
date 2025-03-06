@@ -1,7 +1,7 @@
 /**
  * normal Bullet class
  *               
- * @author:    Quetzalcoatl, ALLE ANDRE SOM HAR JOBBET PÅ DEN SKRIV NAVN HER
+ * @author:    Anarox, Quetzalcoatl
  * Created:   25.01.2025
  **/
 
