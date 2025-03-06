@@ -1,7 +1,8 @@
 /**
  * Bullet classes
  *               
- * @author:    Quetzalcoatl, Randomfevva
+ * @author:    Quetzalcoatl, 
+ * @contributer: Randomfevva 
  * Created:   25.01.2025
  **/
 

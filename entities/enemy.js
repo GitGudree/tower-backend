@@ -5,7 +5,8 @@ import { cellSize } from "../game/grid.js";
  * Enemy class
  *
  * @constructor row, wave, type
- * @author:    Anarox, Randomfevva
+ * @author:    Anarox
+ * @contributer: Randomfevva 
  * Created:   25.01.2025
  **/
 export class Enemy {
