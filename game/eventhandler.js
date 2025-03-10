@@ -1,6 +1,7 @@
 import { Tower, towers } from "../entities/tower.js";
 import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, moneyElement } from "./game.js";
 import { cellSize } from "./grid.js";
+import { resources } from "./game.js";
 
 let selectedTower = null;
 
