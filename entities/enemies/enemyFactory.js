@@ -17,7 +17,7 @@ export function createEnemy(row, wave, type) {
     else if (type === "boss") enemy = new BossEnemy(row, wave);
     else enemy = new Enemy(row, wave);
 
-    console.log("Spawned enemy:", enemy); // 🔥 Debugging
+    console.log("Spawned enemy:", enemy); // Debugging
 
     return enemy;
 }

@@ -1,4 +1,4 @@
-import { rows } from "./grid.js"; // ✅ Beholder grid-importen
+import { rows } from "./grid.js"; 
 import { enemies } from "../entities/enemies/enemy.js";
 
 /**
@@ -12,10 +12,10 @@ import { enemies } from "../entities/enemies/enemy.js";
 
 
 let wave = 1;
- // ✨ Flyttet enemies hit
+ 
 
 export async function spawnWave(waves) {
-    const { createEnemy } = await import("../entities/enemies/enemyFactory.js"); // 🔥 Lazy import
+    const { createEnemy } = await import("../entities/enemies/enemyFactory.js"); 
 
     for (let i = 0; i < waves * 2; i++) {
         setTimeout(() => {
