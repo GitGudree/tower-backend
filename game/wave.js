@@ -1,7 +1,8 @@
 import { rows } from "./grid.js"; // ✅ Beholder grid-importen
+import { enemies } from "../entities/enemies/enemy.js";
 
 
-let enemies = [];
+
 let wave = 1;
  // ✨ Flyttet enemies hit
 
