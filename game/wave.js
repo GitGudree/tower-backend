@@ -1,25 +1,20 @@
-import { Enemy, enemies } from "../entities/enemy.js";
-import { rows } from "./grid.js"; // Trenger ikke topBar her
+import { rows } from "./grid.js"; // ✅ Beholder grid-importen
 
-/**
- * Enemy class
- *
- * @constructor wave
- * @author:    Anarox
- * @contributor: Randomfevva 
- * Created:   25.01.2025
- **/
 
+let enemies = [];
 let wave = 1;
+ // ✨ Flyttet enemies hit
 
-export function spawnWave(waves) {
+export async function spawnWave(waves) {
+    const { createEnemy } = await import("../entities/enemies/enemyFactory.js"); // 🔥 Lazy import
+
     for (let i = 0; i < waves * 2; i++) {
         setTimeout(() => {
-            let row = Math.floor(Math.random() * rows) + 1; // ✅ Sikrer at fiender ikke spawner i GUI
-
+            let row = Math.floor(Math.random() * rows) + 1;
+            
             let type;
             if (waves % 5 === 0) {
-                type = "boss"; // ✅ Boss kun hver 5. bølge
+                type = "boss";
             } else {
                 let rand = Math.random();
                 if (rand < 0.3) type = "fast";  
@@ -27,7 +22,9 @@ export function spawnWave(waves) {
                 else type = "normal";  
             }
 
-            enemies.push(new Enemy(row, waves, type)); 
+            let enemy = createEnemy(row, waves, type);
+            enemies.push(enemy);
+            console.log("Enemies array:", enemies);
         }, i * 1000);
     }
 }
