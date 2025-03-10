@@ -15,28 +15,34 @@ let wave = 1;
  
 
 export async function spawnWave(waves) {
-    const { createEnemy } = await import("../entities/enemies/enemyFactory.js"); 
+    const { createEnemy } = await import("../entities/enemies/enemyFactory.js");
+
+    const enemyTypes = [
+        { type: "fast", weight: 0.3 },
+        { type: "tank", weight: 0.3 },
+        { type: "normal", weight: 0.4 }
+    ];
+
+    function getRandomEnemyType() {
+        let rand = Math.random();
+        let sum = 0;
+        for (let enemy of enemyTypes) {
+            sum += enemy.weight;
+            if (rand < sum) return enemy.type;
+        }
+    }
 
     for (let i = 0; i < waves * 2; i++) {
         setTimeout(() => {
             let row = Math.floor(Math.random() * rows) + 1;
-            
-            let type;
-            if (waves % 5 === 0) {
-                type = "boss";
-            } else {
-                let rand = Math.random();
-                if (rand < 0.3) type = "fast";  
-                else if (rand < 0.6) type = "tank"; 
-                else type = "normal";  
-            }
-
+            let type = waves % 5 === 0 ? "boss" : getRandomEnemyType();
             let enemy = createEnemy(row, waves, type);
             enemies.push(enemy);
             console.log("Enemies array:", enemies);
         }, i * 1000);
     }
 }
+
 
 export function startWaveButton() {
     spawnWave(wave);
