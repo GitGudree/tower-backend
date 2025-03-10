@@ -1,6 +1,14 @@
 import { rows } from "./grid.js"; // ✅ Beholder grid-importen
 import { enemies } from "../entities/enemies/enemy.js";
 
+/**
+ * Wave class class
+ *
+ * @author:    Anarox
+ * @contributor: Randomfevva
+ * Created:   07.03.2025
+ **/
+
 
 
 let wave = 1;

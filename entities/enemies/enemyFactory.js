@@ -3,6 +3,13 @@ import { TankEnemy } from "./TankEnemy.js";
 import { BossEnemy } from "./BossEnemy.js";
 import { Enemy } from "./enemy.js"; // Standard fiende
 
+/**
+ * enemyFactory class
+ *
+ * @author:    Randomfevva
+ * Created:   07.03.2025
+ **/
+
 export function createEnemy(row, wave, type) {
     let enemy;
     if (type === "fast") enemy = new FastEnemy(row, wave);

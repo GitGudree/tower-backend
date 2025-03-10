@@ -3,8 +3,8 @@ import { Enemy } from "./enemy.js";
 /**
  * Boss Enemy class
  *
- * @author:    Anarox
- * Created:   25.01.2025
+ * @author:    Randomfevva
+ * Created:   07.03.2025
  **/
 export class BossEnemy extends Enemy {
     constructor(row, wave) {
