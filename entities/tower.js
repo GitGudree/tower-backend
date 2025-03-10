@@ -1,4 +1,4 @@
-import { Bullet, LaserBullet, RocketBullet } from "./projectiles/Bullet.js";
+import { Bullet} from "./projectiles/Bullet.js";
 import { collision } from "../game/hitreg.js";
 import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../game/game.js";
 import { cellSize } from "../game/grid.js";

@@ -1,4 +1,4 @@
-import { canvas, ctx } from "./game.js";
+import { ctx } from "./game.js";
 import { cellSize } from "./grid.js";
 import { gridRectColission, mouse } from "./eventHandler.js";
 import { enemies } from "../entities/enemies/enemy.js";

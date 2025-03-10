@@ -1,4 +1,4 @@
-import { canvas, ctx, updateResources } from "../../game/game.js";
+import { canvas} from "../../game/game.js";
 import { cellSize } from "../../game/grid.js";
 
 

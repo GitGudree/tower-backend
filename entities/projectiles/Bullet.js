@@ -7,7 +7,7 @@
  **/
 
 import { cellSize } from "../../game/grid.js";
-import { resources } from "../../game/game.js";
+
 
 export class Bullet {
     constructor(x, y, row, type = "normal") {

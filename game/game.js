@@ -1,10 +1,9 @@
 import { enemies } from "../entities/enemies/enemy.js";
 import { towers } from "../entities/tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
-import { createGrid, handleGameGrid, topBar, rows, cellSize } from "./grid.js";
+import { createGrid, handleGameGrid, topBar} from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
-import { bullets } from "../entities/projectiles/Bullet.js";
 import { getWave } from "./wave.js";
 
 
