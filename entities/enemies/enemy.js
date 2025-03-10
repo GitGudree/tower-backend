@@ -1,40 +1,40 @@
-import { canvas, ctx, updateResources } from "../game/game.js";
-import { cellSize } from "../game/grid.js";
+import { canvas} from "../../game/game.js";
+import { cellSize } from "../../game/grid.js";
+
 
 /**
- * Enemy class
+ * Enemy class (STANDARD)
  *
-
- * @constructor row, wave
+ * @constructor row, wave, type
  * @author:    Anarox
+ * @contributor: Randomfevva 
  * Created:   25.01.2025
  **/
 export class Enemy {
-    constructor(row, wave, config) {
+    constructor(row, wave) {
         this.x = canvas.width;
-        this.y = row * 50;
-        this.speed = Math.random() * 0.2 + 0.4;
-        // maybe set to something like if (wave > 3){this.health = 100 + ((wave - 3) + 10)} + the else ofc. only an example of how to make start rounds easyer if they end up being hard
-        this.health = 100 + (wave - 1) * 20;
+        this.y = row * cellSize;
+        this.type = "normal";
+        this.health = 100 + (wave - 1) * 15;
+        this.speed = 0.8;
+        this.background = "red";
+        this.laneIndex = row;
         this.width = cellSize;
         this.height = cellSize;
-        this.laneIndex = row;
-        this.movement = this.speed;
         this.isStopped = false;
+        this.movement = this.speed;
         this.damage = 2;
-        this.background = 'red';
     }
 
     move() {
-        if(!this.isStopped) {
+        if (!this.isStopped) {
             this.x -= this.movement;
         }
-        
     }
 
     stopMove() {
         this.isStopped = true;
-        this.x = cellSize * Math.ceil(this.x / 50);
+        this.x = cellSize * Math.ceil(this.x / cellSize);
     }
 
     resumeMove() {
@@ -55,4 +55,6 @@ export class Enemy {
     }
 }
 
+
 export const enemies = [];
+

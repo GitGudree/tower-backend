@@ -1,5 +1,5 @@
 import { enemies } from "../entities/Enemy.js";
-import { towers } from "../entities/Tower.js";
+import { towers } from "../entities/tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar, rows, cellSize } from "./grid.js";
 import { startWaveButton } from "./wave.js";
