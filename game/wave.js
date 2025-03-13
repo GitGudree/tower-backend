@@ -1,5 +1,6 @@
 import { rows } from "./grid.js"; 
-import { enemies } from "../entities/enemies/enemy.js";
+import { enemies } from "../entities/enemies/Enemy.js";
+
 
 /**
  * Wave class class

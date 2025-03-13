@@ -22,13 +22,13 @@ export class Enemy {
         this.width = cellSize;
         this.height = cellSize;
         this.isStopped = false;
-        this.movement = this.speed;
+        
         this.damage = 2;
     }
 
     move() {
         if (!this.isStopped) {
-            this.x -= this.movement;
+            this.x -= this.speed;
         }
     }
 
