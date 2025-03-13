@@ -30,7 +30,7 @@ export class Bullet {
     }
 
     dealDamage(enemy) {
-        const actualDamage = Math.max(this.bulletDamage, Math.round(this.bulletDamage * (resources / 200)));
+        const actualDamage = Math.max(this.bulletDamage, Math.round(this.bulletDamage));
         enemy.health -= actualDamage;
     }
 }
