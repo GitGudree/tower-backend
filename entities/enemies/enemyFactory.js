@@ -1,7 +1,7 @@
 import { FastEnemy } from "./FastEnemy.js";
 import { TankEnemy } from "./TankEnemy.js";
 import { BossEnemy } from "./BossEnemy.js";
-import { Enemy } from "./enemy.js"; // Standard enemy
+import { Enemy } from "./Enemy.js"; // Standard enemy
 
 /**
  * enemyFactory class
