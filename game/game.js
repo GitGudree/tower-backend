@@ -1,11 +1,12 @@
-import { enemies } from "../entities/Enemy.js";
+import { enemies } from "../entities/enemy.js";
 import { towers } from "../entities/Tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
-import { createGrid, handleGameGrid, topBar, rows, cellSize } from "./grid.js";
+import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { bullets } from "../entities/projectiles/Bullet.js";
 import { getWave } from "./wave.js";
+import { Tower } from "../entities/Tower.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -16,14 +17,14 @@ export const towerUpgradePriceElement = document.querySelector('.tower-upgrade-p
 export const towerUpgradeElement = document.querySelector('.tower-upgrade-btn');
 
 
-export const moneyElement = document.querySelector(".money");
 window.startWaveButton = startWaveButton;
 
 // export let money = (50 + 150 + 300 + 1e3) * 5 * 16;
-export let money = 150;
+export let money = 500;
 export let price = 50;
-export let resources = 500;
+export let resources = 100;
 export let gameOver;
+
 
 /**
  * Draw function that updates the grid and UI.
@@ -84,6 +85,8 @@ export function drawGame() {
  * Created:   28.01.2025
  **/
 export function updateGameState() {
+    let selectedTower = towers.find(tower => tower.selected);
+
     enemies.forEach((enemy, enemyIndex) => {
         enemy.move();
 
@@ -100,21 +103,53 @@ export function updateGameState() {
         }
     });
 
+    
+    towers.forEach((tower, towerIndex) => {
+        tower.attack(enemies, projectiles, towerIndex);
+        
+    });
+    
     if (resources <= 0) {
         gameOver = true;
     }
+    
+    if (selectedTower) {
+        
 
-    towers.forEach((tower, towerIndex) => {
-        tower.attack(enemies, projectiles, towerIndex);
-    });
+        if (money >= selectedTower.upgradeCost) {
 
-    const selectedTower = towers.find(tower => tower.selected);
-    if (money >= (selectedTower?.upgradeCost ?? Infinity)) {
-        towerUpgradeElement.classList.add('can-buy');
-    } else {
-        towerUpgradeElement.classList.remove('can-buy');
-    }
+            // console.log("Money:", money);
+            // console.log("Upgrade cost:", selectedTower.upgradeCost);
+            // console.log("Comparison result:", money >= selectedTower.upgradeCost);
+            // console.log("selectedTower: " + selectedTower);
+
+            towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
+            towerUpgradeElement.classList.add('upgrade');
+            towerUpgradeElement.classList.add('hover-upgrade');
+        } else {
+            towerUpgradeElement.innerText = "Insufficient balance";
+            towerUpgradeElement.classList.remove('upgrade');
+            towerUpgradeElement.classList.remove('hover-upgrade');
+            console.log("Jeg havner her jeg :D");
+        }
+    } 
 }
+
+
+export function updateButton() {
+    if (towers.length > 0) {
+        let anyTower = towers.find(tower => !tower.selected);
+        
+        if (anyTower && money >= anyTower.upgradeCost) {
+            updateTowerInfo(anyTower);
+            towerUpgradeElement.classList.add('active');
+            towerUpgradeElement.innerText = "Select a tower to upgrade!";
+        } else {
+            towerUpgradeElement.classList.remove('active');
+            towerUpgradeElement.innerText = "Insufficient balance";
+        }
+    } 
+}       
 
 /**
  * Updates money with ("increase"/decrease)
@@ -142,12 +177,11 @@ export function updateMoney(action, amount) {
             return;
     }
 
-    moneyElement.innerText = money;
 }
 
 
 /**
- * Updates money with ("increase"/decrease)
+ * Updates resources with ("increase"/decrease)
  *               
 
  * @param: action, amount
@@ -174,7 +208,67 @@ export function updateResources(action, amount) {
 
 }
 
+/**
+ * Updates the tower level with stars instead of a number.
+ *               
 
+ * @param: tower (Takes in selectedTower)
+ * @author:    Anarox
+ * Created:   09.03.2025
+**/
+export function updateTowerLevel(tower) {
+    let stars = "";
+
+    for (let i = 0; i <= tower.upgrades; i++) {
+        stars += "⭐";
+        console.log("added ⭐");
+    }
+    return stars;
+}
+
+/**
+ * Updates the stat-display in Tower-section to show the selected tower.
+ *               
+
+ * @param: tower (Takes in selectedTower)
+ * @author:    Anarox
+ * Created:   09.03.2025
+**/
+export function updateTowerInfo(tower) {
+
+    document.querySelector(".tower-title-display").textContent = tower.name;
+    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
+    document.querySelector(".hp-title-display").textContent = tower.health;
+    document.querySelector(".range-title-display").textContent = tower.range;
+    document.querySelector(".firerate-title-display").textContent = tower.fireRate;
+    document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
+
+}
+
+export function upgradeTowerStats(tower) {
+    const stats = tower.getUpgradeStats();
+
+    console.log("getUpgradeStats: " + tower.getUpgradeStats());
+    console.log(stats);
+    console.log("Old stats:", stats.oldStats);
+    console.log("New stats:", stats.newStats);
+
+    document.querySelector(".tower-title-display").textContent = `${stats.oldStats.health} → ${stats.newStats.health}`;
+    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
+    document.querySelector(".range-title-up").textContent = `${stats.oldStats.range} → ${stats.newStats.range}`;
+    document.querySelector(".firerate-title-up").textContent = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
+    document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
+}
+
+
+/**
+ * Rewritten Projectile handler
+ *               
+
+ * @param: action, amount
+ * @author:    Anarox, Quetzalcoatl
+ * Created:   09.03.2025
+**/
 export function projectileHandler(){
     const activeProjectiles = [];
     // const enemiesAtRow = [];

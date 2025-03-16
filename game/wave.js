@@ -1,4 +1,4 @@
-import { Enemy, enemies } from "../entities/Enemy.js";
+import { Enemy, enemies } from "../entities/enemy.js";
 import { rows } from "./grid.js";
 
 let wave = 1;

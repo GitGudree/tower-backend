@@ -1,7 +1,6 @@
 import { Tower, towers } from "../entities/Tower.js";
-import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, moneyElement } from "./game.js";
+import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, updateTowerInfo, updateButton } from "./game.js";
 import { cellSize } from "./grid.js";
-import { resources } from "./game.js";
 
 let selectedTower = null;
 
@@ -30,23 +29,30 @@ export function handleCanvasClick() {
         return;
     }
 
-    // Selecting a placed tower to upgrade!
+    /**
+     * MouseEvent that acts as a selection tool to select / upgrade / and analyze individual tower stats.
+     *               
+
+    * @description Event that listens to mouse-clicks on the same mouse-positions with different behaviour.
+    * Author:    Anarox
+    * Created:   27.02.2025
+    **/
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
+            //updateTowerInfo(tower.selected);
 
-            towerDamageElement.textContent = tower.damage;
-            towerUpgradePriceElement.textContent = tower.upgradeCost;
         } else {
             tower.selected = false;
+            
         }
     }
 
     if (money >= price && !towers.some(tower => tower.selected)) {
         towers.push(new Tower(gridMousePosX, gridMousePosY));
+        updateButton();
         updateMoney("decrease", price);
         updateResources("increase", 10);
-        moneyElement.innerText = money;
     }
 }
 
@@ -68,7 +74,6 @@ export function mouseMove(event) {
 export function mouseLeave(event) {
     mouse.x = undefined;
     mouse.y = undefined;
-    console.log('Mouse left...')
 }
 
 export function gridRectColission(first, second) {
@@ -82,13 +87,26 @@ export function gridRectColission(first, second) {
 }
 
 
+function openTab(btn) {
+    document.querySelectorAll('.tabs>.selected').forEach(tab => {
+        tab.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+    
+    document.querySelector('.tab.open').classList.remove('open');
 
+    const tabName = btn.getAttribute('data-tab');
+    document.querySelector(`.tab.${tabName}`).classList.add('open');
+}
 
 
 window.upgradeTower = () => {
     const tower = towers.find(tower => tower.selected);
-
+    console.log("H" + towers.length)
+    
     if (tower) {
         tower.upgrade();
     }
 }
+
+window.openTab = openTab;

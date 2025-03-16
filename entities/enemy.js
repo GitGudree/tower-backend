@@ -10,7 +10,7 @@ import { cellSize } from "../game/grid.js";
  * Created:   25.01.2025
  **/
 export class Enemy {
-    constructor(row, wave, config) {
+    constructor(row, wave) {
         this.x = canvas.width;
         this.y = row * 50;
         this.speed = Math.random() * 0.2 + 0.4;

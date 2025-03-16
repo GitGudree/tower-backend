@@ -1,6 +1,6 @@
 import { Bullet } from "./projectiles/Bullet.js";
 import { collision } from "../game/hitreg.js";
-import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../game/game.js";
+import { updateResources, towerDamageElement, towerUpgradePriceElement, updateTowerInfo, upgradeTowerStats } from "../game/game.js";
 import { cellSize } from "../game/grid.js";
 import { money, updateMoney } from "../game/game.js";
 
@@ -16,6 +16,7 @@ export class Tower {
     constructor(x, y) {
         this.x = x;
         this.y = y;
+        this.name = "Shooter";
         this.health = 100;
         this.range = 500;
         this.damage = 2;
@@ -32,7 +33,7 @@ export class Tower {
 
         // Tower style
         this.background = 'blue';
-        this.textColor = 'gold'
+        this.textColor = 'gold';
     }
 
     attack(enemies, bullets, towerIndex) {
@@ -71,14 +72,17 @@ export class Tower {
     }
 
     draw(ctx) {
-        if (this.selected) {
-            ctx.fillStyle = "lightblue";
+        if (this.selected && money > this.upgradeCost) {
+
+            console.log("Du har råd!");
         } else {
-            ctx.fillStyle = this.background;
+            ctx.fillStyle = "lightblue";
         }
+
+        ctx.fillStyle = this.background;
         ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
         if (this.selected) {
-            ctx.fillStyle = 'black'
+            ctx.fillStyle = 'black';
         } else {
             ctx.fillStyle = this.textColor;
         }
@@ -96,7 +100,7 @@ export class Tower {
             case 0:
                 this.range += 50;
                 this.fireRate = 25; // lower = better
-                this.background = "green";
+                this.background = "orange";
 
                 this.upgradeCost = 300;
                 break;
@@ -126,6 +130,63 @@ export class Tower {
         
         towerDamageElement.textContent = this.damage;
         towerUpgradePriceElement.textContent = this.upgradeCost;
+
+    }
+    
+    /**
+     * getUpgradeStats
+     *
+
+    * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
+    * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
+    * Author:    Anarox
+    * Created:   09.03.2025
+    **/
+    getUpgradeStats() {
+        if (this.upgrades >= 3) return;
+
+        const oldStats = {
+            health: this.health,
+            range: this.range,
+            fireRate: this.fireRate,
+            damage: this.damage,
+            background: this.background,
+            upgradeCost: this.upgradeCost
+        };
+
+        const newStats = { ...oldStats, health: oldStats.health + 50};
+
+        switch (this.upgrades) {
+            case 0:
+                this.range += 50;
+                this.fireRate = 25; // lower = better
+                this.background = "green";
+
+                this.upgradeCost = 300;
+                break;
+            case 1:
+                this.range += 100;
+                this.fireRate = 20; // lower = better
+                this.background = "yellow";
+                this.damage = 3;
+
+                this.upgradeCost = 1000;
+                break;
+            case 2:
+                this.range += 150;
+                this.fireRate = 10; // lower = better
+                this.background = "purple";
+                this.damage = 10;
+
+                this.upgradeCost = -1;
+                break;
+            default:
+                return;
+        }
+
+        newStats.health += 50; // This increases 50 HP each upgrade :D
+
+        return { oldStats, newStats };
     }
 }
 
