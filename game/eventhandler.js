@@ -1,5 +1,5 @@
 import { Tower, towers } from "../entities/Tower.js";
-import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, updateTowerInfo, updateButton } from "./game.js";
+import { canvas, money, price, updateMoney, updateResources, towerUpgradeElement, towerUpgradePriceElement, updateTowerInfo, updateButton, upgradeTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
 
 let selectedTower = null;
@@ -40,8 +40,7 @@ export function handleCanvasClick() {
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-            //updateTowerInfo(tower.selected);
-
+            selectedTower = tower;
         } else {
             tower.selected = false;
             
@@ -50,11 +49,29 @@ export function handleCanvasClick() {
 
     if (money >= price && !towers.some(tower => tower.selected)) {
         towers.push(new Tower(gridMousePosX, gridMousePosY));
-        updateButton();
         updateMoney("decrease", price);
         updateResources("increase", 10);
     }
+
+    for (let tower of towers) {
+        if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
+            tower.selected = true;
+            selectedTower = tower;
+        } else {
+            tower.selected = false;
+            
+        }
+    }
+
+    if (money >= price && !towers.some(tower => tower.selected)) {
+        towers.push(new Tower(gridMousePosX, gridMousePosY));
+        updateMoney("decrease", price);
+        updateResources("increase", 10);
+    }
+
 }
+
+
 
 /**
  * MouseMouse event
@@ -106,6 +123,7 @@ window.upgradeTower = () => {
     
     if (tower) {
         tower.upgrade();
+        upgradeTowerStats(tower);
     }
 }
 

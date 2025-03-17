@@ -1,7 +1,7 @@
 import { canvas, ctx } from "./game.js";
 import { cellSize } from "./grid.js";
 import { gridRectColission, mouse } from "./eventHandler.js";
-import { enemies } from "../entities/Enemy.js";
+import { enemies } from "../entities/enemy.js";
 
 /**
  * Tower Class
@@ -22,9 +22,9 @@ export class Cell {
         const enemyWithinRect = enemies.filter(enemy => gridRectColission(this, enemy)).length > 0;
 
         if (mouse.x && mouse.y && gridRectColission(this, mouse)) {
-            ctx.strokeStyle = enemyWithinRect ? 'gray' : 'green';
-            ctx.strokeRect(this.x, this.y, this.width, this.height);
+            ctx.strokeStyle = enemyWithinRect ? 'gray' : 'black';
             ctx.lineWidth = 1;
-        }   
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
     }
 }

@@ -33,7 +33,7 @@ export class Tower {
 
         // Tower style
         this.background = 'blue';
-        this.textColor = 'gold';
+        this.textColor = 'lightgray';
     }
 
     attack(enemies, bullets, towerIndex) {
@@ -72,17 +72,14 @@ export class Tower {
     }
 
     draw(ctx) {
-        if (this.selected && money > this.upgradeCost) {
-
-            console.log("Du har råd!");
-        } else {
-            ctx.fillStyle = "lightblue";
-        }
-
         ctx.fillStyle = this.background;
         ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
+
         if (this.selected) {
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
         } else {
             ctx.fillStyle = this.textColor;
         }
@@ -100,14 +97,14 @@ export class Tower {
             case 0:
                 this.range += 50;
                 this.fireRate = 25; // lower = better
-                this.background = "orange";
+                this.background = "green";
 
                 this.upgradeCost = 300;
                 break;
             case 1:
                 this.range += 100;
                 this.fireRate = 20; // lower = better
-                this.background = "yellow";
+                this.background = "orange";
                 this.damage = 3;
 
                 this.upgradeCost = 1000;
@@ -127,6 +124,7 @@ export class Tower {
 
         this.health += 50;
         this.upgrades++;
+        
         
         towerDamageElement.textContent = this.damage;
         towerUpgradePriceElement.textContent = this.upgradeCost;
@@ -154,37 +152,48 @@ export class Tower {
             upgradeCost: this.upgradeCost
         };
 
-        const newStats = { ...oldStats, health: oldStats.health + 50};
+        let newRange = this.range;
+        let newFireRate = this.fireRate;
+        let newBackground = this.background;
+        let newDamage = this.damage;
+        let newUpgradeCost = this.upgradeCost;
 
         switch (this.upgrades) {
             case 0:
-                this.range += 50;
-                this.fireRate = 25; // lower = better
-                this.background = "green";
+                newRange += 50;
+                newFireRate = 25; // lower = better
+                newBackground = "red";
 
-                this.upgradeCost = 300;
+                newUpgradeCost = 300;
                 break;
             case 1:
-                this.range += 100;
-                this.fireRate = 20; // lower = better
-                this.background = "yellow";
-                this.damage = 3;
+                newRange += 100;
+                newFireRate = 20; // lower = better
+                newBackground = "yellow";
+                newDamage = 3;
 
-                this.upgradeCost = 1000;
+                newUpgradeCost = 1000;
                 break;
             case 2:
-                this.range += 150;
-                this.fireRate = 10; // lower = better
-                this.background = "purple";
-                this.damage = 10;
+                newRange += 150;
+                newFireRate = 10; // lower = better
+                newBackground = "purple";
+                newDamage = 10;
 
-                this.upgradeCost = -1;
+                newUpgradeCost = -1;
                 break;
             default:
                 return;
         }
 
-        newStats.health += 50; // This increases 50 HP each upgrade :D
+        const newStats = {
+            health: oldStats.health + 50,
+            range: newRange,
+            fireRate: newFireRate,
+            damage: newDamage,
+            background: newBackground,
+            upgradeCost: newUpgradeCost
+        };
 
         return { oldStats, newStats };
     }

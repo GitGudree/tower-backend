@@ -19,12 +19,11 @@ export const towerUpgradeElement = document.querySelector('.tower-upgrade-btn');
 
 window.startWaveButton = startWaveButton;
 
-// export let money = (50 + 150 + 300 + 1e3) * 5 * 16;
-export let money = 500;
+export let money = 1000;
 export let price = 50;
 export let resources = 100;
 export let gameOver;
-
+export let isUpgradeBtnActive = false;
 
 /**
  * Draw function that updates the grid and UI.
@@ -85,6 +84,7 @@ export function drawGame() {
  * Created:   28.01.2025
  **/
 export function updateGameState() {
+    
     let selectedTower = towers.find(tower => tower.selected);
 
     enemies.forEach((enemy, enemyIndex) => {
@@ -112,28 +112,27 @@ export function updateGameState() {
     if (resources <= 0) {
         gameOver = true;
     }
-    
-    if (selectedTower) {
-        
 
-        if (money >= selectedTower.upgradeCost) {
+    const canUpgrade = selectedTower && money >= selectedTower.upgradeCost;
 
-            // console.log("Money:", money);
-            // console.log("Upgrade cost:", selectedTower.upgradeCost);
-            // console.log("Comparison result:", money >= selectedTower.upgradeCost);
-            // console.log("selectedTower: " + selectedTower);
-
+        if (canUpgrade && !isUpgradeBtnActive) {
+            upgradeTowerStats(selectedTower);
             towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
-            towerUpgradeElement.classList.add('upgrade');
-            towerUpgradeElement.classList.add('hover-upgrade');
-        } else {
+            towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
+            isUpgradeBtnActive = true;
+        } else if (!canUpgrade && isUpgradeBtnActive) {
+            towerUpgradeElement.classList.remove('active', 'upgrade', 'hover-upgrade');
             towerUpgradeElement.innerText = "Insufficient balance";
-            towerUpgradeElement.classList.remove('upgrade');
-            towerUpgradeElement.classList.remove('hover-upgrade');
+            isUpgradeBtnActive = false;
             console.log("Jeg havner her jeg :D");
         }
-    } 
+
+        if (selectedTower && money <= selectedTower.upgradeCost) {
+            updateTowerInfo(selectedTower);
+        } 
+
 }
+
 
 
 export function updateButton() {
@@ -141,8 +140,9 @@ export function updateButton() {
         let anyTower = towers.find(tower => !tower.selected);
         
         if (anyTower && money >= anyTower.upgradeCost) {
-            updateTowerInfo(anyTower);
+            //updateTowerInfo(anyTower);
             towerUpgradeElement.classList.add('active');
+            towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade');
             towerUpgradeElement.innerText = "Select a tower to upgrade!";
         } else {
             towerUpgradeElement.classList.remove('active');
@@ -246,18 +246,21 @@ export function updateTowerInfo(tower) {
 }
 
 export function upgradeTowerStats(tower) {
+    if (!tower) return;
     const stats = tower.getUpgradeStats();
 
     console.log("getUpgradeStats: " + tower.getUpgradeStats());
     console.log(stats);
-    console.log("Old stats:", stats.oldStats);
+    console.log("Old stats yyy:", stats.oldStats);
     console.log("New stats:", stats.newStats);
 
-    document.querySelector(".tower-title-display").textContent = `${stats.oldStats.health} → ${stats.newStats.health}`;
+    document.querySelector(".tower-title-display").textContent = tower.name;
     document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
-    document.querySelector(".range-title-up").textContent = `${stats.oldStats.range} → ${stats.newStats.range}`;
-    document.querySelector(".firerate-title-up").textContent = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
-    document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
+
+    document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
+    document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
+    document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
+    document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost; //stats.newStats.upgradeCost;
 }
 
 
