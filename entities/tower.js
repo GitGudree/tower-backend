@@ -1,6 +1,6 @@
 import { Bullet } from "./projectiles/Bullet.js";
 import { collision } from "../game/hitreg.js";
-import { updateResources, towerDamageElement, towerUpgradePriceElement, updateTowerInfo, upgradeTowerStats } from "../game/game.js";
+import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../game/game.js";
 import { cellSize } from "../game/grid.js";
 import { money, updateMoney } from "../game/game.js";
 
@@ -26,10 +26,6 @@ export class Tower {
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
-
-        // Tower Destruction
-        this.deathMessage = null;
-        this.deathMessageTimer = 0;
 
         // Tower style
         this.background = 'blue';
@@ -92,18 +88,25 @@ export class Tower {
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
 
+        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
+
+        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
+        //     const upgrade = towerUpgrades[upgradeKey];
+        //     this[upgradeKey] = upgrade[upgradeKey];
+        // }
+
         const cost = this.upgradeCost;
         switch (this.upgrades) {
             case 0:
                 this.range += 50;
-                this.fireRate = 25; // lower = better
+                this.fireRate = 25;
                 this.background = "green";
 
                 this.upgradeCost = 300;
                 break;
             case 1:
                 this.range += 100;
-                this.fireRate = 20; // lower = better
+                this.fireRate = 20;
                 this.background = "orange";
                 this.damage = 3;
 
@@ -111,11 +114,13 @@ export class Tower {
                 break;
             case 2:
                 this.range += 150;
-                this.fireRate = 10; // lower = better
+                this.fireRate = 10;
                 this.background = "purple";
                 this.damage = 10;
 
                 this.upgradeCost = 2500;
+            case 3:
+                this.upgradeCost = -1;
                 break;
             default:
                 return;
@@ -164,7 +169,7 @@ export class Tower {
         let newDamage = this.damage;
         let newUpgradeCost = this.upgradeCost;
 
-        switch (this.upgrades) {
+        switch (Math.max(this.upgrades - 1, 0)) {
             case 0:
                 newRange += 50;
                 newFireRate = 25; // lower = better
@@ -206,3 +211,56 @@ export class Tower {
 }
 
 export const towers = [];
+
+/**
+ * 
+        this.name = "Shooter";
+        this.health = 100;
+        this.range = 500;
+        this.damage = 2;
+        this.projectiles = [];
+        this.fireRate = 30;
+        this.timer = 0;
+        this.upgradeCost = 150;
+        this.upgrades = 0;
+        this.selected = false;
+
+        this.background = 'blue';
+        this.textColor = 'lightgray';
+ */
+
+export const towerTypes = {
+    'Shooter': {
+        stats: {
+            health: 100,
+            range: 500,
+            damage: 2,
+            fireRate: 30,
+            background: 'blue'
+        },
+        upgradePath: [{
+            range: 550,
+            fireRate: 25,
+            background: 'green',
+            upgradeCost: 150,
+        }, {
+            range: 650,
+            damage: 3,
+            fireRate: 20,
+            background: 'orange',
+            upgradeCost: 300
+        }, {
+            range: 800,
+            damage: 5,
+            fireRate: 15,
+            background: 'purple',
+            upgradeCost: 1000
+        }, {
+            range: 900,
+            damage: 10,
+            fireRate: 10,
+            background: 'purple',
+            upgradeCost: 5000
+        }]
+    }
+}

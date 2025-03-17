@@ -1,12 +1,10 @@
-import { enemies } from "../entities/enemy.js";
+import { enemies, setEnemies } from "../entities/enemy.js";
 import { towers } from "../entities/Tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
-import { bullets } from "../entities/projectiles/Bullet.js";
 import { getWave } from "./wave.js";
-import { Tower } from "../entities/Tower.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -87,69 +85,54 @@ export function updateGameState() {
     
     let selectedTower = towers.find(tower => tower.selected);
 
-    enemies.forEach((enemy, enemyIndex) => {
+    const enemiesArray = [];
+    for (let enemy of enemies) {
         enemy.move();
 
-        // When enemy dies, it gets removed.
         if (enemy.health <= 0) {
-            enemies.splice(enemyIndex, 1);
-            updateMoney("increase", 20);
+            updateMoney('increase', 20);
+            updateResources('increase', 1);
+            continue;
         }
 
-        // When enemy goes out of canvas, it gets removed.
         if (enemy.x + enemy.width < 0) {
-            enemies.splice(enemyIndex, 1);
-            updateResources("decrease", 10);
+            updateResources('decrease', 10);
+            continue;
         }
-    });
+
+        enemiesArray.push(enemy);
+    }
+    setEnemies(enemiesArray);
 
     
     towers.forEach((tower, towerIndex) => {
         tower.attack(enemies, projectiles, towerIndex);
-        
     });
     
     if (resources <= 0) {
         gameOver = true;
     }
 
-    const canUpgrade = selectedTower && money >= selectedTower.upgradeCost;
+    // const canUpgrade = selectedTower && money >= selectedTower.upgradeCost;
 
-        if (canUpgrade && !isUpgradeBtnActive) {
-            upgradeTowerStats(selectedTower);
-            towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
-            towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
-            isUpgradeBtnActive = true;
-        } else if (!canUpgrade && isUpgradeBtnActive) {
-            towerUpgradeElement.classList.remove('active', 'upgrade', 'hover-upgrade');
-            towerUpgradeElement.innerText = "Insufficient balance";
-            isUpgradeBtnActive = false;
-            console.log("Jeg havner her jeg :D");
-        }
+    // if (canUpgrade && !isUpgradeBtnActive) {
+    //     upgradeTowerStats(selectedTower);
+    //     towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
+    //     towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
+    //     isUpgradeBtnActive = true;
+    // } else if (!canUpgrade && isUpgradeBtnActive) {
+    //     towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
+    //     towerUpgradeElement.innerText = "Insufficient balance";
+    //     isUpgradeBtnActive = false;
+    //     console.log("Jeg havner her jeg :D");
+    // }
 
-        if (selectedTower && money <= selectedTower.upgradeCost) {
-            updateTowerInfo(selectedTower);
-        }
+    // if (selectedTower && money <= selectedTower.upgradeCost) {
+    //     updateTowerInfo(selectedTower);
+    // }
+    updateTowerStats(selectedTower);
 
-}
-
-
-
-export function updateButton() {
-    if (towers.length > 0) {
-        let anyTower = towers.find(tower => !tower.selected);
-        
-        if (anyTower && money >= anyTower.upgradeCost) {
-            //updateTowerInfo(anyTower);
-            towerUpgradeElement.classList.add('active');
-            towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade');
-            towerUpgradeElement.innerText = "Select a tower to upgrade!";
-        } else {
-            towerUpgradeElement.classList.remove('active');
-            towerUpgradeElement.innerText = "Insufficient balance";
-        }
-    } 
-}       
+}    
 
 /**
  * Updates money with ("increase"/decrease)
@@ -221,7 +204,6 @@ export function updateTowerLevel(tower) {
 
     for (let i = 0; i <= tower.upgrades; i++) {
         stars += "⭐";
-        console.log("added ⭐");
     }
     return stars;
 }
@@ -245,14 +227,22 @@ export function updateTowerInfo(tower) {
 
 }
 
+/**
+ * Updates the stat-display in Tower-section to show upgrade stats.
+ *               
+
+ * @param: tower (Takes in selectedTower)
+ * @author:    Anarox
+ * Created:   16.03.2025
+**/
 export function upgradeTowerStats(tower) {
     if (!tower) return;
     const stats = tower.getUpgradeStats();
 
-    console.log("getUpgradeStats: " + tower.getUpgradeStats());
-    console.log(stats);
-    console.log("Old stats yyy:", stats.oldStats);
-    console.log("New stats:", stats.newStats);
+    // console.log("getUpgradeStats: " + tower.getUpgradeStats());
+    // console.log(stats);
+    // console.log("Old stats yyy:", stats.oldStats);
+    // console.log("New stats:", stats.newStats);
 
     document.querySelector(".tower-title-display").textContent = tower.name;
     document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
@@ -267,6 +257,36 @@ export function upgradeTowerStats(tower) {
     towerUpgradeElement.innerText = "Insufficient balancenn";
 }
 
+export function updateTowerStats(tower) {
+    if (!tower) return;
+    const canUpgrade = tower && money >= tower.upgradeCost;
+    const stats = tower.getUpgradeStats();
+
+    // console.log("getUpgradeStats: " + tower.getUpgradeStats());
+    // console.log(stats);
+    // console.log("Old stats yyy:", stats.oldStats);
+    // console.log("New stats:", stats.newStats);
+
+    document.querySelector(".tower-title-display").textContent = tower.name;
+    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
+
+    if (canUpgrade) {
+        document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
+        document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
+        document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
+        document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost; //stats.newStats.upgradeCost;
+        towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
+        towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
+    } else {
+        document.querySelector(".hp-title-display").textContent = stats.newStats.health;
+        document.querySelector(".range-title-display").textContent = stats.newStats.range;
+        document.querySelector(".firerate-title-display").textContent = stats.newStats.fireRate;
+        document.querySelector(".tower-upgrade-price").textContent = stats.newStats.upgradeCost;
+        towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
+        towerUpgradeElement.innerText = "Insufficient balance";
+    }
+}
+
 
 /**
  * Rewritten Projectile handler
@@ -278,18 +298,11 @@ export function upgradeTowerStats(tower) {
 **/
 export function projectileHandler(){
     const activeProjectiles = [];
-    // const enemiesAtRow = [];
-
-    // for (let i = 0; i < rows; i++) {
-    //     enemiesAtRow[i] = enemies.filter(enemy => Math.floor((enemy.y - topBar.height) / cellSize) === i);
-    // }
 
     for (let projectile of projectiles) {
         projectile.move();
         let hit = false;
-
-        // const projectileRowIndex = Math.floor((projectile.laneIndex - topBar.height) / cellSize);
-        // for (let enemy of enemiesAtRow[projectileRowIndex] || []) {
+        
         for (let enemy of enemies) {
             if (collision(enemy, projectile)) {
                 projectile.dealDamage(enemy);

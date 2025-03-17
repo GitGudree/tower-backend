@@ -17,13 +17,15 @@
                 <span class="selected" onclick="openTab(this)" data-tab="tower-tab">TOWER</span>
                 <span onclick="openTab(this)" data-tab="inventory-tab">INVENTORY</span>
                 <span onclick="openTab(this)" data-tab="shop-tab">SHOP</span>
-
             </div>
             <div class="tab game-tab">
                 <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
+            <div class="auto-wave-control">
+                <label for="autoWaveCheckbox">Auto Wave</label>
+                <input type="checkbox" id="autoWaveCheckbox">
+            </div>
                 <!-- <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button> -->
                 <p>Tower damage: <span class="tower-damage"></span></p>
-                <!-- <p>Tower upgrade price: <span class="tower-upgrade-price"></span></p> -->
                 <a>Settings</a>
             </div>
             <div class="tab tower-tab grid-split open">
@@ -76,24 +78,7 @@
                     </div>
                 <!-- <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button> -->
                 <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
-
                 </div>
-                <div class="tower-info grid grid-split">
-                    <h2 class="tab-title grid-full-width">Tower Info</h2>
-                    <div class="cards grid grid-full-width">
-                        <div class="display-card">
-                            <img src="" alt="">
-                            <p class="tower-title-up"><span class="tower-title-display"></span>, Lvl <span class="tower-lvl"></span></p>
-                            <p class="hp-title-up">HP: <span class="hp-title-display-old"></span><span class="hp-title-display-new"></span> ❤️</p>
-                            <p class="range-title-up">Range: <span class="range-title-display-old"></span><span class="range-title-display-new"></span> 🏹</p>
-                            <p class="firerate-title-up">Fire rate: <span class="firerate-title-display-old"></span><span class="firerate-title-display-new"></span> 💥</p>
-                            <p class="price-title-up">Price: <span class="tower-upgrade-price"></span> 💶</p>
-                        </div>
-                    </div>
-                <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button>
-                <!-- <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balanca</button> -->
-                </div>
-            </div>
             <div class="tab inventory-tab">
                 <p>Inventory</p>
             </div>

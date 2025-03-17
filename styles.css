@@ -153,6 +153,10 @@ canvas {
     grid-column: 2;
 }
 
+#autoWaves {
+    grid-column: 2;
+}
+
 .active {
     border: 3px solid #00ea69;
 }

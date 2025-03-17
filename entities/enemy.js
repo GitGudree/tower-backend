@@ -1,4 +1,4 @@
-import { canvas, ctx, updateResources } from "../game/game.js";
+import { canvas } from "../game/game.js";
 import { cellSize } from "../game/grid.js";
 
 /**
@@ -55,4 +55,8 @@ export class Enemy {
     }
 }
 
-export const enemies = [];
+export let enemies = [];
+
+export function setEnemies(enemiesArray) {
+    enemies = enemiesArray;
+}

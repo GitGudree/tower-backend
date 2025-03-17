@@ -1,8 +1,6 @@
 import { Tower, towers } from "../entities/Tower.js";
-import { canvas, money, price, updateMoney, updateResources, towerUpgradeElement, towerUpgradePriceElement, updateTowerInfo, updateButton, upgradeTowerStats } from "./game.js";
+import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
-
-let selectedTower = null;
 
 export const mouse = {
     x: 10,
@@ -30,46 +28,48 @@ export function handleCanvasClick() {
     }
 
     /**
-     * MouseEvent that acts as a selection tool to select / upgrade / and analyze individual tower stats.
+     * Handles tower selection and ensures that the right tower is selected.
      *               
 
-    * @description Event that listens to mouse-clicks on the same mouse-positions with different behaviour.
-    * Author:    Anarox
-    * Created:   27.02.2025
-    **/
-    for (let tower of towers) {
-        if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
-            tower.selected = true;
-            selectedTower = tower;
-        } else {
-            tower.selected = false;
-            
-        }
-    }
-
-    if (money >= price && !towers.some(tower => tower.selected)) {
-        towers.push(new Tower(gridMousePosX, gridMousePosY));
-        updateMoney("decrease", price);
-        updateResources("increase", 10);
+     * Author:    Anarox
+     * Created:   27.02.2025
+     **/
+    if (towers) {
+        const selectedTower = towers.find(tower => tower.selected);
+        if (selectedTower) selectedTower.selected = false;
     }
 
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-            //selectedTower = tower;
-        } else {
-            tower.selected = false;
-            
+            break;
         }
     }
 
     if (money >= price && !towers.some(tower => tower.selected)) {
-        towers.push(new Tower(gridMousePosX, gridMousePosY));
+        const tower = new Tower(gridMousePosX, gridMousePosY);
+        towers.push(tower);
+        tower.selected = true;
         updateMoney("decrease", price);
         updateResources("increase", 10);
     }
-
+    
+    if (towers) {
+        const selectedTower = towers.find(tower => tower.selected);
+        updateTowerStats(selectedTower);
+    }
 }
+
+
+/**
+ * Remove contextmenu
+ *               
+
+ * @description Event that removes contextmenu/right-click and solves a game bug.
+ * Author:    Anarox
+ * Created:   17.03.2025
+ **/
+canvas.addEventListener("contextmenu", e => e.preventDefault())
 
 
 
@@ -129,7 +129,7 @@ window.upgradeTower = () => {
 
 
         tower.upgrade();
-        upgradeTowerStats(tower);
+        updateTowerStats(tower);
     }
 }
 
