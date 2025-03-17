@@ -56,7 +56,7 @@ export function handleCanvasClick() {
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-            selectedTower = tower;
+            //selectedTower = tower;
         } else {
             tower.selected = false;
             
@@ -122,6 +122,12 @@ window.upgradeTower = () => {
     console.log("H" + towers.length)
     
     if (tower) {
+
+        tower.oldStats = { 
+            ...tower.newStats
+        };
+
+
         tower.upgrade();
         upgradeTowerStats(tower);
     }

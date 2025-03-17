@@ -77,8 +77,8 @@ export class Tower {
 
         if (this.selected) {
             ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'green';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
             ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
         } else {
             ctx.fillStyle = this.textColor;
@@ -115,7 +115,7 @@ export class Tower {
                 this.background = "purple";
                 this.damage = 10;
 
-                this.upgradeCost = -1;
+                this.upgradeCost = 2500;
                 break;
             default:
                 return;
@@ -141,7 +141,6 @@ export class Tower {
     * Created:   09.03.2025
     **/
     getUpgradeStats() {
-        if (this.upgrades >= 3) return;
 
         const oldStats = {
             health: this.health,
@@ -151,6 +150,13 @@ export class Tower {
             background: this.background,
             upgradeCost: this.upgradeCost
         };
+
+        if (this.upgrades >= 3) {
+            return {
+                oldStats,
+                newStats: oldStats
+            };
+        }
 
         let newRange = this.range;
         let newFireRate = this.fireRate;
@@ -180,7 +186,7 @@ export class Tower {
                 newBackground = "purple";
                 newDamage = 10;
 
-                newUpgradeCost = -1;
+                newUpgradeCost = 3000;
                 break;
             default:
                 return;
