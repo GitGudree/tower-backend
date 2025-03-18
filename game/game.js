@@ -4,7 +4,7 @@ import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
-import { getWave } from "./wave.js";
+import { getWave, tryEndWave } from "./wave.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -45,7 +45,7 @@ export function drawGame() {
     ctx.textAlign = 'center';
     ctx.fillText("⚒️ Resources: " + resources, canvas.width / 2, topBar.height / 2);
     ctx.textAlign = 'right';
-    ctx.fillText("Wave: " + getWave(), canvas.width - 20, topBar.height / 2);
+    ctx.fillText("Wave: " + Math.max(1, getWave()), canvas.width - 20, topBar.height / 2);
     ctx.textAlign = 'center';
     
     if (gameOver) {
@@ -103,8 +103,8 @@ export function updateGameState() {
         enemiesArray.push(enemy);
     }
     setEnemies(enemiesArray);
+    tryEndWave();
 
-    
     towers.forEach((tower, towerIndex) => {
         tower.attack(enemies, projectiles, towerIndex);
     });
