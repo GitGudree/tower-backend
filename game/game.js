@@ -113,25 +113,7 @@ export function updateGameState() {
         gameOver = true;
     }
 
-    // const canUpgrade = selectedTower && money >= selectedTower.upgradeCost;
-
-    // if (canUpgrade && !isUpgradeBtnActive) {
-    //     upgradeTowerStats(selectedTower);
-    //     towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
-    //     towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
-    //     isUpgradeBtnActive = true;
-    // } else if (!canUpgrade && isUpgradeBtnActive) {
-    //     towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
-    //     towerUpgradeElement.innerText = "Insufficient balance";
-    //     isUpgradeBtnActive = false;
-    //     console.log("Jeg havner her jeg :D");
-    // }
-
-    // if (selectedTower && money <= selectedTower.upgradeCost) {
-    //     updateTowerInfo(selectedTower);
-    // }
     updateTowerStats(selectedTower);
-
 }    
 
 /**
@@ -209,63 +191,17 @@ export function updateTowerLevel(tower) {
 }
 
 /**
- * Updates the stat-display in Tower-section to show the selected tower.
+ * Updates the stat-display in Tower-section to show the selected tower and upgrade stats.
  *               
 
  * @param: tower (Takes in selectedTower)
  * @author:    Anarox
  * Created:   09.03.2025
 **/
-export function updateTowerInfo(tower) {
-    const stats = tower.getUpgradeStats().newStats;
-    document.querySelector(".tower-title-display").textContent = tower.name;
-    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
-    document.querySelector(".hp-title-display").textContent = stats.health;
-    document.querySelector(".range-title-display").textContent = stats.range;
-    document.querySelector(".firerate-title-display").textContent = stats.fireRate;
-    document.querySelector(".tower-upgrade-price").textContent = stats.upgradeCost;
-
-}
-
-/**
- * Updates the stat-display in Tower-section to show upgrade stats.
- *               
-
- * @param: tower (Takes in selectedTower)
- * @author:    Anarox
- * Created:   16.03.2025
-**/
-export function upgradeTowerStats(tower) {
-    if (!tower) return;
-    const stats = tower.getUpgradeStats();
-
-    // console.log("getUpgradeStats: " + tower.getUpgradeStats());
-    // console.log(stats);
-    // console.log("Old stats yyy:", stats.oldStats);
-    // console.log("New stats:", stats.newStats);
-
-    document.querySelector(".tower-title-display").textContent = tower.name;
-    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
-
-    document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
-    document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
-    document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
-    document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost; //stats.newStats.upgradeCost;
-
-    isUpgradeBtnActive = false;
-    towerUpgradeElement.classList.remove('active', 'upgrade', 'hover-upgrade');
-    towerUpgradeElement.innerText = "Insufficient balancenn";
-}
-
 export function updateTowerStats(tower) {
     if (!tower) return;
     const canUpgrade = tower && money >= tower.upgradeCost;
     const stats = tower.getUpgradeStats();
-
-    // console.log("getUpgradeStats: " + tower.getUpgradeStats());
-    // console.log(stats);
-    // console.log("Old stats yyy:", stats.oldStats);
-    // console.log("New stats:", stats.newStats);
 
     document.querySelector(".tower-title-display").textContent = tower.name;
     document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
@@ -274,14 +210,14 @@ export function updateTowerStats(tower) {
         document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
         document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
         document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
-        document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost; //stats.newStats.upgradeCost;
+        document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
         towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
         towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
     } else {
-        document.querySelector(".hp-title-display").textContent = stats.newStats.health;
-        document.querySelector(".range-title-display").textContent = stats.newStats.range;
-        document.querySelector(".firerate-title-display").textContent = stats.newStats.fireRate;
-        document.querySelector(".tower-upgrade-price").textContent = stats.newStats.upgradeCost;
+        document.querySelector(".hp-title-display").textContent = stats.oldStats.health;
+        document.querySelector(".range-title-display").textContent = stats.oldStats.range;
+        document.querySelector(".firerate-title-display").textContent = stats.oldStats.fireRate;
+        document.querySelector(".tower-upgrade-price").textContent = stats.oldStats.upgradeCost;
         towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
         towerUpgradeElement.innerText = "Insufficient balance";
     }
