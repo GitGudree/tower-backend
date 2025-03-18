@@ -1,55 +1,73 @@
 import { rows } from "./grid.js"; 
-import { enemies } from "../entities/enemies/Enemy.js";
+import { enemies, getRandomEnemyType } from "../entities/enemies/Enemy.js";
+import { createEnemy } from "../entities/enemies/enemyFactory.js";
 
+let wave = 0;
+let isWaveStarted = false;
+let waveInterval;
 
 /**
- * Wave class class
- *
+ * spawnWave function that ensures enemies spawn and walk to a random lane
+ *               
+
+ * @param: waves, rows
  * @author:    Anarox
  * @contributor: Randomfevva
- * Created:   07.03.2025
- **/
-
-
-
-let wave = 1;
- 
-
-export async function spawnWave(waves) {
-    const { createEnemy } = await import("../entities/enemies/enemyFactory.js");
-
-    const enemyTypes = [
-        { type: "fast", weight: 0.3 },
-        { type: "tank", weight: 0.3 },
-        { type: "normal", weight: 0.4 }
-    ];
-
-    function getRandomEnemyType() {
-        let rand = Math.random();
-        let sum = 0;
-        for (let enemy of enemyTypes) {
-            sum += enemy.weight;
-            if (rand < sum) return enemy.type;
-        }
+ * Created:   11.02.2025
+**/
+export async function spawnWave() {
+    if (isWaveStarted) {
+        // Deny starting a new wave before all enemies are cleared
+        return;
     }
+    wave++;
+    isWaveStarted = true;
 
-    for (let i = 0; i < waves * 2; i++) {
-        setTimeout(() => {
-            let row = Math.floor(Math.random() * rows) + 1;
-            let type = waves % 5 === 0 ? "boss" : getRandomEnemyType();
-            let enemy = createEnemy(row, waves, type);
-            enemies.push(enemy);
-            console.log("Enemies array:", enemies);
-        }, i * 1000);
+    // Set amount of enemies to spawn
+    const spawnEnemies = wave * 2;
+    for (let i = 0; i < spawnEnemies; i++) {
+        // Set random row to spawn the enemy
+        let row = Math.floor(Math.random() * rows) + 1;
+        // Create new enemy object and define enemy type
+        const type = getRandomEnemyType(wave);
+        const enemy = createEnemy(row, wave, type);
+
+        // Push the enemy into the game
+        enemies.push(enemy);
+        // Wait before continue
+        await wait(Math.max(100, 1000 - wave));
     }
 }
 
-
 export function startWaveButton() {
-    spawnWave(wave);
-    wave++;
+    spawnWave();
+}
+
+export function tryEndWave() {
+    if (enemies.length >= 1) {
+        // There's still enemies alive
+        return;
+    }
+
+    isWaveStarted = false;
 }
 
 export function getWave() {
     return wave;
+}
+
+async function wait(ms) {
+    return new Promise(res => setTimeout(res, ms));
+}
+
+window.toggleAutoWave = () => {
+    const autoWaveEnabled = document.getElementById('autoWaveCheckbox').checked;
+
+    if (autoWaveEnabled) {
+        waveInterval = setInterval(spawnWave, 500);
+        console.log("Auto wave enabled");
+    } else {
+        clearInterval(waveInterval);
+        console.log("Auto wave disabled");
+    }
 }

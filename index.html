@@ -9,14 +9,85 @@
 
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    <div class="menu">
-        <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
-        <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button>
-        <p>Money: <span class="money">150</span></p>
-        <p>Tower Information</p>
-        <p>Tower damage: <span class="tower-damage"></span></p>
-        <p>Tower upgrade price: <span class="tower-upgrade-price"></span></p>
-    </div>
+    <main>
+        <canvas id="gameCanvas"></canvas>
+        <div class="menu">
+            <div class="tabs">
+                <span onclick="openTab(this)" data-tab="game-tab">GAME</span>
+                <span class="selected" onclick="openTab(this)" data-tab="tower-tab">TOWER</span>
+                <span onclick="openTab(this)" data-tab="inventory-tab">INVENTORY</span>
+                <span onclick="openTab(this)" data-tab="shop-tab">SHOP</span>
+            </div>
+            <div class="tab game-tab">
+                <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
+            <div class="auto-wave-control">
+                <label for="autoWaveCheckbox">Auto Wave</label>
+                <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+            </div>
+                <!-- <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button> -->
+                <p>Tower damage: <span class="tower-damage"></span></p>
+                <a>Settings</a>
+            </div>
+            <div class="tab tower-tab grid-split open">
+                <div class="grid grid-split">
+                    <h2 class="tab-title grid-full-width">Towers</h2>
+                    <div class="cards grid grid-full-width grid-split">
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">200 ⚒️</span></p>    
+                        </div>
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">400 ⚒️</span></p>    
+                        </div>
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">1000 ⚒️</span></p>    
+                        </div>
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">2500 ⚒️</span></p>    
+                        </div>
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">5000 ⚒️</span></p>    
+                        </div>
+                        <div class="card">
+                            <img src="" alt="">
+                            <p>Tower A</p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">8000 ⚒️</span></p>    
+                        </div>
+                    </div>
+                </div>
+                <div class="tower-info grid grid-split">
+                    <h2 class="tab-title grid-full-width">Tower Info</h2>
+                    <div class="cards grid grid-full-width">
+                        <div class="display-card">
+                            <img src="" alt="">
+                            <p class="tower-title"><span class="tower-title-display"></span>, Lvl <span class="tower-lvl"></span></p>
+                            <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
+                            <p class="range-title">Range: <span class="range-title-display"></span> 🏹</p>
+                            <p class="firerate-title">Fire rate: <span class="firerate-title-display"></span> 💥</p>
+                            <p class="price-title">Price: <span class="tower-upgrade-price green-text"></span> 💶</p>
+                        </div>
+                    </div>
+                <!-- <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button> -->
+                <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
+                </div>
+            <div class="tab inventory-tab">
+                <p>Inventory</p>
+            </div>
+            <div class="tab shop-tab">
+                <div class="shop-section">shop</div>
+                <div class="shop-display-section">display</div>
+            </div>
+
+        </div>
+    </main>
 </body>
 </html>

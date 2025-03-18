@@ -6,6 +6,8 @@ import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "../entities/enemies/Enemy.js";
 import { towers } from "./entities/tower.js";
 
+
+
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);
 canvas.addEventListener("mouseleave", mouseLeave);

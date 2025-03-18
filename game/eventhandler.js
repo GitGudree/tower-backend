@@ -1,9 +1,6 @@
 import { Tower, towers } from "../entities/tower.js";
-import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, moneyElement } from "./game.js";
+import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
-import { resources } from "./game.js";
-
-let selectedTower = null;
 
 export const mouse = {
     x: 10,
@@ -30,25 +27,51 @@ export function handleCanvasClick() {
         return;
     }
 
-    // Selecting a placed tower to upgrade!
+    /**
+     * Handles tower selection and ensures that the right tower is selected.
+     *               
+
+     * Author:    Anarox
+     * Created:   27.02.2025
+     **/
+    if (towers) {
+        const selectedTower = towers.find(tower => tower.selected);
+        if (selectedTower) selectedTower.selected = false;
+    }
+
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-
-            towerDamageElement.textContent = tower.damage;
-            towerUpgradePriceElement.textContent = tower.upgradeCost;
-        } else {
-            tower.selected = false;
+            break;
         }
     }
 
     if (money >= price && !towers.some(tower => tower.selected)) {
-        towers.push(new Tower(gridMousePosX, gridMousePosY));
+        const tower = new Tower(gridMousePosX, gridMousePosY);
+        towers.push(tower);
+        tower.selected = true;
         updateMoney("decrease", price);
         updateResources("increase", 10);
-        moneyElement.innerText = money;
+    }
+    
+    if (towers) {
+        const selectedTower = towers.find(tower => tower.selected);
+        updateTowerStats(selectedTower);
     }
 }
+
+
+/**
+ * Remove contextmenu
+ *               
+
+ * @description Event that removes contextmenu/right-click and solves a game bug.
+ * Author:    Anarox
+ * Created:   17.03.2025
+ **/
+canvas.addEventListener("contextmenu", e => e.preventDefault())
+
+
 
 /**
  * MouseMouse event
@@ -68,7 +91,6 @@ export function mouseMove(event) {
 export function mouseLeave(event) {
     mouse.x = undefined;
     mouse.y = undefined;
-    console.log('Mouse left...')
 }
 
 export function gridRectColission(first, second) {
@@ -82,13 +104,33 @@ export function gridRectColission(first, second) {
 }
 
 
+function openTab(btn) {
+    document.querySelectorAll('.tabs>.selected').forEach(tab => {
+        tab.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+    
+    document.querySelector('.tab.open').classList.remove('open');
 
+    const tabName = btn.getAttribute('data-tab');
+    document.querySelector(`.tab.${tabName}`).classList.add('open');
+}
 
 
 window.upgradeTower = () => {
     const tower = towers.find(tower => tower.selected);
-
+    console.log("H" + towers.length)
+    
     if (tower) {
+
+        tower.oldStats = { 
+            ...tower.newStats
+        };
+
+
         tower.upgrade();
+        updateTowerStats(tower);
     }
 }
+
+window.openTab = openTab;

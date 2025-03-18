@@ -3,7 +3,7 @@ import { cellSize } from "../../game/grid.js";
 
 
 /**
- * Enemy class (STANDARD)
+ * Enemy class (DEFAULT)
  *
  * @constructor row, wave, type
  * @author:    Anarox
@@ -55,6 +55,27 @@ export class Enemy {
     }
 }
 
+export let enemies = [];
 
-export const enemies = [];
+export function setEnemies(enemiesArray) {
+    enemies = enemiesArray;
+}
 
+const enemyTypes = [
+    { type: "fast", weight: 0.3 },
+    { type: "tank", weight: 0.3 },
+    { type: "normal", weight: 0.4 }
+];
+
+export function getRandomEnemyType(wave) {
+    if (wave % 5 === 0) {
+        return "boss";
+    }
+    
+    let rand = Math.random();
+    let sum = 0;
+    for (let enemy of enemyTypes) {
+        sum += enemy.weight;
+        if (rand < sum) return enemy.type;
+    }
+}
