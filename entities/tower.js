@@ -88,6 +88,7 @@ export class Tower {
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
 
+        // DO NOT REMOVE THIS CODE!!!
         // const towerUpgrades = towerTypes['Shooter'].upgradePath;
 
         // for (let upgradeKey in towerUpgrades[this.upgrades]) {
@@ -101,26 +102,41 @@ export class Tower {
                 this.range += 50;
                 this.fireRate = 25;
                 this.background = "green";
+                this.textColor = 'lightgray';
+                this.damage = 2;
 
+                // Next upgrade cost
                 this.upgradeCost = 300;
                 break;
             case 1:
                 this.range += 100;
                 this.fireRate = 20;
-                this.background = "orange";
+                this.background = "yellow";
+                this.textColor = 'gray';
                 this.damage = 3;
 
-                this.upgradeCost = 1000;
+                // Next upgrade cost
+                this.upgradeCost = 1_000;
                 break;
             case 2:
                 this.range += 150;
-                this.fireRate = 10;
-                this.background = "purple";
-                this.damage = 10;
+                this.fireRate = 15;
+                this.background = "orange";
+                this.textColor = 'gray';
+                this.damage = 5;
 
-                this.upgradeCost = 2500;
+                // Next upgrade cost
+                this.upgradeCost = 5_000;
+                break;
             case 3:
-                this.upgradeCost = -1;
+                this.range += 200;
+                this.fireRate = 20;
+                this.background = "purple";
+                this.textColor = 'lightgray';
+                this.damage = 20;
+
+                // Next upgrade cost - 1e3=1.000, 1e6=1.000.000
+                this.upgradeCost = 1e9;
                 break;
             default:
                 return;
@@ -152,49 +168,48 @@ export class Tower {
             range: this.range,
             fireRate: this.fireRate,
             damage: this.damage,
-            background: this.background,
             upgradeCost: this.upgradeCost
         };
 
-        if (this.upgrades >= 3) {
-            return {
-                oldStats,
-                newStats: oldStats
-            };
-        }
-
         let newRange = this.range;
         let newFireRate = this.fireRate;
-        let newBackground = this.background;
         let newDamage = this.damage;
         let newUpgradeCost = this.upgradeCost;
 
-        switch (Math.max(this.upgrades - 1, 0)) {
+        switch (this.upgrades) {
             case 0:
                 newRange += 50;
                 newFireRate = 25; // lower = better
-                newBackground = "red";
+                newDamage = 3;
 
                 newUpgradeCost = 300;
                 break;
             case 1:
                 newRange += 100;
                 newFireRate = 20; // lower = better
-                newBackground = "yellow";
                 newDamage = 3;
 
-                newUpgradeCost = 1000;
+                newUpgradeCost = 1_000;
                 break;
             case 2:
                 newRange += 150;
-                newFireRate = 10; // lower = better
-                newBackground = "purple";
-                newDamage = 10;
+                newFireRate = 15; // lower = better
+                newDamage = 5;
 
-                newUpgradeCost = 3000;
+                newUpgradeCost = 5_000;
+                break;
+            case 3:
+                newRange += 150;
+                newFireRate = 20; // lower = better
+                newDamage = 20;
+
+                newUpgradeCost = 1e9;
                 break;
             default:
-                return;
+                return {
+                    oldStats,
+                    newStats: oldStats
+                };
         }
 
         const newStats = {
@@ -202,7 +217,6 @@ export class Tower {
             range: newRange,
             fireRate: newFireRate,
             damage: newDamage,
-            background: newBackground,
             upgradeCost: newUpgradeCost
         };
 
@@ -213,54 +227,82 @@ export class Tower {
 export const towers = [];
 
 /**
- * 
-        this.name = "Shooter";
-        this.health = 100;
-        this.range = 500;
-        this.damage = 2;
-        this.projectiles = [];
-        this.fireRate = 30;
-        this.timer = 0;
-        this.upgradeCost = 150;
-        this.upgrades = 0;
-        this.selected = false;
+ * towerTypes object
+ *
 
-        this.background = 'blue';
-        this.textColor = 'lightgray';
- */
-
+ * @description An object that contains all information about the turret
+ * Author:    Anarox
+ * Created:   09.03.2025
+ **/
 export const towerTypes = {
     'Shooter': {
         stats: {
             health: 100,
+            healthIncrement: 50,
             range: 500,
             damage: 2,
             fireRate: 30,
-            background: 'blue'
+            background: 'blue',
+            textColor: 'lightgray'
         },
         upgradePath: [{
             range: 550,
             fireRate: 25,
             background: 'green',
+            textColor: 'lightgray',
             upgradeCost: 150,
         }, {
             range: 650,
             damage: 3,
             fireRate: 20,
-            background: 'orange',
+            background: 'yellow',
+            textColor: 'gray',
             upgradeCost: 300
         }, {
             range: 800,
             damage: 5,
             fireRate: 15,
-            background: 'purple',
-            upgradeCost: 1000
+            background: 'orange',
+            textColor: 'gray',
+            upgradeCost: 1_000
         }, {
-            range: 900,
+            range: 1_000,
             damage: 10,
             fireRate: 10,
             background: 'purple',
-            upgradeCost: 5000
+            textColor: 'lightgray',
+            upgradeCost: 5_000
+        }]
+    },
+    'Sniper': {
+        stats: {
+            health: 50,
+            range: 1000,
+            damage: 20,
+            fireRate: 100,
+            background: 'grey',
+            textColor: 'lightgrey'
+        },
+        upgradePath: [{
+            damage: 25,
+            fireRate: 80,
+            // background: 'green',
+            upgradeCost: 1_000,
+        }, {
+            damage: 30,
+            fireRate: 60,
+            // background: 'green',
+            upgradeCost: 5_000,
+        }, {
+            damage: 50,
+            fireRate: 50,
+            // background: 'green',
+            upgradeCost: 20_000,
+        }, {
+            damage: 100,
+            fireRate: 50,
+            // background: 'green',
+            upgradeCost: 100_000,
         }]
     }
 }
