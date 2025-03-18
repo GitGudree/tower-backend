@@ -1,10 +1,10 @@
-import { Enemy, enemies } from "../entities/enemy.js";
-import { rows } from "./grid.js";
+import { rows } from "./grid.js"; 
+import { enemies, getRandomEnemyType } from "../entities/enemies/Enemy.js";
+import { createEnemy } from "../entities/enemies/enemyFactory.js";
 
 let wave = 0;
 let isWaveStarted = false;
 let waveInterval;
-
 
 /**
  * spawnWave function that ensures enemies spawn and walk to a random lane
@@ -12,6 +12,7 @@ let waveInterval;
 
  * @param: waves, rows
  * @author:    Anarox
+ * @contributor: Randomfevva
  * Created:   11.02.2025
 **/
 export async function spawnWave() {
@@ -28,7 +29,8 @@ export async function spawnWave() {
         // Set random row to spawn the enemy
         let row = Math.floor(Math.random() * rows) + 1;
         // Create new enemy object and define enemy type
-        const enemy = new Enemy(row, wave);
+        const type = getRandomEnemyType(wave);
+        const enemy = createEnemy(row, wave, type);
 
         // Push the enemy into the game
         enemies.push(enemy);

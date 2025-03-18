@@ -19,7 +19,7 @@ export class Tower {
         this.name = "Shooter";
         this.health = 100;
         this.range = 500;
-        this.damage = 2;
+        this.damage = 5;
         this.projectiles = [];
         this.fireRate = 30;
         this.timer = 0;
