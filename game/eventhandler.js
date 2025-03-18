@@ -1,5 +1,5 @@
 import { Tower, towers } from "../entities/tower.js";
-import { canvas, money, price, updateMoney, updateResources, towerDamageElement, towerUpgradePriceElement, moneyElement } from "./game.js";
+import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
 
 export const mouse = {
