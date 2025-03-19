@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tower Defense Game</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="settings.js" type="module"></script>
     <script src="main.js" type="module"></script>
-
 </head>
 <body>
     <main>
@@ -20,14 +20,21 @@
             </div>
             <div class="tab game-tab">
                 <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
-            <div class="auto-wave-control">
-                <label for="autoWaveCheckbox">Auto Wave</label>
-                <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
-            </div>
-                <!-- <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button> -->
+                <div class="auto-wave-control">
+                    <label for="autoWaveCheckbox">Auto Wave</label>
+                    <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                </div>
                 <p>Tower damage: <span class="tower-damage"></span></p>
-                <a>Settings</a>
+
+                <!-- Settings UI -->
+                <h3>Settings</h3>
+                <label for="speedSlider">Game Speed:</label>
+                <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+
+                <label for="volumeSlider">Volume:</label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
             </div>
+            
             <div class="tab tower-tab grid-split open">
                 <div class="grid grid-split">
                     <h2 class="tab-title grid-full-width">Towers</h2>
@@ -76,9 +83,10 @@
                             <p class="price-title">Price: <span class="tower-upgrade-price green-text"></span> 💶</p>
                         </div>
                     </div>
-                <!-- <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button> -->
-                <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
+                    <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
                 </div>
+            </div>
+            
             <div class="tab inventory-tab">
                 <p>Inventory</p>
             </div>
@@ -86,7 +94,6 @@
                 <div class="shop-section">shop</div>
                 <div class="shop-display-section">display</div>
             </div>
-
         </div>
     </main>
 </body>
