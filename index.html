@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="settings.js" type="module"></script>
     <script src="main.js" type="module"></script>
+    <script src="eventhandler.js" type="module"></script>
 </head>
 <body>
     <main>
@@ -24,15 +25,18 @@
                     <label for="autoWaveCheckbox">Auto Wave</label>
                     <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
                 </div>
-                <p>Tower damage: <span class="tower-damage"></span></p>
+                <p>Tower damage: <span id="towerDamageTotal">0</span></p>
 
-                <!-- Settings UI -->
-                <h3>Settings</h3>
-                <label for="speedSlider">Game Speed:</label>
-                <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
 
-                <label for="volumeSlider">Volume:</label>
-                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                <div class="settings-container">
+                    <p>SETTINGS:</p>
+                    <label for="speedSlider">Game Speed:</label>
+                    <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+                
+                    <label for="volumeSlider">Volume:</label>
+                    <input type="range" id="volumeSlider" min="0.5" max="2" step="0.1" value="1">
+                </div>
+                
             </div>
             
             <div class="tab tower-tab grid-split open">
