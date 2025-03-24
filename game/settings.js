@@ -7,6 +7,7 @@ const Settings = {
     init() {
         this.loadSettings();
         this.setupUI();
+        this.setupPopupControls(); // Legger til popup-funksjonalitet
     },
 
     loadSettings() {
@@ -39,6 +40,31 @@ const Settings = {
             volumeSlider.addEventListener('input', (e) => {
                 this.volume = parseFloat(e.target.value);
                 this.saveSettings();
+            });
+        }
+    },
+
+    // Funksjonalitet for pop-up menyen
+    setupPopupControls() {
+        const settingsPopup = document.getElementById("settingsPopup");
+        const settingsButton = document.querySelector(".settings-btn");
+        const closeButton = document.querySelector("#settingsPopup button");
+
+        console.log("settingsPopup:", settingsPopup);
+        console.log("settingsButton:", settingsButton);
+        console.log("closeButton:", closeButton);
+
+        if (settingsButton && settingsPopup) {
+            settingsButton.addEventListener("click", () => {
+                console.log("Settings button clicked!");
+                settingsPopup.style.display = "flex";
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener("click", () => {
+                console.log("Close button clicked!");
+                settingsPopup.style.display = "none";
             });
         }
     }
