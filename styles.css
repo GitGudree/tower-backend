@@ -248,7 +248,7 @@ canvas {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    max-width: 400px;
+    max-width: 100px;
     margin: 0 auto;
     text-align: left;
 }
@@ -276,7 +276,7 @@ canvas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
-    max-width: 600px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -315,4 +315,99 @@ canvas {
 .popup-content label {
     display: block;
     margin-bottom: 5px;
+}
+
+/* --- Generell styling --- */
+.shop-tab {
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f4a100; /* Oransje bakgrunn */
+    height: 100%;
+}
+
+/* --- Shop-tittel --- */
+.shop-tab h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* --- Venstre side: Items --- */
+.shop-section {
+    flex: 1;
+    text-align: center;
+}
+
+/* Holder items i en ryddig liste */
+.shop-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Hver enkelt vare i butikken */
+.shop-item {
+    background: #222;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+    width: 140px;
+}
+
+.shop-item img {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.shop-item p {
+    color: white;
+    margin: 5px 0;
+}
+
+/* Hover-effekt */
+.shop-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* --- Høyre side: Item Details --- */
+.shop-display-section {
+    flex: 1;
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    width: 14rem;
+}
+
+.item-display img {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.item-display p {
+    margin: 10px 0;
+}
+
+/* --- Kjøpsknapp --- */
+.item-display button {
+    background: #ffcc00;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.item-display button:hover {
+    background: #e6b800;
 }

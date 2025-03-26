@@ -105,11 +105,32 @@
             
             <div class="tab inventory-tab">
                 <p>Inventory</p>
-            </div>
+            </div>           
             <div class="tab shop-tab">
-                <div class="shop-section">shop</div>
-                <div class="shop-display-section">display</div>
-            </div>
+                <h2>Shop</h2>
+                
+                <div class="shop-section">
+                    <h3>Available Items</h3>
+                    <div class="shop-items">
+                        <div class="shop-item" onclick="selectItem('barricade')">
+                            <img src="images/barricade.png" alt="Barricade">
+                            <p>Barricade</p>
+                            <p class="item-price">100 💶</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="shop-display-section">
+                    <h3>Item Details</h3>
+                    <div class="item-display">
+                        <img id="item-image" src="images/barricade.png" alt="Item">
+                        <p id="item-name">Barricade</p>
+                        <p id="item-description">Place a barricade on a grid slot to slow down enemies.</p>
+                        <p>Price: <span id="item-price">100</span> 💶</p>
+                        <button onclick="buyItem()">Buy</button>
+                    </div>
+                </div>
+            </div>           
         </div>
     </main>
 </body>
