@@ -6,8 +6,9 @@
     <title>Tower Defense Game</title>
     <link rel="stylesheet" href="styles.css">
     <script src="game/settings.js" type="module"></script>
-<script src="main.js" type="module"></script>
-<script src="game/eventhandler.js" type="module"></script>
+    <script src="main.js" type="module"></script>
+    <script src="game/eventhandler.js" type="module"></script>
+    <script type="module" src="shop.js"></script>
 
 </head>
 <body>
@@ -107,8 +108,7 @@
                 <p>Inventory</p>
             </div>           
             <div class="tab shop-tab">
-                <h2>Shop</h2>
-                
+    
                 <div class="shop-section">
                     <h3>Available Items</h3>
                     <div class="shop-items">
@@ -117,9 +117,19 @@
                             <p>Barricade</p>
                             <p class="item-price">100 💶</p>
                         </div>
+                        <div class="shop-item" onclick="selectItem('mine')">
+                            <img src="images/mine.png" alt="Mine">
+                            <p>Mine</p>
+                            <p class="item-price">150 💶</p>
+                        </div>
+                        <div class="shop-item" onclick="selectItem('slowTrap')">
+                            <img src="images/slowtrap.png" alt="Slow Trap">
+                            <p>Slow Trap</p>
+                            <p class="item-price">120 💶</p>
+                        </div>
                     </div>
                 </div>
-                
+            
                 <div class="shop-display-section">
                     <h3>Item Details</h3>
                     <div class="item-display">
@@ -130,7 +140,43 @@
                         <button onclick="buyItem()">Buy</button>
                     </div>
                 </div>
-            </div>           
+                
+                <script>
+                    const items = {
+                        barricade: {
+                            name: "Barricade",
+                            image: "images/barricade.png",
+                            description: "Place a barricade on a grid slot to slow down enemies.",
+                            price: 100
+                        },
+                        mine: {
+                            name: "Mine",
+                            image: "images/mine.png",
+                            description: "Explodes on enemy contact, dealing area damage.",
+                            price: 150
+                        },
+                        slowTrap: {
+                            name: "Slow Trap",
+                            image: "images/slowtrap.png",
+                            description: "Slows down enemies that pass through it.",
+                            price: 120
+                        }
+                    };
+                
+                    function selectItem(itemKey) {
+                        const item = items[itemKey];
+                        if (item) {
+                            document.getElementById("item-image").src = item.image;
+                            document.getElementById("item-name").textContent = item.name;
+                            document.getElementById("item-description").textContent = item.description;
+                            document.getElementById("item-price").textContent = item.price;
+                        }
+                    }
+                </script>
+                
+            
+            </div>
+            
         </div>
     </main>
 </body>
