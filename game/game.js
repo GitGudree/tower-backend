@@ -1,5 +1,5 @@
 import { enemies, setEnemies } from "../entities/enemies/Enemy.js";
-import { towers } from "../entities/tower.js";
+import { towers } from "../entities/towers/tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
@@ -237,17 +237,20 @@ export function projectileHandler(){
 
     for (let projectile of projectiles) {
         projectile.move();
-        let hit = false;
+        let finalHit = false;
         
         for (let enemy of enemies) {
-            if (collision(enemy, projectile)) {
+            if (collision(enemy, projectile) && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) {
                 projectile.dealDamage(enemy);
-                hit = true;
+                console.log(projectile.hitEnemies)
+                if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
+                    finalHit = true;
+                }
                 break;
             }
         }
 
-        if (!hit && projectile.x < canvas.width - 50) {
+        if (!finalHit && projectile.x < canvas.width - 50) {
             activeProjectiles.push(projectile);
         }
     }

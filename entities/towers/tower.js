@@ -1,8 +1,8 @@
-import { Bullet } from "./projectiles/Bullet.js";
-import { collision } from "../game/hitreg.js";
-import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../game/game.js";
-import { cellSize } from "../game/grid.js";
-import { money, updateMoney } from "../game/game.js";
+import { Bullet } from "../projectiles/Bullet.js";
+import { collision } from "../../game/hitreg.js";
+import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../../game/game.js";
+import { cellSize } from "../../game/grid.js";
+import { money, updateMoney } from "../../game/game.js";
 
 /**
  * Tower Class
@@ -10,10 +10,11 @@ import { money, updateMoney } from "../game/game.js";
 
  * @constructor (x, y, row)
  * Author:    Anarox
+ * Editor:      Quetzalcoatl
  * Created:   25.01.2025
  **/
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y, type) {
         this.x = x;
         this.y = y;
         this.name = "Shooter";
@@ -26,20 +27,21 @@ export class Tower {
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
+        this.bulletType = type;
 
         // Tower style
         this.background = 'blue';
         this.textColor = 'lightgray';
     }
-
+    
     attack(enemies, bullets, towerIndex) {
         if (this.timer <= 0) {
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new Bullet(this.x, this.y, this.y);
+                    const bullet = new Bullet(this.x, this.y, this.y, this.bulletType);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
-                }
+                }            
             });
 
             for (let enemy of enemies) {
@@ -234,6 +236,7 @@ export const towers = [];
  * Author:    Anarox
  * Created:   09.03.2025
  **/
+
 export const towerTypes = {
     'Shooter': {
         stats: {
@@ -305,4 +308,6 @@ export const towerTypes = {
             upgradeCost: 100_000,
         }]
     }
+        
 }
+    

@@ -4,8 +4,7 @@ import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventHandler.js
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "../entities/enemies/Enemy.js";
-import { towers } from "./entities/tower.js";
-
+import { towers} from "../entities/towers/tower.js"
 
 
 canvas.addEventListener("click", handleCanvasClick);

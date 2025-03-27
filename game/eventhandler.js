@@ -1,4 +1,5 @@
-import { Tower, towers } from "../entities/tower.js";
+import { Tower, towers } from "../entities/towers/tower.js";
+import { createTower } from "../entities/towers/towerFactory.js";
 import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
 
@@ -47,7 +48,8 @@ export function handleCanvasClick() {
     }
 
     if (money >= price && !towers.some(tower => tower.selected)) {
-        const tower = new Tower(gridMousePosX, gridMousePosY);
+        var type = "laser"
+        const tower = createTower(gridMousePosX, gridMousePosY, type);
         towers.push(tower);
         tower.selected = true;
         updateMoney("decrease", price);
