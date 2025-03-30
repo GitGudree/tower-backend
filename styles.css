@@ -140,6 +140,8 @@ canvas {
 
 .tower-upgrade-btn,
 .start-wave-btn,
+.usebtn,
+.sellbtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -241,4 +243,40 @@ canvas {
 
 .hidden {
     display: none;
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.slot {
+    text-align: center;
+    background-color: #b67a20;
+    gap: .5rem;
+    user-select: none;
+}
+
+.slots > .slot img {
+    height: 60px;
+    aspect-ratio: 1/1;
+}
+
+.itemdesc {
+    display: grid;
+    grid-template-columns: 1fr;
+    
+}
+
+.desc {
+    text-align: center;
+    background-color: #b67a20;
+    gap: .5rem;
+    user-select: none;
+}
+
+.itemdesc > .desc img {
+    height: 195px;
+    aspect-ratio: 1/1;
 }
