@@ -18,10 +18,13 @@ export function createTower(x, y, type) {
             tower = new SniperTower(x, y, "pierce")
             break;
         case "gatling":
-            tower = new GatlingTower(x, y, "normal")
+            tower = new GatlingTower(x, y, "basic")
             break;
         case "laser":
             tower = new LaserTower(x, y, "laser")
+            break;
+        case "basic":
+            tower = new Tower(x, y, "basic")
             break;
         default:
             tower = new Tower(x, y, "normal");

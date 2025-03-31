@@ -26,7 +26,7 @@ export class Bullet {
                 this.pierceAmount = 3;
                 this.color = "blue";
                 break;
-            case "normal":
+            case "basic":
                 this.pierceAmount = 1;
                 this.color = "black";
                 break;
