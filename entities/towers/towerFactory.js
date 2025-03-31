@@ -1,6 +1,7 @@
 import { SniperTower } from "./SniperTower.js";
 import { GatlingTower } from "./GatlingTower.js";
 import { LaserTower } from "./LaserTower.js";
+import { ErrorTower} from "./ErrorTower.js"
 import { Tower } from "./tower.js";
 /**
  * towerFactory class
@@ -27,7 +28,7 @@ export function createTower(x, y, type) {
             tower = new Tower(x, y, "basic")
             break;
         default:
-            tower = new Tower(x, y, "normal");
+            tower = new ErrorTower(x, y, "error");
     }
     return tower;
 }

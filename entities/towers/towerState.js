@@ -5,7 +5,7 @@
  * Created:   31.03.2025
  **/
 
-let chosenTower ="basic";
+let chosenTower;
 export function setChosenTower(typeIn){
     chosenTower = typeIn
     console.log("valgte tower" +" "+ chosenTower)
