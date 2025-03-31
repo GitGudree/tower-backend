@@ -106,7 +106,8 @@ export function updateGameState() {
     tryEndWave();
 
     towers.forEach((tower, towerIndex) => {
-        tower.attack(enemies, projectiles, towerIndex);
+        tower.updateTowerCollision(enemies, towerIndex)
+        tower.attack(enemies, projectiles);
     });
     
     if (resources <= 0) {

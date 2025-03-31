@@ -1,6 +1,6 @@
 import { ctx } from "./game.js";
 import { cellSize } from "./grid.js";
-import { gridRectColission, mouse } from "./eventHandler.js";
+import { gridRectColission, mouse } from "./eventhandler.js";
 import { enemies } from "../entities/enemies/Enemy.js";
 
 /**

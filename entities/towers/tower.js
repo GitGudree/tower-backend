@@ -24,6 +24,7 @@ export class Tower {
         this.projectiles = [];
         this.fireRate = 30;
         this.timer = 0;
+        this.iFrames = 0;
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
@@ -33,9 +34,40 @@ export class Tower {
         this.background = 'blue';
         this.textColor = 'lightgray';
     }
+
+    updateTowerCollision(enemies, towerIndex) {
+        if (this.iFrames <= 0) {
+            for (let enemy of enemies) {
+                if (collision(this, enemy)) {
+                    enemy.stopMove();
+                    enemy.attack(this);
     
-    attack(enemies, bullets, towerIndex) {
+                    if (this.health <= 0) {
+                        towers.splice(towerIndex, 1);
+                        this.deathMessage = "-5 Resources";
+                        this.deathMessageTimer = 60;
+        
+                        updateResources("decrease", 5);
+        
+        
+                        for (let enemy of enemies) {
+                            enemy.resumeMove();
+                        }
+                    }
+                }
+                this.iFrames = enemy.attackspeed;
+            }
+           
+        } else{
+            this.iFrames--;
+        }
+
+    }
+    
+    attack(enemies, bullets) {
         if (this.timer <= 0) {
+
+
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     const bullet = new Bullet(this.x, this.y, this.y, this.bulletType);
@@ -44,25 +76,7 @@ export class Tower {
                 }            
             });
 
-            for (let enemy of enemies) {
-                if (collision(this, enemy)) {
-                    enemy.stopMove();
-                    enemy.attack(this);
-                }
-            }
 
-            if (this.health <= 0) {
-                towers.splice(towerIndex, 1);
-                this.deathMessage = "-5 Resources";
-                this.deathMessageTimer = 60;
-
-                updateResources("decrease", 5);
-
-
-                for (let enemy of enemies) {
-                    enemy.resumeMove();
-                }
-            }
             this.timer = this.fireRate;
         } else {
             this.timer--;
