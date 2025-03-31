@@ -1,4 +1,8 @@
-import { items } from "./entities/items.js"; // Importer items
+import { items } from "./items.js"; // Importer items fra en separat modul
+
+console.log("Shop.js loaded");
+console.log("Items:", items);
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const shopItemsContainer = document.querySelector(".shop-items");
@@ -7,33 +11,35 @@ document.addEventListener("DOMContentLoaded", () => {
     shopItemsContainer.innerHTML = "";
 
     // Genererer butikkens innhold dynamisk
-    Object.keys(items).forEach((key) => {
-        const item = items[key];
+    for (let itemKey in items) {
+        console.log("Processing item:", itemKey, items[itemKey]);
+        const item = items[itemKey];
 
         const itemElement = document.createElement("div");
         itemElement.classList.add("shop-item");
         itemElement.innerHTML = `
             <img src="${item.image}" alt="${item.name}">
             <p>${item.name}</p>
-            <p class="item-price">${item.cost} 💶</p>
+            <p class="item-price"><span>${item.price}</span> 💶</p>
         `;
-        itemElement.onclick = () => selectItem(key);
+        itemElement.onclick = () => selectItem(itemKey);
 
         shopItemsContainer.appendChild(itemElement);
-    });
+    }
 });
 
 // Oppdaterer detaljvisningen når et item velges
 function selectItem(itemKey) {
     const item = items[itemKey];
-
-    document.getElementById("item-image").src = item.image;
-    document.getElementById("item-name").textContent = item.name;
-    document.getElementById("item-description").textContent = item.description;
-    document.getElementById("item-price").textContent = item.cost;
+    if (item) {
+        document.getElementById("item-image").src = item.image;
+        document.getElementById("item-name").textContent = item.name;
+        document.getElementById("item-description").textContent = item.description;
+        document.getElementById("item-price").textContent = item.price;
+    }
 }
 
 // Kjøpsfunksjon (kan utvides med spillmekanikk)
-function buyItem() {
+document.getElementById("buy-button").addEventListener("click", () => {
     alert("Item purchased!");
-}
+});
