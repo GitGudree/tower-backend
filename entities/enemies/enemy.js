@@ -24,6 +24,7 @@ export class Enemy {
         this.isStopped = false;
         
         this.damage = 2;
+        this.attackspeed = 20;
     }
 
     move() {
