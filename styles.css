@@ -252,14 +252,14 @@ canvas {
 }
 
 .slot {
-    text-align: center;
-    background-color: #b67a20;
-    gap: .5rem;
+    justify-items: stretch;
     user-select: none;
 }
 
 .slots > .slot img {
-    height: 60px;
+    background-color: #b67a20;
+    height: 90px;
+    width: 90px;
     aspect-ratio: 1/1;
 }
 
@@ -280,3 +280,4 @@ canvas {
     height: 195px;
     aspect-ratio: 1/1;
 }
+
