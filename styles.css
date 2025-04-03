@@ -140,6 +140,8 @@ canvas {
 
 .tower-upgrade-btn,
 .start-wave-btn,
+.usebtn,
+.sellbtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -424,3 +426,39 @@ canvas {
 .item-display button:hover {
     background: #e6b800;
 }
+.slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.slot {
+    justify-items: stretch;
+    user-select: none;
+}
+
+.slots > .slot img {
+    background-color: #b67a20;
+    height: 90px;
+    width: 90px;
+    aspect-ratio: 1/1;
+}
+
+.itemdesc {
+    display: grid;
+    grid-template-columns: 1fr;
+    
+}
+
+.desc {
+    text-align: center;
+    background-color: #b67a20;
+    gap: .5rem;
+    user-select: none;
+}
+
+.itemdesc > .desc img {
+    height: 195px;
+    aspect-ratio: 1/1;
+}
+
