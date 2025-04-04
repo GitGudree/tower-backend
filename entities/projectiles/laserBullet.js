@@ -3,6 +3,7 @@ import { cellSize } from "../../game/grid.js";
  * laser bullet class
  *
  * @author:    Randomfevva
+ * editor:     Quetzalcoatl
  * Created:   27.03.2025
  **/
 
@@ -31,10 +32,8 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        enemy.health -= this.bulletDamage;
-        this.pierceAmount--
-        this.hitEnemies.add(enemy)
         console.log("hit" + enemy)
+        enemy.health -= this.bulletDamage;
         updateTowerDamageTotal(this.bulletDamage); // Send skaden videre
     }
 }
