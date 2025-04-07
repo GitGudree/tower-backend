@@ -1,4 +1,7 @@
 import { Tower } from "./tower.js";
+import { RocketBullet } from "../projectiles/RocketBullet.js";
+import { collision } from "../../game/hitreg.js";
+import { updateResources} from "../../game/game.js";
 /**
  * Sniper tower class
  *
@@ -20,4 +23,20 @@ export class SniperTower extends Tower {
         this.background = "yellow";
         
     }
+    attack(enemies, bullets) {
+            if (this.timer <= 0) {
+                enemies.forEach(enemy => {
+                    if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                        const bullet = new RocketBullet(this.x, this.y, enemy);
+                        bullet.bulletDamage = this.damage;
+                        bullets.push(bullet);
+                    }            
+                });
+    
+    
+                this.timer = this.fireRate;
+            } else {
+                this.timer--;
+            }
+        }
 }

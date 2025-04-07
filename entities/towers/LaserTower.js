@@ -1,5 +1,5 @@
 import { Tower } from "./tower.js";
-import { LaserBullet } from "../projectiles/LaserBullet.js";
+import { LaserBullet } from "../projectiles/laserBullet.js";
 import { collision } from "../../game/hitreg.js";
 import { updateResources} from "../../game/game.js";
 
@@ -25,38 +25,20 @@ export class LaserTower extends Tower {
         this.bulletType = type;
         this.background = "purple";
     }
-     attack(enemies, bullets, towerIndex) {
-            if (this.timer <= 0) {
-                enemies.forEach(enemy => {
-                    if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                        const bullet = new LaserBullet(this.x, this.y, enemy.x, enemy.y);
-                        bullet.bulletDamage = this.damage;
-                        bullets.push(bullet);
-                    }            
-                });
-    
-                for (let enemy of enemies) {
-                    if (collision(this, enemy)) {
-                        enemy.stopMove();
-                        enemy.attack(this);
-                    }
-                }
-    
-                if (this.health <= 0) {
-                    towers.splice(towerIndex, 1);
-                    this.deathMessage = "-5 Resources";
-                    this.deathMessageTimer = 60;
-    
-                    updateResources("decrease", 5);
-    
-    
-                    for (let enemy of enemies) {
-                        enemy.resumeMove();
-                    }
-                }
-                this.timer = this.fireRate;
-            } else {
-                this.timer--;
-            }
-        }
+      attack(enemies, bullets) {
+             if (this.timer <= 0) {
+                 enemies.forEach(enemy => {
+                     if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                         const bullet = new LaserBullet(this.x, this.y, enemy.x, enemy.y);
+                         bullet.bulletDamage = this.damage;
+                         bullets.push(bullet);
+                     }            
+                 });
+     
+     
+                 this.timer = this.fireRate;
+             } else {
+                 this.timer--;
+             }
+         }
 }
