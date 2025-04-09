@@ -42,7 +42,7 @@ function selectItem(itemKey) {
     }
 }
 
-<<<<<<< HEAD
+
 document.addEventListener("DOMContentLoaded", () => {
     const buyButton = document.getElementById("buy-button");
     const purchaseMessage = document.getElementById("purchase-message");
@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
 
-=======
 // Kjøpsfunksjon (kan utvides med spillmekanikk)
 document.getElementById("buy-button").addEventListener("click", () => {
     if (window.selectedItem) {
@@ -72,4 +71,3 @@ document.getElementById("buy-button").addEventListener("click", () => {
         alert("Select an item first!");
     }
 });
->>>>>>> 7ac5ba0c1fdb7ba088f84fb4cc746679b5cd11ab
