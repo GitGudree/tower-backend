@@ -141,7 +141,7 @@ canvas {
 .tower-upgrade-btn,
 .start-wave-btn,
 .usebtn,
-.sellbtn,
+.deletebtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -426,28 +426,34 @@ canvas {
 .item-display button:hover {
     background: #e6b800;
 }
+
+/*--- Inventory Slots ---*/
 .slots {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    gap: 10px;
+    padding: 5px;
+    background-color: #b67a20;
 }
 
 .slot {
-    justify-items: stretch;
-    user-select: none;
+    border: 1px solid#ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
 }
 
 .slots > .slot img {
-    background-color: #b67a20;
-    height: 90px;
-    width: 90px;
+    height: 60px;
+    width: 60px;
     aspect-ratio: 1/1;
 }
 
+/*--- Inventory Item-selection ---*/
 .itemdesc {
     display: grid;
     grid-template-columns: 1fr;
-    
 }
 
 .desc {
@@ -462,3 +468,26 @@ canvas {
     aspect-ratio: 1/1;
 }
 
+.purchase-message {
+    position: fixed;
+    inset: 0; /* dekker hele viewporten */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    /* Overlay stil */
+    background-color: rgba(0, 0, 0, 0.4); /* gir litt bakgrunn, kan endres om ønsket */
+    z-index: 9999;
+  }
+  
+.purchase-message .message-box {
+    background-color: #4caf50;
+    color: white;
+    padding: 1.25rem 2.5rem; /* tilsvarer 20px 40px */
+    border-radius: 0.625rem; /* 10px */
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
+  }
+  
+  

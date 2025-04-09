@@ -1,4 +1,5 @@
 import { items } from "./items.js"; // Importer items fra en separat modul
+import { addInventoryItem } from "./inventory.js"; //Importerer inventory funksjonen
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
@@ -36,10 +37,39 @@ function selectItem(itemKey) {
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;
         document.getElementById("item-price").textContent = item.price;
+
+        window.selectedItem = item;
     }
 }
 
+<<<<<<< HEAD
+document.addEventListener("DOMContentLoaded", () => {
+    const buyButton = document.getElementById("buy-button");
+    const purchaseMessage = document.getElementById("purchase-message");
+  
+    buyButton.addEventListener("click", () => {
+      // Vis meldingen
+      purchaseMessage.classList.remove("hidden");
+  
+      // Skjul etter 2 sekunder
+      setTimeout(() => {
+        purchaseMessage.classList.add("hidden");
+      }, 2000);
+    });
+  });
+  
+  
+
+    
+
+=======
 // Kjøpsfunksjon (kan utvides med spillmekanikk)
 document.getElementById("buy-button").addEventListener("click", () => {
-    alert("Item purchased!");
+    if (window.selectedItem) {
+        addInventoryItem(window.selectedItem);
+        alert("Item purchased!");
+    } else {
+        alert("Select an item first!");
+    }
 });
+>>>>>>> 7ac5ba0c1fdb7ba088f84fb4cc746679b5cd11ab
