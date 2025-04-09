@@ -141,7 +141,7 @@ canvas {
 .tower-upgrade-btn,
 .start-wave-btn,
 .usebtn,
-.sellbtn,
+.deletebtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -426,28 +426,34 @@ canvas {
 .item-display button:hover {
     background: #e6b800;
 }
+
+/*--- Inventory Slots ---*/
 .slots {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    gap: 10px;
+    padding: 5px;
+    background-color: #b67a20;
 }
 
 .slot {
-    justify-items: stretch;
-    user-select: none;
+    border: 1px solid#ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
 }
 
 .slots > .slot img {
-    background-color: #b67a20;
-    height: 90px;
-    width: 90px;
+    height: 60px;
+    width: 60px;
     aspect-ratio: 1/1;
 }
 
+/*--- Inventory Item-selection ---*/
 .itemdesc {
     display: grid;
     grid-template-columns: 1fr;
-    
 }
 
 .desc {

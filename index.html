@@ -9,6 +9,7 @@
     <script src="main.js" type="module"></script>
     <script src="game/eventhandler.js" type="module"></script>
     <script src="./entities/shop.js" type="module"></script>
+    <script src="./entities/inventory.js" type="module"></script>
 
 </head>
 <body>
@@ -18,7 +19,7 @@
             <div class="tabs">
                 <span onclick="openTab(this)" data-tab="game-tab">GAME</span>
                 <span class="selected" onclick="openTab(this)" data-tab="tower-tab">TOWER</span>
-                <span onclick="openTab(this)" data-tab="inventory-tab">INVENTORY</span>
+                <span onclick="openTab(this), updateInventory()" data-tab="inventory-tab">INVENTORY</span>
                 <span onclick="openTab(this)" data-tab="shop-tab">SHOP</span>
             </div>
             <div class="tab game-tab">
@@ -106,45 +107,18 @@
             <div class="tab inventory-tab grid-split">
                 <div class="grid grid-split">
                     <h2 class="tab-title grid-full-width">Inventory</h2>
-                    <div class="slots grid grid-full-width grid-split">
-                        <div class="slot slot-a">
-                            <img src="https://shorturl.at/hvKIM" alt="">
-                        </div>
-                        <div class="slot slot-b">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-c">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-d">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-e">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-f">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-g">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-h">
-                            <img src="" alt="">
-                        </div>
-                        <div class="slot slot-i">
-                            <img src="" alt="">
-                        </div>
+                    <div id=inventoryCards class="slots grid grid-full-width grid-split">
                     </div>
                 </div>
                 <div class="grid grid-split">
                     <h2 class="tab-title grid-full-width">Selected Item:</h2>
                     <div class="itemdesc grid grid-full-width">
                         <div class="desc">
-                            <img src="" alt="">
-                            <h1> Item Name</h1>
-                            <p> Item Description</p>
-                            <button class="usebtn" onclick=""> Use </button>
-                            <button class="sellbtn" onclick=""> Sell </button>
+                            <img id="selected-item-image" src="" alt="">
+                            <h1 id="selected-item-name">Ingen Items Valgt!</h1>
+                            <p id="selected-item-description"> Velg et item.</p>
+                            <button class="usebtn" id="use-button" onclick="useItem()"> Use </button>
+                            <button class="deletebtn" id="delete-button" onclick="deleteButton()"> Delete </button>
                         </div>
                     </div>
                 </div>

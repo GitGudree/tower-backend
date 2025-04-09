@@ -1,4 +1,5 @@
 import { items } from "./items.js"; // Importer items fra en separat modul
+import { addInventoryItem } from "./inventory.js"; //Importerer inventory funksjonen
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
@@ -36,10 +37,17 @@ function selectItem(itemKey) {
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;
         document.getElementById("item-price").textContent = item.price;
+
+        window.selectedItem = item;
     }
 }
 
 // Kjøpsfunksjon (kan utvides med spillmekanikk)
 document.getElementById("buy-button").addEventListener("click", () => {
-    alert("Item purchased!");
+    if (window.selectedItem) {
+        addInventoryItem(window.selectedItem);
+        alert("Item purchased!");
+    } else {
+        alert("Select an item first!");
+    }
 });
