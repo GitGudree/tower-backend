@@ -1,9 +1,10 @@
+import { updateMoney } from './path/to/your/money.js'; // juster path etter behov
+
 let inventory = [];
+let selectedItem = null;
+let refundRate = 0.5; // 50 % tilbake ved sletting
 
-
-//Oppdatering av Inventory, kjøres ved åpning av Inventory tabben og når items legges inn
 function updateInventory() {
-
     const inventorySlots = [];
 
     for (let item of inventory) {
@@ -12,8 +13,7 @@ function updateInventory() {
         itemSlot.innerHTML = `
             <img src="${item.image}" alt="${item.name}"/>
             <h3>${item.name}</h3>
-            `;
-
+        `;
         itemSlot.addEventListener('click', () => selectItem(item));
         inventorySlots.push(itemSlot);
     }
@@ -22,27 +22,61 @@ function updateInventory() {
     inventoryCards.replaceChildren(...inventorySlots);
 }
 
-//Funksjon for å velge et item å vise på siden av inventory.
 function selectItem(item) {
+    selectedItem = item;
     document.getElementById("selected-item-image").src = item.image;
     document.getElementById("selected-item-name").textContent = item.name;
     document.getElementById("selected-item-description").textContent = item.description;
 }
 
-//Funksjon for å legge til et item i inventory.
 function addInventoryItem(item) {
     inventory.push(item);
     updateInventory();
 }
 
-/*Funksjon for å bruke et valgt item (ikke implementert)
-function useItem() {
+function useItem(gameState) {
+    if (!selectedItem) {
+        alert("Velg et item før du bruker det.");
+        return;
+    }
 
-}*/
+    if (typeof selectedItem.effect !== "function") {
+        alert("Dette itemet har ingen definert effekt.");
+        return;
+    }
 
-/*Funksjon for å slette et valgt item (ikke implementert)
-function deleteItem() {
+    selectedItem.effect(gameState);
 
-}*/
+    if (!selectedItem.reusable) {
+        inventory = inventory.filter(i => i !== selectedItem);
+    }
 
-export { addInventoryItem, inventory}; //Eksporterer for bruk i shop.js
+    selectedItem = null;
+    updateInventory();
+    clearSelectedDisplay();
+}
+
+function deleteButton() {
+    if (!selectedItem) return;
+
+    const index = inventory.indexOf(selectedItem);
+    if (index !== -1) {
+        inventory.splice(index, 1);
+
+        const refundAmount = Math.floor((selectedItem.cost || 0) * refundRate);
+        updateMoney("increase", refundAmount);
+    }
+
+    selectedItem = null;
+    updateInventory();
+    clearSelectedDisplay();
+}
+
+function clearSelectedDisplay() {
+    document.getElementById("selected-item-image").src = "";
+    document.getElementById("selected-item-name").textContent = "Ingen Items Valgt!";
+    document.getElementById("selected-item-description").textContent = "Velg et item.";
+}
+
+// Eksporter funksjoner
+export { addInventoryItem, useItem, deleteButton, inventory };

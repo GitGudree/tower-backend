@@ -1,19 +1,17 @@
 import { items } from "./items.js"; // Importer items fra en separat modul
-import { addInventoryItem } from "./inventory.js"; //Importerer inventory funksjonen
+import { addInventoryItem } from "./inventory.js"; // Importerer inventory-funksjonen
+import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
 
-
+// Generer butikkens innhold når DOM er klar
 document.addEventListener("DOMContentLoaded", () => {
     const shopItemsContainer = document.querySelector(".shop-items");
+    shopItemsContainer.innerHTML = ""; // Tøm eksisterende innhold
 
-    // Tømmer eksisterende innhold
-    shopItemsContainer.innerHTML = "";
-
-    // Genererer butikkens innhold dynamisk
+    // Generer butikkens item-elementer
     for (let itemKey in items) {
-        console.log("Processing item:", itemKey, items[itemKey]);
         const item = items[itemKey];
 
         const itemElement = document.createElement("div");
@@ -27,9 +25,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
         shopItemsContainer.appendChild(itemElement);
     }
+
+    // Kjøpsknapp-logikk
+    const buyButton = document.getElementById("buy-button");
+    const purchaseMessage = document.getElementById("purchase-message");
+
+    buyButton.addEventListener("click", () => {
+        if (window.selectedItem) {
+            const price = window.selectedItem.price;
+
+            if (money >= price) {
+                // Trekk penger
+                updateMoney("decrease", price);
+
+                // Legg til item i inventory
+                addInventoryItem(window.selectedItem);
+
+                // Vis kjøpsmelding
+                purchaseMessage.textContent = "Item purchased!";
+                purchaseMessage.classList.remove("hidden");
+
+                setTimeout(() => {
+                    purchaseMessage.classList.add("hidden");
+                }, 2000);
+            } else {
+                alert("Not enough money!");
+            }
+        } else {
+            alert("Select an item first!");
+        }
+    });
 });
 
-// Oppdaterer detaljvisningen når et item velges
+// Når du klikker på et item, oppdater visningen
 function selectItem(itemKey) {
     const item = items[itemKey];
     if (item) {
@@ -42,32 +70,3 @@ function selectItem(itemKey) {
     }
 }
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    const buyButton = document.getElementById("buy-button");
-    const purchaseMessage = document.getElementById("purchase-message");
-  
-    buyButton.addEventListener("click", () => {
-      // Vis meldingen
-      purchaseMessage.classList.remove("hidden");
-  
-      // Skjul etter 2 sekunder
-      setTimeout(() => {
-        purchaseMessage.classList.add("hidden");
-      }, 2000);
-    });
-  });
-  
-  
-
-    
-
-// Kjøpsfunksjon (kan utvides med spillmekanikk)
-document.getElementById("buy-button").addEventListener("click", () => {
-    if (window.selectedItem) {
-        addInventoryItem(window.selectedItem);
-        alert("Item purchased!");
-    } else {
-        alert("Select an item first!");
-    }
-});
