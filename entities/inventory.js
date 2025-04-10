@@ -1,4 +1,4 @@
-import { updateMoney } from './path/to/your/money.js'; // juster path etter behov
+import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
 
 let inventory = [];
 let selectedItem = null;
