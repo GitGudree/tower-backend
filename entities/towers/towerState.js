@@ -9,8 +9,10 @@ let chosenTower;
 export function setChosenTower(typeIn){
     chosenTower = typeIn
     console.log("valgte tower" +" "+ chosenTower)
-}
+};
 
 export function getChosenTower(){
-    return chosenTower;
-}
+    if (chosenTower != null){
+        return chosenTower;
+    } return "basic";
+};

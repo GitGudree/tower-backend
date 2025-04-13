@@ -9,8 +9,7 @@ import { money, updateMoney } from "../../game/game.js";
  *
 
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:      Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   25.01.2025
  **/
 export class Tower {
@@ -21,29 +20,51 @@ export class Tower {
         this.health = 100;
         this.range = 500;
         this.damage = 5;
+        this.width = cellSize;
+        this.height = cellSize;
         this.projectiles = [];
         this.fireRate = 30;
         this.timer = 0;
         this.iFrames = 0;
+        this.stopMove = 100; // can cause rubberbanding if value exceeds 100
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
         this.bulletType = type;
+        this.isColliding = false;
 
         // Tower style
         this.background = 'blue';
         this.textColor = 'lightgray';
     }
 
+    stopEnemyMovement(enemies) { // separat for å unngå enemy rubberbanding
+        
+        if (this.stopMove <= 0 && this.isColliding == false){ // using isColliding here to prevent this hogging resources
+            for (let enemy of enemies){
+                if (collision(this, enemy)) {
+                    this.isColliding = true;
+                    enemy.stopMove();
+                }
+            }
+        } else if (this.stopMove > 0){
+            this.stopMove --
+        }
+            
+    }
+
     updateTowerCollision(enemies, towerIndex) {
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
                 if (collision(this, enemy)) {
+                    console.log("aatt" + " " + this)
                     enemy.stopMove();
                     enemy.attack(this);
+                    
     
                     if (this.health <= 0) {
                         towers.splice(towerIndex, 1);
+                        this.isColliding = false;
                         this.deathMessage = "-5 Resources";
                         this.deathMessageTimer = 60;
         
@@ -55,7 +76,7 @@ export class Tower {
                         }
                     }
                 }
-                this.iFrames = enemy.attackspeed;
+                this.iFrames += enemy.attackspeed;
             }
            
         } else{
@@ -66,8 +87,6 @@ export class Tower {
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
-
-
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     const bullet = new Bullet(this.x, this.y, this.y, this.bulletType);
@@ -75,7 +94,6 @@ export class Tower {
                     bullets.push(bullet);
                 }            
             });
-
 
             this.timer = this.fireRate;
         } else {

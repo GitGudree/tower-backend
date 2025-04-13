@@ -106,6 +106,7 @@ export function updateGameState() {
     tryEndWave();
 
     towers.forEach((tower, towerIndex) => {
+        tower.stopEnemyMovement(enemies)
         tower.updateTowerCollision(enemies, towerIndex)
         tower.attack(enemies, projectiles);
     });
@@ -241,9 +242,12 @@ export function projectileHandler(){
         let finalHit = false;
         
         for (let enemy of enemies) {
-            if (collision(enemy, projectile) && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) {
-                projectile.dealDamage(enemy);
-                console.log(projectile.hitEnemies)
+            if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
+                if (projectile.name == "rocket"){
+                    projectile.dealDamage(enemy, enemies);
+                } else{
+                    projectile.dealDamage(enemy);
+                }
                 if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
                     finalHit = true;
                 }

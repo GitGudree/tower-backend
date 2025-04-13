@@ -34,13 +34,8 @@ export class LaserBullet {
     dealDamage(enemy) {
         console.log("hit" + enemy)
         enemy.health -= this.bulletDamage;
-        updateTowerDamageTotal(this.bulletDamage); // Send skaden videre
     }
 }
-    export function updateTowerDamageTotal(damage) {
-    totalDamage += damage; // Øker total skade
-    document.getElementById("towerDamageTotal").textContent = "Tower damage: " + totalDamage;
-} 
 
 
         

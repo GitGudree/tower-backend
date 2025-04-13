@@ -53,7 +53,6 @@ export function handleCanvasClick() {
 
     if (money >= price && !towers.some(tower => tower.selected)) {
         var type = getChosenTower();
-        console.log(type)
         const tower = createTower(gridMousePosX, gridMousePosY, type);
         towers.push(tower);
         tower.selected = true;
