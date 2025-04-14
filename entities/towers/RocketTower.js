@@ -23,13 +23,14 @@ export class RocketTower extends Tower {
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
-            enemies.forEach(enemy => {
+            for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     const bullet = new RocketBullet(this.x, this.y, enemy);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
+                    break;
                 }            
-            });
+            };
             
             this.timer = this.fireRate;
         } else {

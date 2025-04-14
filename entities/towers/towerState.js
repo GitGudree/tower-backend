@@ -8,7 +8,7 @@
 let chosenTower;
 export function setChosenTower(typeIn){
     chosenTower = typeIn
-    console.log("valgte tower" +" "+ chosenTower)
+    console.log("valgte" +" "+ chosenTower + " " + "tower")
 };
 
 export function getChosenTower(){

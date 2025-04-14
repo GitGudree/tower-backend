@@ -50,7 +50,7 @@ function gameLoop(currentTime) {
 gameLoop();
 
  //passes data along to setChosenTower
-document.querySelectorAll('button[tower-type]').forEach(button => {
+document.querySelectorAll('[tower-type]').forEach(button => {
     button.addEventListener('click', () => {
         const towerType = button.getAttribute('tower-type');
         setChosenTower(towerType)
