@@ -111,16 +111,22 @@ export function gridRectColission(first, second) {
 
 
 function openTab(btn) {
+    // Fjern 'selected' fra alle knapper
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
     });
     btn.classList.add('selected');
-    
-    document.querySelector('.tab.open').classList.remove('open');
 
+    // Lukk alle faner før åpning av ny
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('open');
+    });
+
+    // Åpne valgt fane
     const tabName = btn.getAttribute('data-tab');
     document.querySelector(`.tab.${tabName}`).classList.add('open');
 }
+
 
 
 window.upgradeTower = () => {
