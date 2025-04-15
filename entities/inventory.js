@@ -63,8 +63,10 @@ function deleteButton() {
     if (index !== -1) {
         inventory.splice(index, 1);
 
-        const refundAmount = Math.floor((selectedItem.cost || 0) * refundRate);
+        const refundAmount = Math.floor((selectedItem.price || 0) * refundRate);
         updateMoney("increase", refundAmount);
+        console.log(`Refunding: ${refundAmount} for deleting ${selectedItem.name}`);
+
     }
 
     selectedItem = null;
@@ -80,3 +82,6 @@ function clearSelectedDisplay() {
 
 // Eksporter funksjoner
 export { addInventoryItem, useItem, deleteButton, inventory };
+
+window.useItem = useItem;
+window.deleteButton = deleteButton;
