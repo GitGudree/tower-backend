@@ -103,9 +103,25 @@
                 <!-- <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button> -->
                 <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
                 </div>
-            <div class="tab inventory-tab">
-                <p>Inventory</p>
-            </div>
+                <div class="tab inventory-tab grid-split">
+                    <div class="grid grid-split">
+                        <h2 class="tab-title grid-full-width">Inventory</h2>
+                        <div id=inventoryCards class="slots grid grid-full-width grid-split">
+                        </div>
+                    </div>
+                    <div class="grid grid-split">
+                        <h2 class="tab-title grid-full-width">Selected Item:</h2>
+                        <div class="itemdesc grid grid-full-width">
+                            <div class="desc">
+                                <img id="selected-item-image" src="" alt="">
+                                <h1 id="selected-item-name">Ingen Items Valgt!</h1>
+                                <p id="selected-item-description"> Velg et item.</p>
+                                <button class="usebtn" id="use-button" onclick="useItem()"> Use </button>
+                                <button class="deletebtn" id="delete-button" onclick="deleteButton()"> Delete </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <div class="tab shop-tab">
                 <div class="shop-section">shop</div>
                 <div class="shop-display-section">display</div>
