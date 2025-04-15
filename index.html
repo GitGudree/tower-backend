@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tower Defense Game</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="game/settings.js" type="module"></script>
     <script src="main.js" type="module"></script>
+    <script src="game/eventhandler.js" type="module"></script>
+    <script src="./entities/shop.js" type="module"></script>
+    <script src="./entities/inventory.js" type="module"></script>
 
 </head>
 <body>
@@ -20,14 +24,33 @@
             </div>
             <div class="tab game-tab">
                 <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
-            <div class="auto-wave-control">
-                <label for="autoWaveCheckbox">Auto Wave</label>
-                <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
-            </div>
-                <!-- <button class="tower-upgrade-btn" onclick="upgradeTower()">Upgrade</button> -->
-                <p>Tower damage: <span class="tower-damage"></span></p>
-                <a>Settings</a>
-            </div>
+                
+                <div class="auto-wave-control">
+                    <label for="autoWaveCheckbox">Auto Wave</label>
+                    <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                </div>
+                
+                <p>Tower damage: <span id="towerDamageTotal">0</span></p>
+            
+                <!-- Knapp for å åpne settings -->
+                <button class="settings-btn">⚙️ Settings</button>
+
+            
+               <!-- Pop-up meny -->
+               <div id="settingsPopup" class="popup">
+               <div class="popup-content">
+               <h2>Game Settings</h2>
+               <br>
+               <label for="speedSlider">Speed:</label>
+               <input type="range" id="speedSlider" min="0" max="1.0" step="0.01">
+               <br>
+               <label for="volumeSlider">Volume:</label>
+               <input type="range" id="volumeSlider" min="0" max="1.0" step="0.01">
+               <br>
+               <button id="closeSettings">Close</button>
+              </div>
+            </div>    
+        </div>
             <div class="tab tower-tab grid-split open">
                 <div class="grid grid-split">
                     <h2 class="tab-title grid-full-width">Towers</h2>
@@ -122,13 +145,30 @@
                         </div>
                     </div>
                 </div>
-            <div class="tab shop-tab">
-                <div class="shop-section">shop</div>
-                <div class="shop-display-section">display</div>
-            </div>
-
-        </div>
-    </main>
-
-</body>
-</html> 
+                <div class="tab shop-tab">
+                    <div class="shop-section">
+                        <h3>Available Items</h3>
+                        <div class="shop-items"></div>
+                    </div>
+                
+                    <div class="shop-display-section">
+                        <h3>Item Details</h3>
+                        <div class="item-display">
+                            <img id="item-image" src="images/item.png" alt="Item">
+                            <p id="item-name"></p>
+                            <p id="item-description"></p>
+                            <p>Price: <span id="item-price"></span>💶</p>
+                            <button id="buy-button">Buy</button>
+                        </div>
+                    </div>
+                
+                    <!-- Bruk kun én script-tag med type="module" -->
+                    <script type="module" src="./entities/shop.js"></script>
+                </div>
+                <div id="purchase-message" class="hidden">
+                    <div class="message-box">Item purchased!</div>
+                  </div>
+            </div>     
+        </main> 
+    </body>
+    </html>
