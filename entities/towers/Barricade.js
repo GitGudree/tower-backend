@@ -1,5 +1,11 @@
 import { Tower } from "./tower.js";
-
+/**
+ * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
+ *
+ * @constructor (x, y, row)
+ * Author:    Randomfevva
+ * Created:   15.04.2025
+ **/
 export class Barricade extends Tower {
     constructor(x, y, type) {
         super(x, y, type);
