@@ -17,6 +17,11 @@ export class Barricade extends Tower {
         this.textColor = 'white';
         this.selected = false;
     }
+    destroy() {
+        console.log("Barricade destroyed!");
+        // Fjern barricaden fra spillbrettet
+        Barricade.splice(Barricade.indexOf(this), 1);
+    }
 
     attack(){};
 }

@@ -1,4 +1,4 @@
-import { Tower } from "./towers/tower.js"
+
 
 class Item {
     constructor(name, price, description, image) {
@@ -13,19 +13,21 @@ class Item {
         console.log(`${this.name} attacks ${target}!`);
     }
 }
-/*
+
 // Barricade - Blokkerer fiender, men gjør ingen skade
-class Barricade extends Item {
+class BarricadeInfo extends Item {
     constructor(x, y) {
         super("Barricade", 100, "Blocks enemy movement but does no damage.", "images/barricade.png"); // 
+        /*
         this.x = x;
         this.y = y;
         this.health = 500; // Mye helse for å blokkere fiender
         this.background = 'darkgray';
         this.textColor = 'white';
         this.selected = false;
+        */
     }
-
+    /*
     // Overstyrer attack-metoden til å gjøre ingenting
     attack() {};
         // Barricaden angriper ikke, men blokkerer fiender
@@ -63,14 +65,14 @@ class Barricade extends Item {
         ctx.fillText(Math.floor(this.health), this.x + 25, this.y + 25);
     }
         
-        
+        */
         
 }
-    */
+    
 
 // Oppretter items ved å bruke de riktige klassene
 const items = {
-    barricade: new Barricade(0, 0), // Standard posisjon, men må settes dynamisk
+    barricade: new BarricadeInfo(), // Standard posisjon, men må settes dynamisk
     mine: new Item("Mine", 150, "Explodes when enemies step on it.", "images/mine.png"),
     slowTrap: new Item("Slow Trap", 120, "Slows down enemies for a duration.", "images/slowtrap.png")
 };
