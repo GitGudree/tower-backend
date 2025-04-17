@@ -1,3 +1,5 @@
+import { Tower } from "./towers/tower.js"
+
 class Item {
     constructor(name, price, description, image) {
         this.name = name;
@@ -11,11 +13,11 @@ class Item {
         console.log(`${this.name} attacks ${target}!`);
     }
 }
-
+/*
 // Barricade - Blokkerer fiender, men gjør ingen skade
 class Barricade extends Item {
     constructor(x, y) {
-        super("Barricade", 100, "Blocks enemy movement but does no damage.", "images/barricade.png");
+        super("Barricade", 100, "Blocks enemy movement but does no damage.", "images/barricade.png"); // 
         this.x = x;
         this.y = y;
         this.health = 500; // Mye helse for å blokkere fiender
@@ -28,7 +30,7 @@ class Barricade extends Item {
     attack() {};
         // Barricaden angriper ikke, men blokkerer fiender
     
-
+    
     takeDamage(amount) {
         this.health -= amount;
         console.log(`Barricade took ${amount} damage. Remaining health: ${this.health}`);
@@ -44,7 +46,7 @@ class Barricade extends Item {
         // Fjern barricaden fra spillbrettet
         Barricade.splice(Barricade.indexOf(this), 1);
     }
-
+    
     draw(ctx) {
         ctx.fillStyle = this.background;
         ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
@@ -60,7 +62,11 @@ class Barricade extends Item {
         ctx.textAlign = 'center';
         ctx.fillText(Math.floor(this.health), this.x + 25, this.y + 25);
     }
+        
+        
+        
 }
+    */
 
 // Oppretter items ved å bruke de riktige klassene
 const items = {

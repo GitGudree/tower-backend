@@ -19,5 +19,4 @@ export class GatlingTower extends Tower {
         this.bulletType = type;
         this.background = "green";
     }
-    attack(){};
 }
