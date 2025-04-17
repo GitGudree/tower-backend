@@ -40,13 +40,17 @@ function useItem(gameState) {
         return;
     }
 
-    if (typeof selectedItem.effect !== "function") {
-        alert("Dette itemet har ingen definert effekt.");
-        return;
+    // Sjekk om det er en tower-type
+    if (selectedItem.placeOnBoard) {
+        // Spesiallogikk hvis tower skal plasseres
+        gameState.selectedTowerType = selectedItem.constructor.name;
+        console.log("Ready to place:", selectedItem.constructor.name);
+    } else if (typeof selectedItem.effect === "function") {
+        // Vanlig item-effekt
+        selectedItem.effect(gameState);
     }
 
-    selectedItem.effect(gameState);
-
+    // Fjern fra inventory hvis det ikke er gjenbrukbart
     if (!selectedItem.reusable) {
         inventory = inventory.filter(i => i !== selectedItem);
     }
@@ -55,6 +59,7 @@ function useItem(gameState) {
     updateInventory();
     clearSelectedDisplay();
 }
+
 
 function deleteButton() {
     if (!selectedItem) return;
