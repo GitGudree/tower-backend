@@ -4,6 +4,7 @@ import { LaserTower } from "./LaserTower.js";
 import { ErrorTower } from "./ErrorTower.js"
 import { RocketTower } from "./RocketTower.js";
 import { Barricade } from "./Barricade.js";
+import { setChosenTower } from "./towerState.js";
 import { Tower } from "./tower.js";
 /**
  * towerFactory class
@@ -31,6 +32,7 @@ export function createTower(x, y, type) {
             break;
         case "barricade":
             tower = new Barricade(x, y)
+            setChosenTower("basic")
             break;
         case "basic":
             tower = new Tower(x, y, "basic")
