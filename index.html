@@ -146,26 +146,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab shop-tab">
-                    <div class="shop-section">
-                        <h3>Available Items</h3>
-                        <div class="shop-items"></div>
+                <div class="tab shop-tab grid-split">
+                    <div class="grid grid-split">
+                        <h2 class="tab-title grid-full-width">Available Items</h2>
+                        <div class="shop-items grid grid-full-width grid-split">
+                            <!-- Dynamisk genererte item cards her -->
+                        </div>
                     </div>
                 
-                    <div class="shop-display-section">
-                        <h3>Item Details</h3>
-                        <div class="item-display">
-                            <img id="item-image" src="images/item.png" alt="Item">
-                            <p id="item-name"></p>
-                            <p id="item-description"></p>
-                            <p>Price: <span id="item-price"></span>💶</p>
-                            <button id="buy-button">Buy</button>
+                    <div class="grid grid-split">
+                        <h2 class="tab-title grid-full-width">Item Details</h2>
+                        <div class="itemdesc grid grid-full-width">
+                            <div class="desc">
+                                <img id="item-image" src="images/item.png" alt="Item">
+                                <p id="item-name"></p>
+                                <p id="item-description"></p>
+                                <p>Price: <span id="item-price"></span>💶</p>
+                                <button id="buy-button" class="buybtn">Buy</button>
+                            </div>
                         </div>
                     </div>
                 
                     <!-- Bruk kun én script-tag med type="module" -->
                     <script type="module" src="./entities/shop.js"></script>
-                </div>
+                </div>                
                 <div id="purchase-message" class="hidden">
                     <div class="message-box">Item purchased!</div>
                   </div>

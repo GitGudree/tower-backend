@@ -320,37 +320,7 @@ canvas {
 }
 
 /* --- Generell styling --- */
-.shop-tab {
-    display: grid flex;
-    justify-content: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f4a100; /* Oransje bakgrunn */
-    height: 100%;
-}
 
-/* --- Shop-tittel --- */
-.shop-tab h2 {
-    text-align: center;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* --- Grid container for shop-seksjoner --- */
-.shop-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* --- Venstre side: Items --- */
-.shop-section {
-    text-align: center;
-    max-width: 250px;
-}
 
 /* Holder items i en ryddig liste */
 .shop-items {
@@ -382,50 +352,53 @@ canvas {
     margin: 5px 0;
 }
 
-/* Hover-effekt */
-.shop-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+
+
+.itemdesc {
+    background-color: rgba(30, 30, 30, 0.85); /* Mørk semi-transparens */
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* --- Høyre side: Item Details --- */
-.shop-display-section {
-    background: #333;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
+.itemdesc .desc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: white;
-    max-width: 230px;
-    display: grid;
+    text-align: center;
     gap: 10px;
-    justify-items: center;
 }
 
-/* Styling for bilde inne i item-display */
-.item-display img {
+.itemdesc .desc img {
     width: 100px;
     height: auto;
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-.item-display p {
-    margin: 10px 0;
-}
-
-/* --- Kjøpsknapp --- */
-.item-display button {
-    background: #ffcc00;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+/* Ny knappestil for kjøpsknappen */
+.buybtn {
     font-weight: bold;
-    transition: background 0.2s ease;
+    background-color: #fbbf24; /* gul */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.item-display button:hover {
-    background: #e6b800;
+.buybtn:hover {
+    background-color: #fbbf24;
+    transform: scale(1.05);
 }
+
 
 /*--- Inventory Slots ---*/
 .slots {
@@ -490,4 +463,41 @@ canvas {
     box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
   }
   
+  /* Inventory Use & Delete Buttons */
+.usebtn,
+.deletebtn {
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 8px auto;
+    display: block;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Use button style */
+.usebtn {
+    background-color: #28a745; /* grønn */
+    color: white;
+}
+
+.usebtn:hover {
+    background-color: #45c164;
+    transform: scale(1.05);
+}
+
+/* Delete button style */
+.deletebtn {
+    background-color: #dc3545; /* rød */
+    color: white;
+}
+
+.deletebtn:hover {
+    background-color: #ff5b6b;
+    transform: scale(1.05);
+}
+
   
