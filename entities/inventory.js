@@ -30,7 +30,9 @@ function selectItem(item) {
 }
 
 function addInventoryItem(item) {
-    inventory.push(item);
+    // Lag en ny kopi hvis item har en constructor
+    const newItem = item.constructor ? new item.constructor() : { ...item };
+    inventory.push(newItem);
     updateInventory();
 }
 
@@ -42,24 +44,22 @@ function useItem(gameState) {
 
     // Sjekk om det er en tower-type
     if (selectedItem.placeOnBoard) {
-        // Spesiallogikk hvis tower skal plasseres
         gameState.selectedTowerType = selectedItem.constructor.name;
         console.log("Ready to place:", selectedItem.constructor.name);
     } else if (typeof selectedItem.effect === "function") {
-        // Vanlig item-effekt
         selectedItem.effect(gameState);
     }
 
-    // Fjern fra inventory hvis det ikke er gjenbrukbart
-    if (!selectedItem.reusable) {
-        inventory = inventory.filter(i => i !== selectedItem);
+    // Fjern kun én forekomst av itemet
+    const index = inventory.indexOf(selectedItem);
+    if (index !== -1 && !selectedItem.reusable) {
+        inventory.splice(index, 1);
     }
 
     selectedItem = null;
     updateInventory();
     clearSelectedDisplay();
 }
-
 
 function deleteButton() {
     if (!selectedItem) return;
@@ -71,7 +71,6 @@ function deleteButton() {
         const refundAmount = Math.floor((selectedItem.price || 0) * refundRate);
         updateMoney("increase", refundAmount);
         console.log(`Refunding: ${refundAmount} for deleting ${selectedItem.name}`);
-
     }
 
     selectedItem = null;
