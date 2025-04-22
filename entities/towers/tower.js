@@ -39,7 +39,7 @@ export class Tower {
     }
     
     stopEnemyMovement(enemies) { // used to prevent rubberbanding
-        if (this.stopEnemy <= 0 /*&& this.isColliding == false*/){ // using isColliding here to prevent this hogging resources
+        if (this.stopEnemy <= 0){
             for (let enemy of enemies){
                 if (collision(this, enemy)) {
                     this.isColliding = true;
