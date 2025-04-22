@@ -19,4 +19,6 @@ export class ErrorTower extends Tower {
         this.bulletType = type;
         this.background = "black";
     }
+    upgrade() {}
+    getUpgradeStats() {}
 }

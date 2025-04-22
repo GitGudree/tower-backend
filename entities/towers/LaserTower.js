@@ -2,6 +2,7 @@ import { Tower } from "./tower.js";
 import { LaserBullet } from "../projectiles/laserBullet.js";
 import { collision } from "../../game/hitreg.js";
 import { updateResources} from "../../game/game.js";
+import { money, updateMoney } from "../../game/game.js";
 
 /**
  * Laser tower class

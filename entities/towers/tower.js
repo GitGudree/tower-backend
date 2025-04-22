@@ -134,8 +134,6 @@ export class Tower {
             case 0:
                 this.range += 50;
                 this.fireRate = 25;
-                this.background = "green";
-                this.textColor = 'lightgray';
                 this.damage = 2;
 
                 // Next upgrade cost
@@ -144,8 +142,6 @@ export class Tower {
             case 1:
                 this.range += 100;
                 this.fireRate = 20;
-                this.background = "yellow";
-                this.textColor = 'gray';
                 this.damage = 3;
 
                 // Next upgrade cost
@@ -154,8 +150,6 @@ export class Tower {
             case 2:
                 this.range += 150;
                 this.fireRate = 15;
-                this.background = "orange";
-                this.textColor = 'gray';
                 this.damage = 5;
 
                 // Next upgrade cost
@@ -164,8 +158,6 @@ export class Tower {
             case 3:
                 this.range += 200;
                 this.fireRate = 20;
-                this.background = "purple";
-                this.textColor = 'lightgray';
                 this.damage = 20;
 
                 // Next upgrade cost - 1e3=1.000, 1e6=1.000.000
@@ -174,14 +166,15 @@ export class Tower {
             default:
                 return;
         }
+
         updateMoney('decrease', cost);
 
         this.health += 50;
         this.upgrades++;
         
         
-        towerDamageElement.textContent = this.damage;
-        towerUpgradePriceElement.textContent = this.upgradeCost;
+        //towerDamageElement.textContent = this.damage;
+        //towerUpgradePriceElement.textContent = this.upgradeCost;
 
     }
     

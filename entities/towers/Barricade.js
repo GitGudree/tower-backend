@@ -24,4 +24,6 @@ export class Barricade extends Tower {
     }
 
     attack(){};
+    upgrade() {}
+    getUpgradeStats() {}
 }
