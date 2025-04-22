@@ -288,21 +288,23 @@ canvas {
     top: 0;
     left: 0;
     width: 100%;
-    height: 50%;
-    background: rgba(0, 0, 0, 0.5);
+    height: 100vh; /* dekker hele høyden av skjermen */
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent sort */
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Flytt innholdet til toppen */
+    padding-top: 5vh; /* Juster hvor langt ned fra toppen */
+    z-index: 9999;
 }
 
-/* Selve menyen */
 .popup-content {
     background: white;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 300px; /* For å holde størrelsen på menyen passende */
+    width: 300px;
 }
+
 
 /* Bredde og plassering av sliderne */
 .popup-content input[type="range"] {
