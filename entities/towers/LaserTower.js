@@ -20,11 +20,32 @@ export class LaserTower extends Tower {
         this.health = 30;
         this.range = 1000;
         this.damage = 4;
+        this.fireRate = 5;
         this.projectiles = [];
         this.fireRate = 120;
         this.bulletType = type;
         this.background = "purple";
     }
+
+    attack(enemies, bullets) {
+        if (this.timer <= 0) {
+            const target = enemies.find(enemy =>
+                Math.abs(enemy.y - this.y) < 10 &&
+                Math.abs(enemy.x - this.x) < this.range
+            );
+    
+            if (target) {
+                const bullet = new LaserBullet(this.x, this.y, target.x, target.y);
+                bullet.bulletDamage = this.damage;
+                bullets.push(bullet);
+            }
+    
+            this.timer = this.fireRate;
+        } else {
+            this.timer--;
+        }
+    }
+    /*
       attack(enemies, bullets) {
              if (this.timer <= 0) {
                  enemies.forEach(enemy => {
@@ -41,4 +62,5 @@ export class LaserTower extends Tower {
                  this.timer--;
              }
          }
+             */
 }

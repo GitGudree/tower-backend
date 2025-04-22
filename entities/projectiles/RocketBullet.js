@@ -22,6 +22,7 @@ export class RocketBullet {
         this.bulletDamage = 2;
         this.explosionLifetime = 100;
         this.pierceAmount = 1;
+        this.localIframes = 0;
         this.hitEnemies = new Set();
         this.color = "purple"
     }
@@ -68,4 +69,8 @@ export class RocketBullet {
             this.exploded = true;
         }
     }
+    doesLaserHit() { // this is more preformant than doing a check in projectileHandler
+        return false;
+    }
+
 }

@@ -235,25 +235,46 @@ export function updateTowerStats(tower) {
  * Created:   09.03.2025
 **/
 export function projectileHandler(){
+    const start = performance.now();
     const activeProjectiles = [];
+    let frameCount = 0;
 
     for (let projectile of projectiles) {
         projectile.move();
         let finalHit = false;
+
+        if (projectile.localIframes > 0){
+            projectile.localIframes--;
+        }
         
-        for (let enemy of enemies) {
-            if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
-                if (projectile.name == "rocket"){
-                    projectile.dealDamage(enemy, enemies);
-                } else{
+        
+
+        if (projectile.name === "laser") {
+            for (let enemy of enemies) {
+                if ( projectile.doesLaserHit(enemy) && projectile.localIframes <= 0 && projectile.lifetime > 0) {
                     projectile.dealDamage(enemy);
+                    activeProjectiles.push(projectile);
                 }
-                if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
-                    finalHit = true;
+            }
+        } else{
+
+            for (let enemy of enemies) {
+                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
+
+                    if (projectile.name == "rocket"){
+                        projectile.dealDamage(enemy, enemies);
+                    } else{
+                        projectile.dealDamage(enemy);
+                    }
+                    if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
+                        finalHit = true;
+                    }
+                    break;
                 }
-                break;
             }
         }
+
+        
 
         if (!finalHit && projectile.x < canvas.width - 50) {
             activeProjectiles.push(projectile);
@@ -262,4 +283,10 @@ export function projectileHandler(){
 
     projectiles.length = 0;
     projectiles.push(...activeProjectiles);
+    
+    const end = performance.now(); // ⏱️ end timer
+    frameCount++;
+    if (frameCount % 30 === 0) {
+        console.log(`projectileHandler took ${(end - start).toFixed(3)}ms`);
+    }
 }

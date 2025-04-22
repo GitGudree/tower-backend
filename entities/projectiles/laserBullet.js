@@ -2,8 +2,7 @@ import { cellSize } from "../../game/grid.js";
 /**
  * laser bullet class
  *
- * @author:    Randomfevva
- * editor:     Quetzalcoatl
+ * @author:    Randomfevva, Quetzalcoatl
  * Created:   27.03.2025
  **/
 
@@ -11,15 +10,24 @@ export class LaserBullet {
     constructor(x, y, targetX, targetY) {
         this.x = x;
         this.y = y;
+        this.name = "laser";
+        this.width = 2;
+        this.height = 2;
         this.targetX = targetX;
         this.targetY = targetY;
         this.bulletDamage = 4; // Laser gjør mer skade
         this.pierceAmount = 1;
-        this.hitEnemies = new Set();
+        this.localIframes = 0; // how often laser damages enemies
+        this.lifetime = 1;
+        this.name = "laser";
     }
 
     move() {
         // Laser trenger ikke å bevege seg, den treffer umiddelbart
+    }
+
+    isAlive() {
+        return this.lifetime > 0;
     }
 
     draw(ctx) {
@@ -32,8 +40,32 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        console.log("hit" + enemy)
+        console.log("laser hit")
         enemy.health -= this.bulletDamage;
+        this.localIframes = 30;
+        this.lifetime--;
+    }
+
+    doesLaserHit(enemy) {
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        const lengthSqr = dx * dx + dy * dy;
+    
+        // Project enemy onto line
+        const t = ((enemy.x - this.x) * dx + (enemy.y - this.y) * dy) / lengthSqr;
+    
+        // Clamp t to 0–1 to stay within segment
+        const clampedT = Math.max(0, Math.min(1, t));
+    
+        const closestX = this.x + clampedT * dx;
+        const closestY = this.y + clampedT * dy;
+    
+        // Distance from enemy to line
+        const distX = enemy.x - closestX;
+        const distY = enemy.y - closestY;
+        const distanceSqr = distX * distX + distY * distY;
+    
+        return distanceSqr < 400; // ≈ within 20px range of beam
     }
 }
 

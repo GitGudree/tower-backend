@@ -13,12 +13,14 @@ export class Bullet {
     constructor(x, y, row, type) {
         this.x = x;
         this.y = y;
+        this.name = "bullet"
         this.speed = 3;
         this.width = 5;
         this.height = 5;
         this.bulletDamage = 2;
         this.laneIndex = row;
         this.pierceAmount = 1;
+        this.localIframes = 0;
         this.hitEnemies = new Set();
         this.color = "purple"
         switch(type){
@@ -35,7 +37,9 @@ export class Bullet {
         }
     }
 
-    
+    doesLaserHit() { // this is more preformant than doing a check in projectileHandler
+        return false;
+    }
 
     move() {
         this.x += this.speed;

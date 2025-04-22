@@ -38,7 +38,7 @@ export class Tower {
         this.textColor = 'lightgray';
     }
 
-    stopEnemyMovement(enemies) { // separat for å unngå enemy rubberbanding
+    stopEnemyMovement(enemies) { // used to prevent rubberbanding
         
         if (this.stopMove <= 0 && this.isColliding == false){ // using isColliding here to prevent this hogging resources
             for (let enemy of enemies){
@@ -57,7 +57,6 @@ export class Tower {
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
                 if (collision(this, enemy)) {
-                    console.log("aatt" + " " + this)
                     enemy.stopMove();
                     enemy.attack(this);
                     
