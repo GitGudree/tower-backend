@@ -21,6 +21,7 @@ export class GatlingTower extends Tower {
         this.bulletType = type;
         this.background = "green";
     }
+    attack(){}
 
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;

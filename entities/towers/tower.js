@@ -26,7 +26,7 @@ export class Tower {
         this.fireRate = 30;
         this.timer = 0;
         this.iFrames = 0;
-        this.stopMove = 100; // can cause rubberbanding if value exceeds 100
+        this.stopEnemy = 100; // can cause rubberbanding if value exceeds 100
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
@@ -37,18 +37,17 @@ export class Tower {
         this.background = 'blue';
         this.textColor = 'lightgray';
     }
-
+    
     stopEnemyMovement(enemies) { // used to prevent rubberbanding
-        
-        if (this.stopMove <= 0 && this.isColliding == false){ // using isColliding here to prevent this hogging resources
+        if (this.stopEnemy <= 0 /*&& this.isColliding == false*/){ // using isColliding here to prevent this hogging resources
             for (let enemy of enemies){
                 if (collision(this, enemy)) {
                     this.isColliding = true;
                     enemy.stopMove();
                 }
             }
-        } else if (this.stopMove > 0){
-            this.stopMove --
+        } else if (this.stopEnemy > 0){
+            this.stopEnemy --
         }
             
     }
@@ -56,7 +55,7 @@ export class Tower {
     updateTowerCollision(enemies, towerIndex) {
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
-                if (collision(this, enemy)) {
+                if (collision(this, enemy, "test")) {
                     enemy.stopMove();
                     enemy.attack(this);
                     
