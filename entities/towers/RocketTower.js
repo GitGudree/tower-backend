@@ -4,8 +4,7 @@ import { RocketBullet } from "../projectiles/RocketBullet.js";
  * Rocket tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class RocketTower extends Tower {

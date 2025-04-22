@@ -7,7 +7,7 @@ import { cellSize } from "../../game/grid.js";
  **/
 
 export class LaserBullet {
-    constructor(x, y, targetX, targetY) {
+    constructor(x, y, targetX, targetY, source) {
         this.x = x;
         this.y = y;
         this.name = "laser";
@@ -19,6 +19,7 @@ export class LaserBullet {
         this.pierceAmount = 1;
         this.localIframes = 0; // how often laser damages enemies
         this.lifetime = 1;
+        this.bulletSource = source;
         this.name = "laser";
     }
 
@@ -27,7 +28,7 @@ export class LaserBullet {
     }
 
     isAlive() {
-        return this.lifetime > 0;
+        return this.lifetime > 0 && this.bulletSource?.health > 0;
     }
 
     draw(ctx) {
@@ -40,10 +41,9 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        console.log("laser hit")
+        console.log(this.lifetime)
         enemy.health -= this.bulletDamage;
         this.localIframes = 30;
-        this.lifetime--;
     }
 
     doesLaserHit(enemy) {
@@ -51,21 +51,18 @@ export class LaserBullet {
         const dy = this.targetY - this.y;
         const lengthSqr = dx * dx + dy * dy;
     
-        // Project enemy onto line
         const t = ((enemy.x - this.x) * dx + (enemy.y - this.y) * dy) / lengthSqr;
-    
-        // Clamp t to 0–1 to stay within segment
+
         const clampedT = Math.max(0, Math.min(1, t));
     
         const closestX = this.x + clampedT * dx;
         const closestY = this.y + clampedT * dy;
     
-        // Distance from enemy to line
         const distX = enemy.x - closestX;
         const distY = enemy.y - closestY;
         const distanceSqr = distX * distX + distY * distY;
     
-        return distanceSqr < 400; // ≈ within 20px range of beam
+        return distanceSqr < 400;
     }
 }
 

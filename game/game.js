@@ -235,19 +235,15 @@ export function updateTowerStats(tower) {
  * Created:   09.03.2025
 **/
 export function projectileHandler(){
-    const start = performance.now();
     const activeProjectiles = [];
-    let frameCount = 0;
 
     for (let projectile of projectiles) {
         projectile.move();
         let finalHit = false;
 
-        if (projectile.localIframes > 0){
+        if (projectile.name === "laser" && projectile.localIframes > 0){
             projectile.localIframes--;
         }
-        
-        
 
         if (projectile.name === "laser") {
             for (let enemy of enemies) {
@@ -283,10 +279,4 @@ export function projectileHandler(){
 
     projectiles.length = 0;
     projectiles.push(...activeProjectiles);
-    
-    const end = performance.now(); // ⏱️ end timer
-    frameCount++;
-    if (frameCount % 30 === 0) {
-        console.log(`projectileHandler took ${(end - start).toFixed(3)}ms`);
-    }
 }

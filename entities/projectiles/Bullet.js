@@ -20,7 +20,7 @@ export class Bullet {
         this.bulletDamage = 2;
         this.laneIndex = row;
         this.pierceAmount = 1;
-        this.localIframes = 0;
+
         this.hitEnemies = new Set();
         this.color = "purple"
         switch(type){

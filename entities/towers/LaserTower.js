@@ -4,11 +4,10 @@ import { collision } from "../../game/hitreg.js";
 import { updateResources} from "../../game/game.js";
 
 /**
- * Sniper tower class
+ * Laser tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class LaserTower extends Tower {
@@ -22,7 +21,7 @@ export class LaserTower extends Tower {
         this.damage = 4;
         this.fireRate = 5;
         this.projectiles = [];
-        this.fireRate = 120;
+        this.fireRate = 50;
         this.bulletType = type;
         this.background = "purple";
     }
@@ -35,7 +34,7 @@ export class LaserTower extends Tower {
             );
     
             if (target) {
-                const bullet = new LaserBullet(this.x, this.y, target.x, target.y);
+                const bullet = new LaserBullet(this.x, this.y, target.x, target.y, this);
                 bullet.bulletDamage = this.damage;
                 bullets.push(bullet);
             }
