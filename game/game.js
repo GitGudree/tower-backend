@@ -1,5 +1,5 @@
 import { enemies, setEnemies } from "../entities/enemies/Enemy.js";
-import { towers } from "../entities/tower.js";
+import { towers } from "../entities/towers/tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
@@ -106,7 +106,9 @@ export function updateGameState() {
     tryEndWave();
 
     towers.forEach((tower, towerIndex) => {
-        tower.attack(enemies, projectiles, towerIndex);
+        tower.stopEnemyMovement(enemies)
+        tower.updateTowerCollision(enemies, towerIndex)
+        tower.attack(enemies, projectiles);
     });
     
     if (resources <= 0) {
@@ -237,17 +239,40 @@ export function projectileHandler(){
 
     for (let projectile of projectiles) {
         projectile.move();
-        let hit = false;
-        
-        for (let enemy of enemies) {
-            if (collision(enemy, projectile)) {
-                projectile.dealDamage(enemy);
-                hit = true;
-                break;
+        let finalHit = false;
+
+        if (projectile.name === "laser" && projectile.localIframes > 0){
+            projectile.localIframes--;
+        }
+
+        if (projectile.name === "laser") {
+            for (let enemy of enemies) {
+                if ( projectile.doesLaserHit(enemy) && projectile.localIframes <= 0 && projectile.lifetime > 0) {
+                    projectile.dealDamage(enemy);
+                    activeProjectiles.push(projectile);
+                }
+            }
+        } else{
+
+            for (let enemy of enemies) {
+                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
+
+                    if (projectile.name == "rocket"){
+                        projectile.dealDamage(enemy, enemies);
+                    } else{
+                        projectile.dealDamage(enemy);
+                    }
+                    if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
+                        finalHit = true;
+                    }
+                    break;
+                }
             }
         }
 
-        if (!hit && projectile.x < canvas.width - 50) {
+        
+
+        if (!finalHit && projectile.x < canvas.width - 50) {
             activeProjectiles.push(projectile);
         }
     }

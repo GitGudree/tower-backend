@@ -1,12 +1,11 @@
 import { gameGrid, createGrid, handleGameGrid } from "./game/grid.js";
 import { drawGame, projectileHandler, updateGameState } from "./game/game.js";
-import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventHandler.js";
+import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventhandler.js";
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "../entities/enemies/Enemy.js";
-import { towers } from "./entities/tower.js";
-
-
+import { towers} from "../entities/towers/tower.js"
+import { setChosenTower } from "./entities/towers/towerState.js"
 
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);
@@ -49,6 +48,14 @@ function gameLoop(currentTime) {
 }
 
 gameLoop();
+
+ //passes data along to setChosenTower
+document.querySelectorAll('[tower-type]').forEach(button => {
+    button.addEventListener('click', () => {
+        const towerType = button.getAttribute('tower-type');
+        setChosenTower(towerType)
+    });
+});
 
 
 window.printCounters = e => {

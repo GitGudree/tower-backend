@@ -16,10 +16,12 @@ let waveInterval;
  * Created:   11.02.2025
 **/
 export async function spawnWave() {
-    if (isWaveStarted) {
+    let test = false; // only used for bugfixing, removes wave time limit
+    if (isWaveStarted && !test) {
         // Deny starting a new wave before all enemies are cleared
         return;
-    }
+    };
+    
     wave++;
     isWaveStarted = true;
 

@@ -140,6 +140,8 @@ canvas {
 
 .tower-upgrade-btn,
 .start-wave-btn,
+.usebtn,
+.deletebtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -242,3 +244,262 @@ canvas {
 .hidden {
     display: none;
 }
+
+/* Adjusting the settings layout */
+.settings-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 100px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+/* Sliders and labels in the correct position */
+.setting {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+}
+
+.setting label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+}
+
+.setting input[type="range"] {
+    width: 80%; /* Avoid full width */
+    justify-self: center;
+}
+
+/* Adjustment of cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.popup {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* dekker hele høyden av skjermen */
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent sort */
+    justify-content: center;
+    align-items: flex-start; /* Flytt innholdet til toppen */
+    padding-top: 5vh; /* Juster hvor langt ned fra toppen */
+    z-index: 9999;
+}
+
+.popup-content {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+
+/* Bredde og plassering av sliderne */
+.popup-content input[type="range"] {
+    width: 80%;  /* Gjør sliderne litt mindre enn hele bredden på containeren */
+    margin: 10px 0;  /* Plasserer avstand mellom sliderne */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Legger til plass til etikettene */
+.popup-content label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* --- Generell styling --- */
+
+
+/* Holder items i en ryddig liste */
+.shop-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    justify-items: center;
+}
+
+/* Hver enkelt vare i butikken */
+.shop-item {
+    background: #222;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+    width: 100px;
+}
+
+.shop-item img {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.shop-item p {
+    color: white;
+    margin: 5px 0;
+}
+
+
+
+.itemdesc {
+    background-color: rgba(30, 30, 30, 0.85); /* Mørk semi-transparens */
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemdesc .desc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-align: center;
+    gap: 10px;
+}
+
+.itemdesc .desc img {
+    width: 100px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Ny knappestil for kjøpsknappen */
+.buybtn {
+    font-weight: bold;
+    background-color: #fbbf24; /* gul */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.buybtn:hover {
+    background-color: #fbbf24;
+    transform: scale(1.05);
+}
+
+
+/*--- Inventory Slots ---*/
+.slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    gap: 10px;
+    padding: 5px;
+    background-color: #b67a20;
+}
+
+.slot {
+    border: 1px solid#ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+.slots > .slot img {
+    height: 60px;
+    width: 60px;
+    aspect-ratio: 1/1;
+}
+
+/*--- Inventory Item-selection ---*/
+.itemdesc {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.desc {
+    text-align: center;
+    background-color: #b67a20;
+    gap: .5rem;
+    user-select: none;
+}
+
+.itemdesc > .desc img {
+    height: 195px;
+    aspect-ratio: 1/1;
+}
+
+.purchase-message {
+    position: fixed;
+    inset: 0; /* dekker hele viewporten */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    /* Overlay stil */
+    background-color: rgba(0, 0, 0, 0.4); /* gir litt bakgrunn, kan endres om ønsket */
+    z-index: 9999;
+  }
+  
+.purchase-message .message-box {
+    background-color: #4caf50;
+    color: white;
+    padding: 1.25rem 2.5rem; /* tilsvarer 20px 40px */
+    border-radius: 0.625rem; /* 10px */
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
+  }
+  
+  /* Inventory Use & Delete Buttons */
+.usebtn,
+.deletebtn {
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 8px auto;
+    display: block;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Use button style */
+.usebtn {
+    background-color: #28a745; /* grønn */
+    color: white;
+}
+
+.usebtn:hover {
+    background-color: #45c164;
+    transform: scale(1.05);
+}
+
+/* Delete button style */
+.deletebtn {
+    background-color: #dc3545; /* rød */
+    color: white;
+}
+
+.deletebtn:hover {
+    background-color: #ff5b6b;
+    transform: scale(1.05);
+}
+
+  

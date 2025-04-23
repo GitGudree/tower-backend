@@ -1,6 +1,10 @@
-import { Tower, towers } from "../entities/tower.js";
+import { Tower, towers } from "../entities/towers/tower.js";
+import { createTower } from "../entities/towers/towerFactory.js";
 import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
+import { getChosenTower } from "../entities/towers/towerState.js";
+
+
 
 export const mouse = {
     x: 10,
@@ -32,6 +36,7 @@ export function handleCanvasClick() {
      *               
 
      * Author:    Anarox
+     * Editor: Quetzalcoatl
      * Created:   27.02.2025
      **/
     if (towers) {
@@ -47,7 +52,8 @@ export function handleCanvasClick() {
     }
 
     if (money >= price && !towers.some(tower => tower.selected)) {
-        const tower = new Tower(gridMousePosX, gridMousePosY);
+        var type = getChosenTower();
+        const tower = createTower(gridMousePosX, gridMousePosY, type);
         towers.push(tower);
         tower.selected = true;
         updateMoney("decrease", price);
@@ -105,16 +111,22 @@ export function gridRectColission(first, second) {
 
 
 function openTab(btn) {
+    // Fjern 'selected' fra alle knapper
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
     });
     btn.classList.add('selected');
-    
-    document.querySelector('.tab.open').classList.remove('open');
 
+    // Lukk alle faner før åpning av ny
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('open');
+    });
+
+    // Åpne valgt fane
     const tabName = btn.getAttribute('data-tab');
     document.querySelector(`.tab.${tabName}`).classList.add('open');
 }
+
 
 
 window.upgradeTower = () => {
@@ -134,3 +146,5 @@ window.upgradeTower = () => {
 }
 
 window.openTab = openTab;
+
+
