@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "chmod +x node_modules/.bin/vite && vite build",
+    "postinstall": "chmod +x node_modules/.bin/vite",
+    "build": "vite build",
     "preview": "vite preview",
     "vercel-build": "npm ci && npm run build"
   },
