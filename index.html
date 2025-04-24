@@ -6,7 +6,7 @@
     <title>Tower Defense Game</title>
     <link rel="stylesheet" href="styles.css">
     <script src="game/settings.js" type="module"></script>
-    <script src="main.js" type="module"></script>
+    <script type="module" src="/main.js"></script>
     <script src="game/eventhandler.js" type="module"></script>
     <script src="./entities/shop.js" type="module"></script>
     <script src="./entities/inventory.js" type="module"></script>
@@ -79,7 +79,7 @@
                             <p>Gatling tower</p>    
                             <p class="tower-unlock-price-title"><span class="tower-unlock-price">1000 ⚒️</span></p>    
                         </div>
-                        <div class="card" /*tower-type = "laser"*/>
+                        <div class="card" > <!-- tower-type = "laser" -->
                             <img 
                             src="" 
                             alt=""
@@ -95,7 +95,7 @@
                             <p>rocket tower</p>    
                             <p class="tower-unlock-price-title"><span class="tower-unlock-price">5000 ⚒️</span></p>    
                         </div>
-                        <div class="card" /*tower-type = "tower a"*/ >
+                        <div class="card"> <!-- tower-type = "tower a" -->
                             <img 
                             src="" 
                             alt=""
@@ -134,7 +134,7 @@
                                 <img id="selected-item-image" src="" alt="">
                                 <h1 id="selected-item-name">Ingen Items Valgt!</h1>
                                 <p id="selected-item-description"> Velg et item.</p>
-                                <button class="usebtn" id="use-button" onclick="useItem()"tower-type = "barricade"> Use </button>
+                                <button class="usebtn" id="use-button" onclick="useItem()" tower-type = "barricade"> Use </button>
                                 <button class="deletebtn" id="delete-button" onclick="deleteButton()"> Delete </button>
                             </div>
                         </div>

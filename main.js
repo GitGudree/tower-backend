@@ -3,8 +3,8 @@ import { drawGame, projectileHandler, updateGameState } from "./game/game.js";
 import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventhandler.js";
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
-import { enemies } from "../entities/enemies/Enemy.js";
-import { towers} from "../entities/towers/tower.js"
+import { enemies } from "./entities/enemies/enemy.js";
+import { towers} from "./entities/towers/tower.js"
 import { setChosenTower } from "./entities/towers/towerState.js"
 
 canvas.addEventListener("click", handleCanvasClick);

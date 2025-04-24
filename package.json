@@ -1,0 +1,27 @@
+{
+  "name": "bop3000-tower-defense",
+  "version": "1.0.0",
+  "description": "BOP3000-Tower-Defense is a web-based Tower Defense game developed using HTML Canvas, JavaScript, and CSS as part of a Bachelor's thesis project. The game is designed to explore real-time rendering techniques, game mechanics, and performance optimization within a browser-based environment.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anarox1111/BOP3000-Tower-Defense.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Anarox1111/BOP3000-Tower-Defense/issues"
+  },
+  "homepage": "https://github.com/Anarox1111/BOP3000-Tower-Defense#readme",
+  "devDependencies": {
+    "vite": "^6.3.3"
+  }
+}
