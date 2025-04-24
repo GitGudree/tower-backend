@@ -6,6 +6,7 @@ import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
 import { setChosenTower } from "./entities/towers/towerState.js"
+import { openTab } from "./game/eventhandler.js";
 
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);
@@ -69,5 +70,5 @@ window.printCounters = e => {
         console.log(timer + ':', performanceTimers[timer]);
     }
 }
-
+window.openTab = openTab;
 // setInterval(printCounters, 2e3);

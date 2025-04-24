@@ -110,7 +110,7 @@ export function gridRectColission(first, second) {
 }
 
 
-function openTab(btn) {
+export function openTab(btn) {
     // Fjern 'selected' fra alle knapper
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
@@ -144,7 +144,3 @@ window.upgradeTower = () => {
         updateTowerStats(tower);
     }
 }
-
-window.openTab = openTab;
-
-
