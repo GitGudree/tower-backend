@@ -283,7 +283,7 @@ canvas {
 }
 
 .popup {
-    display: flex;
+    /* IKKE sett display her – det styres av JS og .hidden-klassen */
     position: fixed;
     top: 0;
     left: 0;
@@ -291,10 +291,15 @@ canvas {
     height: 100vh; /* dekker hele høyden av skjermen */
     background: rgba(0, 0, 0, 0.5); /* semi-transparent sort */
     justify-content: center;
-    align-items: flex-start; /* Flytt innholdet til toppen */
-    padding-top: 5vh; /* Juster hvor langt ned fra toppen */
+    align-items: flex-start;
+    padding-top: 5vh;
     z-index: 9999;
-}
+  }
+
+  /* Vis popup når .popup IKKE har .hidden */
+.popup:not(.hidden) {
+    display: flex;
+  }
 
 .popup-content {
     background: white;
