@@ -80,8 +80,8 @@ function deleteButton() {
 
 function clearSelectedDisplay() {
     document.getElementById("selected-item-image").src = "";
-    document.getElementById("selected-item-name").textContent = "Ingen Items Valgt!";
-    document.getElementById("selected-item-description").textContent = "Velg et item.";
+    document.getElementById("selected-item-name").textContent = "No item chosen!";
+    document.getElementById("selected-item-description").textContent = "Choose an item.";
 }
 
 // Eksporter funksjoner
