@@ -9,16 +9,25 @@
     --transparent: rgba(0,0,0,0);
 }
 
+html, body {
+    height: 100%; /* VIKTIG: sørger for at body alltid er 100% høyde */
+    margin: 0;    /* Fjern default margin */
+    padding: 0;
+}
+
 body {
     background-image: url('public/sprites/bunkerwide.png');
-    background-position: center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed; /* NYTT: holder bakgrunnen i ro selv om du scroller */
     background-color: #202020;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 
 main {
     display: flex;
