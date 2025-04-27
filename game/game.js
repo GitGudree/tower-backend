@@ -1,10 +1,11 @@
-import { enemies, setEnemies } from "../entities/enemies/Enemy.js";
+import { enemies, setEnemies } from "../entities/enemies/enemy.js";
 import { towers } from "../entities/towers/tower.js";
 import { projectiles } from "../entities/projectiles/projectiles.js";
 import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
+import { GatlingTower } from "../entities/towers/GatlingTower.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -81,7 +82,7 @@ export function drawGame() {
  * @author:    Anarox
  * Created:   28.01.2025
  **/
-export function updateGameState() {
+export function updateGameState(deltaTime) {
     
     let selectedTower = towers.find(tower => tower.selected);
 
@@ -106,6 +107,7 @@ export function updateGameState() {
     tryEndWave();
 
     towers.forEach((tower, towerIndex) => {
+        tower.update(deltaTime);
         tower.stopEnemyMovement(enemies)
         tower.updateTowerCollision(enemies, towerIndex)
         tower.attack(enemies, projectiles);

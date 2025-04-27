@@ -25,6 +25,7 @@ export class Tower {
         this.projectiles = [];
         this.fireRate = 30;
         this.timer = 0;
+        //this.isFiring = false;
         this.iFrames = 0;
         this.stopEnemy = 100; // can cause rubberbanding if value exceeds 100
         this.upgradeCost = 150;
@@ -37,6 +38,8 @@ export class Tower {
         this.background = 'blue';
         this.textColor = 'lightgray';
     }
+
+    update (deltaTime) {}
     
     stopEnemyMovement(enemies) { // used to prevent rubberbanding
         if (this.stopEnemy <= 0){
@@ -111,9 +114,11 @@ export class Tower {
         } else {
             ctx.fillStyle = this.textColor;
         }
+        /*
         ctx.font = '20px Impact';
         ctx.textAlign = 'center';
         ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
+        */
         
     }
 

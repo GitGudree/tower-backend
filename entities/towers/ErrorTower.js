@@ -4,8 +4,7 @@ import { money, updateMoney } from "../../game/game.js";
  * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class ErrorTower extends Tower {
@@ -20,6 +19,9 @@ export class ErrorTower extends Tower {
         this.bulletType = type;
         this.background = "black";
     }
+
+    update (deltaTime) {}
+
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
 
@@ -63,6 +65,7 @@ export class ErrorTower extends Tower {
     * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
     * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
     * Author:    Anarox
+    * Editor:    Quetzalcoatl
     * Created:   09.03.2025
     **/
     getUpgradeStats() {

@@ -1,12 +1,17 @@
-import { Tower } from "./tower.js";
+
+import { SpriteAnimator } from "../../public/spriteAnimator.js";
+import { Bullet } from "../projectiles/Bullet.js";
+import { collision } from "../../game/hitreg.js";
+import { updateResources} from "../../game/game.js";
 import { money, updateMoney } from "../../game/game.js";
+import { Tower, towers } from "./tower.js";
+
 
 /**
  * Gatling tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class GatlingTower extends Tower {
@@ -20,7 +25,79 @@ export class GatlingTower extends Tower {
         this.fireRate = 10;
         this.bulletType = type;
         this.background = "green";
+        this.isFiring = false;
+        
+        
+        const gatlingImage = new Image();
+        gatlingImage.src = "./public/sprites/gatling-0001-Sheet.png";
+
+        this.animatorLive = new SpriteAnimator (gatlingImage, 0, 50, 50, 3, 100);
+        //this.animatorDeath = new SpriteAnimator (gatlingSprite, 50, 50, 3, 100);
+       
     }
+    
+
+    update (deltaTime) {
+        if (this.isFiring){
+            this.animatorLive.update(deltaTime);
+        }
+    }
+
+    draw (ctx) {
+        this.animatorLive.draw(ctx, this.x, this.y)
+    }
+
+    attack(enemies, bullets) {
+        if (this.timer <= 0) {
+            enemies.forEach(enemy => {
+                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    const bullet = new Bullet(this.x + 18, this.y - 4, this.y, this.bulletType);
+                    bullet.bulletDamage = this.damage;
+                    bullets.push(bullet);
+                    this.isFiring = true;
+                } else {
+                    this.isFiring = false;
+                }            
+            });
+                
+    
+            this.timer = this.fireRate;
+        } else {
+            this.timer--;
+        }
+    }
+        updateTowerCollision(enemies, towerIndex) {
+            if (this.iFrames <= 0) {
+                for (let enemy of enemies) {
+                    if (collision(this, enemy, "test")) {
+                        enemy.stopMove();
+                        enemy.attack(this);
+                        
+        
+                        if (this.health <= 0) {
+                            towers.splice(towerIndex, 1);
+                            this.isColliding = false;
+                            this.deathMessage = "-5 Resources";
+                            this.deathMessageTimer = 60;
+            
+                            updateResources("decrease", 5);
+            
+            
+                            for (let enemy of enemies) {
+                                enemy.resumeMove();
+                            }
+                        }
+                    }
+                    this.iFrames += enemy.attackspeed;
+                }
+               
+            } else{
+                this.iFrames--;
+            }
+    
+        }
+
+    
 
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
@@ -88,6 +165,7 @@ export class GatlingTower extends Tower {
     * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
     * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
     * Author:    Anarox
+    * Editor:    Quetzalcoatl
     * Created:   09.03.2025
     **/
     getUpgradeStats() {

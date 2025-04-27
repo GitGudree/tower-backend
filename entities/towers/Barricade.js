@@ -3,7 +3,7 @@ import { Tower } from "./tower.js";
  * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
  *
  * @constructor (x, y, row)
- * Author:    Randomfevva
+ * Author:    Randomfevva, Quetzalcoatl
  * Created:   15.04.2025
  **/
 export class Barricade extends Tower {
@@ -17,6 +17,9 @@ export class Barricade extends Tower {
         this.textColor = 'white';
         this.selected = false;
     }
+
+    update (deltaTime) {}
+    
     destroy() {
         console.log("Barricade destroyed!");
         // Fjern barricaden fra spillbrettet
@@ -67,6 +70,7 @@ export class Barricade extends Tower {
             * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
             * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
             * Author:    Anarox
+            * Editor:    Quetzalcoatl
             * Created:   09.03.2025
             **/
             getUpgradeStats() {

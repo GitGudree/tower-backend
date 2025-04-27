@@ -4,8 +4,7 @@ import { money, updateMoney } from "../../game/game.js";
  * Sniper tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class SniperTower extends Tower {
@@ -20,16 +19,19 @@ export class SniperTower extends Tower {
         this.bulletType = type;
         this.background = "yellow";  
     }
+    /*
+    update (deltaTime) {
+        if (this.isFiring){
+            this.animator.update(deltaTime);
+        }
+    }
+
+    draw (ctx) {
+        this.animator.draw(ctx, this.x, this.y)
+    }*/
+
     upgrade() {
             if (money < this.upgradeCost || this.upgradeCost === -1) return;
-    
-            // DO NOT REMOVE THIS CODE!!!
-            // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-    
-            // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-            //     const upgrade = towerUpgrades[upgradeKey];
-            //     this[upgradeKey] = upgrade[upgradeKey];
-            // }
     
             const cost = this.upgradeCost;
             switch (this.upgrades) {
@@ -77,15 +79,6 @@ export class SniperTower extends Tower {
     
         }
         
-        /**
-         * getUpgradeStats
-         *
-    
-        * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
-        * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
-        * Author:    Anarox
-        * Created:   09.03.2025
-        **/
         getUpgradeStats() {
     
             const oldStats = {

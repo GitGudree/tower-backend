@@ -27,6 +27,8 @@ export class LaserTower extends Tower {
         this.background = "purple";
     }
 
+    update (deltaTime) {}
+    
     attack(enemies, bullets) {
         if (this.timer <= 0) {
             const target = enemies.find(enemy =>

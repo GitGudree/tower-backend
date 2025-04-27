@@ -5,7 +5,7 @@ import { money, updateMoney } from "../../game/game.js";
  * Rocket tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox, Quetzalcoatl
+ * Author:    Anarox, Randomfevva, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class RocketTower extends Tower {
@@ -20,6 +20,8 @@ export class RocketTower extends Tower {
         this.bulletType = type;
         this.background = "grey"; 
     }
+
+    update (deltaTime) {}
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
@@ -39,14 +41,6 @@ export class RocketTower extends Tower {
     }
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        // DO NOT REMOVE THIS CODE!!!
-        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-
-        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-        //     const upgrade = towerUpgrades[upgradeKey];
-        //     this[upgradeKey] = upgrade[upgradeKey];
-        // }
 
         const cost = this.upgradeCost;
         switch (this.upgrades) {
@@ -95,16 +89,6 @@ export class RocketTower extends Tower {
         //towerUpgradePriceElement.textContent = this.upgradeCost;
 
     }
-    
-    /**
-     * getUpgradeStats
-     *
-
-    * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
-    * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
-    * Author:    Anarox
-    * Created:   09.03.2025
-    **/
     getUpgradeStats() {
 
         const oldStats = {
