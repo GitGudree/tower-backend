@@ -1,16 +1,18 @@
 import { Tower } from "./tower.js";
 import { RocketBullet } from "../projectiles/RocketBullet.js";
 import { money, updateMoney } from "../../game/game.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 /**
  * Rocket tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox, Quetzalcoatl
+ * Author:    Anarox, Randomfevva, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class RocketTower extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "Rocket";
         this.health = 30;
         this.range = 700;
@@ -19,34 +21,46 @@ export class RocketTower extends Tower {
         this.fireRate = 160;
         this.bulletType = type;
         this.background = "grey"; 
+        this.laneIndex = laneIndex;
+
+        this.isFiring = false;
+        this.deathDuration = 50;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
+        this.animationExtend = 3;
+        this.fireAnimation = 0;
+        
+
+        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3, 500); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.rocket, 50, 50, 50, 2, 200);
     }
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
+            let fired = false;
             for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new RocketBullet(this.x, this.y, enemy);
+                    this.animationExtend = 5;
+                    const bullet = new RocketBullet(this.x, this.y, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
+                    fired = true;
                     break;
                 }            
             };
+            if (fired){
+                this.fireAnimation = 500
+                this.animatorLive.reset();
+            }
             
             this.timer = this.fireRate;
         } else {
             this.timer--;
         }
     }
+
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        // DO NOT REMOVE THIS CODE!!!
-        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-
-        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-        //     const upgrade = towerUpgrades[upgradeKey];
-        //     this[upgradeKey] = upgrade[upgradeKey];
-        // }
 
         const cost = this.upgradeCost;
         switch (this.upgrades) {
@@ -95,16 +109,6 @@ export class RocketTower extends Tower {
         //towerUpgradePriceElement.textContent = this.upgradeCost;
 
     }
-    
-    /**
-     * getUpgradeStats
-     *
-
-    * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
-    * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
-    * Author:    Anarox
-    * Created:   09.03.2025
-    **/
     getUpgradeStats() {
 
         const oldStats = {

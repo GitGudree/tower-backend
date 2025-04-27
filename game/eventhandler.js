@@ -53,7 +53,9 @@ export function handleCanvasClick() {
 
     if (money >= price && !towers.some(tower => tower.selected)) {
         var type = getChosenTower();
-        const tower = createTower(gridMousePosX, gridMousePosY, type);
+        console.log(type);
+        var laneIndex = gridMousePosY / 50; // find what lane tower is in for laneIndex
+        const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
         towers.push(tower);
         tower.selected = true;
         updateMoney("decrease", price);

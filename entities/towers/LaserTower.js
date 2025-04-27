@@ -12,8 +12,8 @@ import { money, updateMoney } from "../../game/game.js";
  * Created:   27.03.2025
  **/
 export class LaserTower extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "laser";
         this.width = 5;
         this.height = 5;
@@ -25,8 +25,15 @@ export class LaserTower extends Tower {
         this.fireRate = 50;
         this.bulletType = type;
         this.background = "purple";
+        this.laneIndex = laneIndex;
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
 
+    update (deltaTime) {}
+    
     attack(enemies, bullets) {
         if (this.timer <= 0) {
             const target = enemies.find(enemy =>

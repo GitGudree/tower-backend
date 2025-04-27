@@ -1,14 +1,16 @@
 import { Tower } from "./tower.js";
+import { cellSize} from "../../game/grid.js";
+import { money, updateMoney } from "../../game/game.js";
 /**
  * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
  *
  * @constructor (x, y, row)
- * Author:    Randomfevva
+ * Author:    Randomfevva, Quetzalcoatl
  * Created:   15.04.2025
  **/
 export class Barricade extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "barricade";
         this.x = x;
         this.y = y;
@@ -16,7 +18,15 @@ export class Barricade extends Tower {
         this.background = 'darkgray';
         this.textColor = 'white';
         this.selected = false;
+        this.laneIndex = laneIndex;
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
+
+    update (deltaTime) {}
+    
     destroy() {
         console.log("Barricade destroyed!");
         // Fjern barricaden fra spillbrettet
@@ -24,6 +34,23 @@ export class Barricade extends Tower {
     }
 
     attack() {};
+
+    draw(ctx) {
+        ctx.fillStyle = this.background;
+        ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
+
+        if (this.selected) {
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
+        } else {
+            ctx.fillStyle = this.textColor;
+        }
+        ctx.font = '20px Impact';
+        ctx.textAlign = 'center';
+        ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
+    }
     upgrade() {
                 if (money < this.upgradeCost || this.upgradeCost === -1) return;
         
@@ -67,6 +94,7 @@ export class Barricade extends Tower {
             * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
             * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
             * Author:    Anarox
+            * Editor:    Quetzalcoatl
             * Created:   09.03.2025
             **/
             getUpgradeStats() {

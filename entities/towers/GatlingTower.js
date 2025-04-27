@@ -1,17 +1,22 @@
-import { Tower } from "./tower.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
+import { Bullet } from "../projectiles/Bullet.js";
+import { collision } from "../../game/hitreg.js";
+import { updateResources } from "../../game/game.js";
 import { money, updateMoney } from "../../game/game.js";
+import { Tower} from "./tower.js";
+
 
 /**
  * Gatling tower class
  *
  * @constructor (x, y, row)
- * Author:    Anarox
- * Editor:    Quetzalcoatl
+ * Author:    Anarox, Quetzalcoatl
  * Created:   27.03.2025
  **/
 export class GatlingTower extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "Gatling";
         this.health = 60;
         this.range = 300;
@@ -19,8 +24,20 @@ export class GatlingTower extends Tower {
         this.projectiles = [];
         this.fireRate = 10;
         this.bulletType = type;
+        this.laneIndex = laneIndex;
         this.background = "green";
+
+        this.isFiring = false;
+        this.deathDuration = 50;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
+        
+        
+
+        this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.gatling, 50, 50, 50, 2, 200);
     }
+    
 
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
@@ -88,6 +105,7 @@ export class GatlingTower extends Tower {
     * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
     * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
     * Author:    Anarox
+    * Editor:    Quetzalcoatl
     * Created:   09.03.2025
     **/
     getUpgradeStats() {

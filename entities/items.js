@@ -17,7 +17,7 @@ class Item {
 // Barricade - Blokkerer fiender, men gjør ingen skade
 class BarricadeInfo extends Item {
     constructor(x, y) {
-        super("Barricade", 100, "Blocks enemy movement but does no damage.", "images/barricade.png"); // 
+        super("Barricade", 100, "Blocks enemy movement but does no damage.", "public/sprites/barricadeicon.png"); // 
         /*
         this.x = x;
         this.y = y;
@@ -73,8 +73,8 @@ class BarricadeInfo extends Item {
 // Oppretter items ved å bruke de riktige klassene
 const items = {
     barricade: new BarricadeInfo(), // Standard posisjon, men må settes dynamisk
-    mine: new Item("Mine", 150, "Explodes when enemies step on it.", "images/mine.png"),
-    slowTrap: new Item("Slow Trap", 120, "Slows down enemies for a duration.", "images/slowtrap.png")
+    mine: new Item("Mine", 150, "Explodes when enemies step on it.", "public/sprites/landmineicon.png"),
+    slowTrap: new Item("Slow Trap", 120, "Slows down enemies for a duration.", "public/sprites/beartrapiconmidl.png")
 };
 
 // Eksporter items slik at det kan brukes i shop.js
