@@ -1,6 +1,8 @@
 import { Tower } from "./tower.js";
 import { RocketBullet } from "../projectiles/RocketBullet.js";
 import { money, updateMoney } from "../../game/game.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 /**
  * Rocket tower class
  *
@@ -21,29 +23,42 @@ export class RocketTower extends Tower {
         this.background = "grey"; 
         this.laneIndex = laneIndex;
 
-        this.deathDuration = 0;
+        this.isFiring = false;
+        this.deathDuration = 50;
         this.deathTimer = this.deathDuration;
         this.isDead;
-    }
+        this.animationExtend = 3;
+        this.fireAnimation = 0;
+        
 
-    update (deltaTime) {}
+        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3, 500); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.rocket, 50, 50, 50, 2, 200);
+    }
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
+            let fired = false;
             for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    this.animationExtend = 5;
                     const bullet = new RocketBullet(this.x, this.y, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
+                    fired = true;
                     break;
                 }            
             };
+            if (fired){
+                this.fireAnimation = 500
+                this.animatorLive.reset();
+            }
             
             this.timer = this.fireRate;
         } else {
             this.timer--;
         }
     }
+
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;
 

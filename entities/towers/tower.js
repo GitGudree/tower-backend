@@ -1,3 +1,5 @@
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 import { Bullet } from "../projectiles/Bullet.js";
 import { collision } from "../../game/hitreg.js";
 import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../../game/game.js";
@@ -17,13 +19,13 @@ export class Tower {
         this.x = x;
         this.y = y;
         this.name = "Shooter";
-        this.health = 100;
+        this.health = 80;
         this.range = 500;
         this.damage = 5;
         this.width = cellSize;
         this.height = cellSize;
         this.projectiles = [];
-        this.fireRate = 30;
+        this.fireRate = 40;
         this.timer = 0;
         //this.isFiring = false;
         this.iFrames = 0;
@@ -39,12 +41,18 @@ export class Tower {
         this.background = 'blue';
         this.textColor = 'lightgray';
 
-        this.deathDuration = 0;
+        this.isFiring = false;
+        this.deathDuration = 50;
         this.deathTimer = this.deathDuration;
         this.isDead;
-    }
+        this.animationExtend = 3;
+        this.fireAnimation = 0;
+        this.frameInterval = 100;
+        
 
-    update (deltaTime) {}
+        this.animatorLive = new SpriteAnimator (sprites.default, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.default, 50, 50, 50, 2, 200);
+    }
     
     stopEnemyMovement(enemies) { // used to prevent rubberbanding
         if (this.stopEnemy <= 0){
@@ -63,20 +71,21 @@ export class Tower {
     updateTowerCollision(enemies, towerIndex) {
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
-                if (collision(this, enemy)) {
+                if (collision(this, enemy, "test")) {
                     enemy.stopMove();
                     enemy.attack(this);
-                    
-    
+                        
+        
                     if (this.health <= 0) {
-                        towers.splice(towerIndex, 1);
+                        this.isDead = true;
+                        this.deathTimer = this.deathDuration;
                         this.isColliding = false;
                         this.deathMessage = "-5 Resources";
                         this.deathMessageTimer = 60;
-        
+            
                         updateResources("decrease", 5);
-        
-        
+            
+            
                         for (let enemy of enemies) {
                             enemy.resumeMove();
                         }
@@ -84,48 +93,60 @@ export class Tower {
                 }
                 this.iFrames += enemy.attackspeed;
             }
-           
+               
         } else{
             this.iFrames--;
         }
-
+    
     }
     
-    attack(enemies, bullets) {
-        if (this.timer <= 0) {
-            enemies.forEach(enemy => {
-                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new Bullet(this.x, this.y, this.bulletType, this.laneIndex);
-                    bullet.bulletDamage = this.damage;
-                    bullets.push(bullet);
-                }            
-            });
-
-            this.timer = this.fireRate;
+       
+    update(deltaTime) {
+        if (this.isDead) {
+            this.animatorDead.update(deltaTime)
+            if (this.deathTimer >= 0){
+                this.deathDuration -= deltaTime;
+            }
         } else {
-            this.timer--;
+            if (this.fireAnimation > 0) {
+                this.animatorLive.update(deltaTime);
+                this.fireAnimation -= deltaTime;
+            }
         }
     }
-
-    draw(ctx) {
-        ctx.fillStyle = this.background;
-        ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
-
-        if (this.selected) {
-            ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
-        } else {
-            ctx.fillStyle = this.textColor;
+    
+        draw (ctx) {
+            if (!this.isDead){
+                this.animatorLive.draw(ctx, this.x, this.y);
+            } else {
+                this.animatorDead.draw(ctx, this.x, this.y);
+            }
         }
-        /*
-        ctx.font = '20px Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
-        */
-        
-    }
+    
+        attack(enemies, bullets) {
+            if (this.timer <= 0 && !this.isDead) {
+                let fired = false;
+                enemies.forEach(enemy => {
+                    if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                        this.animationExtend = this.animationExtend;
+                        const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
+                        bullet.bulletDamage = this.damage;
+                        bullets.push(bullet);
+                        fired = true;
+                    }           
+                });
+
+                if (fired){
+                    this.fireAnimation = 500
+                    this.animatorLive.reset();
+                }
+    
+                this.isFiring = fired;
+                this.timer = this.fireRate;
+            } else {
+                this.timer--;
+            }
+        }
 
     upgrade() {
         if (money < this.upgradeCost || this.upgradeCost === -1) return;

@@ -13,5 +13,6 @@ export class BossEnemy extends Enemy {
         this.health = 500 + (wave - 1) * 50;
         this.speed = 0.8;
         this.background = "purple";
+        this.laneIndex = row;
     }
 }

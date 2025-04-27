@@ -38,7 +38,7 @@ export class SniperTower extends Tower {
         this.animatorLive = new SpriteAnimator (sprites.sniper, 0, 50, 50, 5); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.sniper, 50, 50, 50, 2, 200);
     }
-
+    /*
     update(deltaTime) {
         if (this.isDead) {
             this.animatorDead.update(deltaTime)
@@ -117,6 +117,7 @@ export class SniperTower extends Tower {
             }
         
         }
+            */
     upgrade() {
             if (money < this.upgradeCost || this.upgradeCost === -1) return;
     
