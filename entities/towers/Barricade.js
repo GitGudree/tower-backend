@@ -1,4 +1,6 @@
 import { Tower } from "./tower.js";
+import { cellSize} from "../../game/grid.js";
+import { money, updateMoney } from "../../game/game.js";
 /**
  * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
  *
@@ -32,6 +34,23 @@ export class Barricade extends Tower {
     }
 
     attack() {};
+
+    draw(ctx) {
+        ctx.fillStyle = this.background;
+        ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
+
+        if (this.selected) {
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
+        } else {
+            ctx.fillStyle = this.textColor;
+        }
+        ctx.font = '20px Impact';
+        ctx.textAlign = 'center';
+        ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
+    }
     upgrade() {
                 if (money < this.upgradeCost || this.upgradeCost === -1) return;
         
