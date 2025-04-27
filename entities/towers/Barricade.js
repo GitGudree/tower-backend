@@ -7,8 +7,8 @@ import { Tower } from "./tower.js";
  * Created:   15.04.2025
  **/
 export class Barricade extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "barricade";
         this.x = x;
         this.y = y;
@@ -16,6 +16,11 @@ export class Barricade extends Tower {
         this.background = 'darkgray';
         this.textColor = 'white';
         this.selected = false;
+        this.laneIndex = laneIndex;
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
 
     update (deltaTime) {}

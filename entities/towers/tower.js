@@ -1,7 +1,7 @@
 import { Bullet } from "../projectiles/Bullet.js";
 import { collision } from "../../game/hitreg.js";
 import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../../game/game.js";
-import { cellSize } from "../../game/grid.js";
+import { cellSize, rows } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 
 /**
@@ -13,7 +13,7 @@ import { money, updateMoney } from "../../game/game.js";
  * Created:   25.01.2025
  **/
 export class Tower {
-    constructor(x, y, type) {
+    constructor(x, y, type, row) {
         this.x = x;
         this.y = y;
         this.name = "Shooter";
@@ -33,10 +33,15 @@ export class Tower {
         this.selected = false;
         this.bulletType = type;
         this.isColliding = false;
+        this.laneIndex = row;
 
         // Tower style
         this.background = 'blue';
         this.textColor = 'lightgray';
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
 
     update (deltaTime) {}
@@ -58,7 +63,7 @@ export class Tower {
     updateTowerCollision(enemies, towerIndex) {
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
-                if (collision(this, enemy, "test")) {
+                if (collision(this, enemy)) {
                     enemy.stopMove();
                     enemy.attack(this);
                     
@@ -90,7 +95,7 @@ export class Tower {
         if (this.timer <= 0) {
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new Bullet(this.x, this.y, this.y, this.bulletType);
+                    const bullet = new Bullet(this.x, this.y, this.bulletType, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                 }            

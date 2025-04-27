@@ -80,6 +80,7 @@ export function drawGame() {
 
  *
  * @author:    Anarox
+ * editor:     Quetzalocatl
  * Created:   28.01.2025
  **/
 export function updateGameState(deltaTime) {
@@ -106,12 +107,18 @@ export function updateGameState(deltaTime) {
     setEnemies(enemiesArray);
     tryEndWave();
 
-    towers.forEach((tower, towerIndex) => {
+    //towers.forEach((tower, towerIndex) => {
+    for (let i = towers.length - 1; i >= 0; i--) { // byttet fra for each for å unngå edge cases -quetz
+        const tower = towers[i];
         tower.update(deltaTime);
         tower.stopEnemyMovement(enemies)
-        tower.updateTowerCollision(enemies, towerIndex)
+        tower.updateTowerCollision(enemies, i)
         tower.attack(enemies, projectiles);
-    });
+
+        if (tower.isDead && tower.deathTimer <= 0){
+            towers.splice(i, 1)
+        }
+    };
     
     if (resources <= 0) {
         gameOver = true;

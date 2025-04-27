@@ -36,5 +36,9 @@ export class SpriteAnimator {
             width, height
         );
     }
+    reset() {
+        this.currentFrame = 0;
+        this.frameTimer = 0;
+    }
 
 }

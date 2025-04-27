@@ -9,8 +9,8 @@ import { money, updateMoney } from "../../game/game.js";
  * Created:   27.03.2025
  **/
 export class RocketTower extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "Rocket";
         this.health = 30;
         this.range = 700;
@@ -19,6 +19,11 @@ export class RocketTower extends Tower {
         this.fireRate = 160;
         this.bulletType = type;
         this.background = "grey"; 
+        this.laneIndex = laneIndex;
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
 
     update (deltaTime) {}
@@ -27,7 +32,7 @@ export class RocketTower extends Tower {
         if (this.timer <= 0) {
             for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                    const bullet = new RocketBullet(this.x, this.y, enemy);
+                    const bullet = new RocketBullet(this.x, this.y, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                     break;

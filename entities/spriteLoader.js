@@ -1,15 +1,20 @@
-/*
-export const sprites = {
-    gatlingTower: new Image(),
+/**
+ * sprite loader class
+ * contains sprites and loads them before use
+ *
+ * @constructor (x, y, row)
+ * Author:    Quetzalcoatl
+ * Created:   27.04.2025
+ **/
+export const sprites = {};
+
+const imagePaths = {
+  gatling: "./public/sprites/gatling-0001-Sheet.png",
+  sniper: "./public/sprites/railgun-0002-Sheet.png",
 };
 
-sprites.gatlingTower.src = '/sprites/gatling_tower.png';
-/*
-export const spriteLoadPromises = [
-    new Promise((resolve, reject) => {
-        const img = sprites.gatlingTower;
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error('Failed to load sprites'));
-    }),
-];
-*/
+for (const [key, src] of Object.entries(imagePaths)) { // should load images before they are used
+  const img = new Image();
+  img.src = src;
+  sprites[key] = img;
+}

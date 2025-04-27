@@ -8,8 +8,8 @@ import { money, updateMoney } from "../../game/game.js";
  * Created:   27.03.2025
  **/
 export class ErrorTower extends Tower {
-    constructor(x, y, type) {
-        super(x, y, type);
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "error";
         this.health = 60;
         this.range = 300;
@@ -18,6 +18,11 @@ export class ErrorTower extends Tower {
         this.fireRate = 10;
         this.bulletType = type;
         this.background = "black";
+        this.laneIndex = laneIndex;
+
+        this.deathDuration = 0;
+        this.deathTimer = this.deathDuration;
+        this.isDead;
     }
 
     update (deltaTime) {}
