@@ -16,10 +16,10 @@ html, body {
 }
 
 body {
-    background-image: url('public/sprites/bunkerwide.png');
+    background-image: url('public/sprites/bunkerwidef.png');
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     background-attachment: fixed; /* NYTT: holder bakgrunnen i ro selv om du scroller */
     background-color: #1a1a1a;
     
