@@ -9,12 +9,25 @@
     --transparent: rgba(0,0,0,0);
 }
 
+html, body {
+    height: 100%; /* VIKTIG: sørger for at body alltid er 100% høyde */
+    margin: 0;    /* Fjern default margin */
+    padding: 0;
+}
+
 body {
-    background-color: #202020;
+    background-image: url('public/sprites/bunkerwidef.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; /* NYTT: holder bakgrunnen i ro selv om du scroller */
+    background-color: #1a1a1a;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 
 main {
     display: flex;
@@ -349,8 +362,8 @@ canvas {
 }
 
 .shop-item img {
-    width: 80px;
-    height: auto;
+    width: 40px;
+    height: 40px;
     border-radius: 5px;
 }
 
@@ -380,7 +393,7 @@ canvas {
 }
 
 .itemdesc .desc img {
-    width: 100px;
+    width: 200px;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);

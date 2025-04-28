@@ -22,6 +22,7 @@ export class Enemy {
         this.width = cellSize;
         this.height = cellSize;
         this.isStopped = false;
+        this.laneIndex = row;
         
         this.damage = 2;
         this.attackspeed  = 15;

@@ -13,5 +13,6 @@ export class FastEnemy extends Enemy {
         this.health = 50 + (wave - 1) * 10;
         this.speed = 1.2;
         this.background = "orange";
+        this.laneIndex = row;
     }
 }

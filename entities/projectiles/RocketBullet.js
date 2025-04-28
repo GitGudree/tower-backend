@@ -8,7 +8,7 @@ import { projectiles } from "./projectiles.js";
  * Created:   27.03.2025
  **/
 export class RocketBullet {
-    constructor(x, y, enemy) {
+    constructor(x, y, enemy, laneIndex) {
         this.x = x;
         this.y = y;
         this.target = enemy;
@@ -18,8 +18,8 @@ export class RocketBullet {
         this.speed = 0.05;
         this.width = 5;
         this.height = 5;
-        this.aoe = 60;
-        this.bulletDamage = 2;
+        this.aoe = 80;
+        this.laneIndex = laneIndex;
         this.explosionLifetime = 100;
         this.pierceAmount = 1;
         this.hitEnemies = new Set();
@@ -42,7 +42,7 @@ export class RocketBullet {
         if (this.exploded) {
             ctx.fillStyle = "orange";
             ctx.beginPath();
-            ctx.arc(this.x + cellSize / 2, this.y + cellSize / 2, 40, 0, Math.PI * 2);
+            ctx.arc(this.x + cellSize / 2, this.y + cellSize / 2, this.aoe, 0, Math.PI * 2);
             ctx.fill();
 
             setTimeout(() => {

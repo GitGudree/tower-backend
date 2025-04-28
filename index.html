@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tower Defense Game</title>
+    <link rel = "icon" type = "image/png" href="./public/sprites/logo-big.png">
     <link rel="stylesheet" href="styles.css">
     <script src="game/settings.js" type="module"></script>
     <script type="module" src="/main.js"></script>
@@ -57,7 +58,7 @@
                     <div class="cards grid grid-full-width grid-split">
                         <div class="card" tower-type = "basic">
                             <img 
-                            src="" 
+                            src="public/sprites/bulleticon.png" 
                             alt=""
                             >
                             <p>Normal tower</p>
@@ -65,7 +66,7 @@
                         </div>
                         <div class="card" tower-type = "sniper">
                             <img 
-                            src="" 
+                            src="public/sprites/snipericon.png" 
                             alt=""
                             >
                             <p>Sniper tower</p>    
@@ -73,7 +74,7 @@
                         </div>
                         <div class="card" tower-type = "gatling">
                             <img 
-                            src="" 
+                            src="public/sprites/gatlingicon.png" 
                             alt=""
                             >
                             <p>Gatling tower</p>    
@@ -81,7 +82,7 @@
                         </div>
                         <div class="card" > <!-- tower-type = "laser" -->
                             <img 
-                            src="" 
+                            src="public/sprites/emptyicon.png" 
                             alt=""
                             >
                             <p>Laser tower</p>    
@@ -89,7 +90,7 @@
                         </div>
                         <div class="card" tower-type = "rocket">
                             <img 
-                            src="" 
+                            src="public/sprites/rocketicon.png" 
                             alt=""
                             >
                             <p>rocket tower</p>    
@@ -97,7 +98,7 @@
                         </div>
                         <div class="card"> <!-- tower-type = "tower a" -->
                             <img 
-                            src="" 
+                            src="public/sprites/emptyicon.png" 
                             alt=""
                             >
                             <p>Tower A</p>    
@@ -109,7 +110,7 @@
                     <h2 class="tab-title grid-full-width">Tower Info</h2>
                     <div class="cards grid grid-full-width">
                         <div class="display-card">
-                            <img src="" alt="">
+                            <img src="public/sprites/emptyicon.png" alt="">
                             <p class="tower-title"><span class="tower-title-display"></span>, Lvl <span class="tower-lvl"></span></p>
                             <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
                             <p class="range-title">Range: <span class="range-title-display"></span> 🏹</p>
@@ -132,8 +133,8 @@
                         <div class="itemdesc grid grid-full-width">
                             <div class="desc">
                                 <img id="selected-item-image" src="" alt="">
-                                <h1 id="selected-item-name">Ingen Items Valgt!</h1>
-                                <p id="selected-item-description"> Velg et item.</p>
+                                <h1 id="selected-item-name">No item chosen!</h1>
+                                <p id="selected-item-description"> Choose an item.</p>
                                 <button class="usebtn" id="use-button" onclick="useItem()" tower-type = "barricade"> Use </button>
                                 <button class="deletebtn" id="delete-button" onclick="deleteButton()"> Delete </button>
                             </div>

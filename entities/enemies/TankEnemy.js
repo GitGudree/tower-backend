@@ -13,5 +13,6 @@ export class TankEnemy extends Enemy {
         this.health = 200 + (wave - 1) * 20;
         this.speed = 0.5;
         this.background = "darkgreen";
+        this.laneIndex = row;
     }
 }

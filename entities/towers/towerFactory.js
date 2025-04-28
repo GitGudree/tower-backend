@@ -13,32 +13,32 @@ import { Tower } from "./tower.js";
  * Created:   27.03.2025
  **/
 
-export function createTower(x, y, type) {
+export function createTower(x, y, type, laneIndex) {
     let tower;
     console.log("placed" + " " + type);
 
     switch (type) {
         case "sniper":
-            tower = new SniperTower(x, y, "pierce")
+            tower = new SniperTower(x, y, "pierce", laneIndex)
             break;
         case "gatling":
-            tower = new GatlingTower(x, y, "basic")
+            tower = new GatlingTower(x, y, "basic", laneIndex)
             break;
         case "laser":
-            tower = new LaserTower(x, y, "laser")
+            tower = new LaserTower(x, y, "laser", laneIndex)
             break;
         case "rocket":
-            tower = new RocketTower(x, y, "rocket")
+            tower = new RocketTower(x, y, "rocket", laneIndex)
             break;
         case "barricade":
-            tower = new Barricade(x, y)
+            tower = new Barricade(x, y, laneIndex)
             setChosenTower("basic")
             break;
         case "basic":
-            tower = new Tower(x, y, "basic")
+            tower = new Tower(x, y, "basic", laneIndex)
             break;
         default:
-            tower = new ErrorTower(x, y, "error");
+            tower = new ErrorTower(x, y, "error", laneIndex);
     }
     return tower;
 }

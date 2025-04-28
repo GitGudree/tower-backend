@@ -10,7 +10,7 @@ import { cellSize } from "../../game/grid.js";
 import { resources } from "../../game/game.js";
 
 export class Bullet {
-    constructor(x, y, row, type) {
+    constructor(x, y, type, laneIndex) {
         this.x = x;
         this.y = y;
         this.name = "bullet"
@@ -18,7 +18,7 @@ export class Bullet {
         this.width = 5;
         this.height = 5;
         this.bulletDamage = 2;
-        this.laneIndex = row;
+        this.laneIndex = laneIndex;
         this.pierceAmount = 1;
 
         this.hitEnemies = new Set();
