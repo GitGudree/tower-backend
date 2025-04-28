@@ -9,10 +9,10 @@
 export const sprites = {};
 
 const imagePaths = {
-  gatling: "/gatling-0001-Sheet.png",
-  sniper: "/railgun-0002-Sheet.png",
-  default: "/default-0002-Sheet.png",
-  rocket: "/mortard-0002-Sheet.png",
+  gatling: "/sprites/gatling-0001-Sheet.png",
+  sniper: "/sprites/railgun-0002-Sheet.png",
+  default: "/sprites/default-0002-Sheet.png",
+  rocket: "/sprites/mortard-0002-Sheet.png",
 };
 
 for (const [key, src] of Object.entries(imagePaths)) { // should load images before they are used
