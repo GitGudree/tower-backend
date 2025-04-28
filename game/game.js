@@ -5,7 +5,6 @@ import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
-import { GatlingTower } from "../entities/towers/GatlingTower.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
