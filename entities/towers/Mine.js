@@ -22,6 +22,11 @@ export class Mine extends Tower {
         this.fireRate = 0;
         this.stopEnemy = 0;
         this.isColliding = false;
+        
+        // Set death-related properties
+        this.deathTimer = 0;
+        this.deathDuration = 0;
+        this.isDead = false;
     }
 
     update(deltaTime) {
@@ -30,6 +35,7 @@ export class Mine extends Tower {
             if (this.explosionTimer >= this.explosionLifetime) {
                 // Remove all references to hit enemies before destroying
                 this.hitEnemies.clear();
+                this.isDead = true;
                 return true; // Remove the mine
             }
         }
