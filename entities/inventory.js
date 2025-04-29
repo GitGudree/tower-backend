@@ -1,4 +1,5 @@
 import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
+import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
 
 let inventory = [];
 let selectedItem = null;
@@ -42,10 +43,20 @@ function useItem(gameState) {
         return;
     }
 
-    // Sjekk om det er en tower-type
-    if (selectedItem.placeOnBoard) {
-        gameState.selectedTowerType = selectedItem.constructor.name;
-        console.log("Ready to place:", selectedItem.constructor.name);
+    // Map item names to tower types
+    const itemToTowerType = {
+        'Barricade': 'barricade',
+        'Mine': 'mine',
+        'Slow Trap': 'slowtrap'
+    };
+
+    const towerType = itemToTowerType[selectedItem.name];
+    if (towerType) {
+        if (gameState) {
+            gameState.selectedTowerType = towerType;
+        }
+        setChosenTower(towerType);
+        console.log("Ready to place:", towerType);
     } else if (typeof selectedItem.effect === "function") {
         selectedItem.effect(gameState);
     }

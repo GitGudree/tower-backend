@@ -4,6 +4,8 @@ import { LaserTower } from "./LaserTower.js";
 import { ErrorTower } from "./ErrorTower.js"
 import { RocketTower } from "./RocketTower.js";
 import { Barricade } from "./Barricade.js";
+import { Mine } from "./Mine.js";
+import { SlowTrap } from "./SlowTrap.js";
 import { setChosenTower } from "./towerState.js";
 import { Tower } from "./tower.js";
 /**
@@ -32,6 +34,14 @@ export function createTower(x, y, type, laneIndex) {
             break;
         case "barricade":
             tower = new Barricade(x, y, laneIndex)
+            setChosenTower("basic")
+            break;
+        case "mine":
+            tower = new Mine(x, y, "mine", laneIndex)
+            setChosenTower("basic")
+            break;
+        case "slowtrap":
+            tower = new SlowTrap(x, y, "slowtrap", laneIndex)
             setChosenTower("basic")
             break;
         case "basic":

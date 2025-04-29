@@ -1,4 +1,5 @@
-
+import { Mine } from "./towers/Mine.js";
+import { SlowTrap } from "./towers/SlowTrap.js";
 
 class Item {
     constructor(name, price, description, image) {
@@ -14,67 +15,32 @@ class Item {
     }
 }
 
+// Mine - Explodes and deals damage to enemies that step on it
+class MineInfo extends Item {
+    constructor() {
+        super("Mine", 150, "Explodes when enemies step on it, dealing high damage.", "public/sprites/landmineicon.png");
+    }
+}
+
+// SlowTrap - Slows down enemies that step on it
+class SlowTrapInfo extends Item {
+    constructor() {
+        super("Slow Trap", 120, "Slows down enemies that step on it for a short duration.", "public/sprites/beartrapiconmidl.png");
+    }
+}
+
 // Barricade - Blokkerer fiender, men gjør ingen skade
 class BarricadeInfo extends Item {
-    constructor(x, y) {
-        super("Barricade", 100, "Blocks enemy movement but does no damage.", "public/sprites/barricadeicon.png"); // 
-        /*
-        this.x = x;
-        this.y = y;
-        this.health = 500; // Mye helse for å blokkere fiender
-        this.background = 'darkgray';
-        this.textColor = 'white';
-        this.selected = false;
-        */
+    constructor() {
+        super("Barricade", 100, "Blocks enemy movement but does no damage.", "public/sprites/barricadeicon.png");
     }
-    /*
-    // Overstyrer attack-metoden til å gjøre ingenting
-    attack() {};
-        // Barricaden angriper ikke, men blokkerer fiender
-    
-    
-    takeDamage(amount) {
-        this.health -= amount;
-        console.log(`Barricade took ${amount} damage. Remaining health: ${this.health}`);
-
-        // Hvis barricaden ødelegges, fjernes den
-        if (this.health <= 0) {
-            this.destroy();
-        }
-    }
-
-    destroy() {
-        console.log("Barricade destroyed!");
-        // Fjern barricaden fra spillbrettet
-        Barricade.splice(Barricade.indexOf(this), 1);
-    }
-    
-    draw(ctx) {
-        ctx.fillStyle = this.background;
-        ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
-
-        if (this.selected) {
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
-        } else {
-            ctx.fillStyle = this.textColor;
-        }
-        ctx.font = '20px Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText(Math.floor(this.health), this.x + 25, this.y + 25);
-    }
-        
-        */
-        
 }
-    
 
 // Oppretter items ved å bruke de riktige klassene
 const items = {
-    barricade: new BarricadeInfo(), // Standard posisjon, men må settes dynamisk
-    mine: new Item("Mine", 150, "Explodes when enemies step on it.", "public/sprites/landmineicon.png"),
-    slowTrap: new Item("Slow Trap", 120, "Slows down enemies for a duration.", "public/sprites/beartrapiconmidl.png")
+    barricade: new BarricadeInfo(),
+    mine: new MineInfo(),
+    slowTrap: new SlowTrapInfo()
 };
 
 // Eksporter items slik at det kan brukes i shop.js
