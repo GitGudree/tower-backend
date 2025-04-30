@@ -30,13 +30,13 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 
     const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
-    const deltaTime = ( currentTime - lastRenderTime); // for animations - quetz
+    const deltaTime = ( currentTime - lastRenderTime); // Time elapsed since last frame for animation calculations
     if (secondsSinceLastRender < 1 / GAME_SPEED) return;
 
     lastRenderTime = currentTime;
 
     const preUpdateGameStateTime = performance.now();
-    updateGameState(deltaTime); // passes deltaTime to towers - quetz
+    updateGameState(deltaTime); // Pass deltaTime to tower animations
     performanceTimers.updateGameStateTime = performance.now() - preUpdateGameStateTime;
 
     const preProjectileHandlerTime = performance.now();

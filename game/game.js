@@ -25,21 +25,20 @@ export let gameOver;
 export let isUpgradeBtnActive = false;
 
 /**
- * Draw function that updates the grid and UI.
- *               
-
- *
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Renders the game state by updating the grid and UI elements.
+ * 
+ * @function drawGame
+ * @author Anarox
+ * @date 2025-01-25
+ */
 export function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Topbar
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffa500';
+    ctx.fillStyle = '#2d2d2d';
     ctx.fillRect(0, 0, topBar.width, topBar.height);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = '#e0e0e0';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     ctx.fillText("💶 " + money, 20, topBar.height / 2);
@@ -58,6 +57,10 @@ export function drawGame() {
         return;
     }
 
+    // Set background color for game grid
+    ctx.fillStyle = '#666666';
+    ctx.fillRect(0, topBar.height, canvas.width, canvas.height - topBar.height);
+
     createGrid();
     handleGameGrid();
 
@@ -75,14 +78,13 @@ export function drawGame() {
 }
 
 /**
- * Update function that updates in-game interactions, movement and stats.
- *               
-
- *
- * @author:    Anarox
- * editor:     Quetzalocatl
- * Created:   28.01.2025
- **/
+ * Updates in-game interactions, movement, and statistics.
+ * 
+ * @function updateGameState
+ * @param {number} deltaTime - Time elapsed since last frame
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-01-28
+ */
 export function updateGameState(deltaTime) {
     
     let selectedTower = towers.find(tower => tower.selected);
@@ -128,13 +130,14 @@ export function updateGameState(deltaTime) {
 }    
 
 /**
- * Updates money with ("increase"/decrease)
- *               
-
- * @param: action, amount
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Updates the player's money balance.
+ * 
+ * @function updateMoney
+ * @param {string} action - Type of update ("increase" or "decrease")
+ * @param {number} amount - Amount to modify
+ * @author Anarox
+ * @date 2025-01-25
+ */
 export function updateMoney(action, amount) {
     if (typeof amount !== "number" || isNaN(amount)) {
         console.error("Invalid amount:", amount);
@@ -157,13 +160,14 @@ export function updateMoney(action, amount) {
 
 
 /**
- * Updates resources with ("increase"/decrease)
- *               
-
- * @param: action, amount
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Updates the player's resource count.
+ * 
+ * @function updateResources
+ * @param {string} action - Type of update ("increase" or "decrease")
+ * @param {number} amount - Amount to modify
+ * @author Anarox
+ * @date 2025-01-25
+ */
 export function updateResources(action, amount) {
     if (typeof amount !== "number" || isNaN(amount)) {
         console.error("Invalid amount:", amount);
@@ -185,13 +189,14 @@ export function updateResources(action, amount) {
 }
 
 /**
- * Updates the tower level with stars instead of a number.
- *               
-
- * @param: tower (Takes in selectedTower)
- * @author:    Anarox
- * Created:   09.03.2025
-**/
+ * Converts tower level to star representation.
+ * 
+ * @function updateTowerLevel
+ * @param {Object} tower - Selected tower instance
+ * @returns {string} Star representation of tower level
+ * @author Anarox
+ * @date 2025-03-09
+ */
 export function updateTowerLevel(tower) {
     let stars = "";
 
@@ -202,47 +207,67 @@ export function updateTowerLevel(tower) {
 }
 
 /**
- * Updates the stat-display in Tower-section to show the selected tower and upgrade stats.
- *               
-
- * @param: tower (Takes in selectedTower)
- * @author:    Anarox
- * Created:   09.03.2025
-**/
+ * Updates the tower statistics display in the UI.
+ * 
+ * @function updateTowerStats
+ * @param {Object} tower - Selected tower instance
+ * @author Anarox
+ * @date 2025-03-09
+ */
 export function updateTowerStats(tower) {
-    if (!tower) return;
-    const canUpgrade = tower && money >= tower.upgradeCost;
-    const stats = tower.getUpgradeStats();
+    const towerImage = document.getElementById('tower-image');
+    const towerTitle = document.getElementById('tower-title');
+    const towerDescription = document.getElementById('tower-description');
+    const towerStats = document.getElementById('tower-stats');
+    const upgradeBtn = document.querySelector('.tower-upgrade-btn');
 
-    document.querySelector(".tower-title-display").textContent = tower.name;
-    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
+    if (!tower) {
+        // Default state when no tower is selected
+        towerImage.src = 'public/sprites/emptyicon.png';
+        towerTitle.textContent = 'Select a tower!';
+        towerDescription.textContent = 'Choose a tower to view its stats.';
+        towerStats.classList.add('hidden');
+        upgradeBtn.classList.add('hidden');
+        return;
+    }
 
-    if (canUpgrade) {
-        document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
-        document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
-        document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
-        document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
-        towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
-        towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
+    // Show tower information when selected
+    towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
+    towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
+    towerDescription.textContent = 'A powerful defensive tower.';
+    towerStats.classList.remove('hidden');
+    upgradeBtn.classList.remove('hidden');
+
+    // Calculate stat improvements (assuming 20% increase per upgrade)
+    const healthImprovement = Math.round(tower.health * 0.2);
+    const rangeImprovement = Math.round(tower.range * 0.2);
+    const fireRateImprovement = Math.round(tower.fireRate * 0.2);
+
+    // Update stats with improvement indicators
+    document.querySelector('.hp-title-display').textContent = 
+        `${tower.health} ${money >= tower.upgradeCost ? `(+${healthImprovement})` : ''}`;
+    document.querySelector('.range-title-display').textContent = 
+        `${tower.range} ${money >= tower.upgradeCost ? `(+${rangeImprovement})` : ''}`;
+    document.querySelector('.firerate-title-display').textContent = 
+        `${tower.fireRate} ${money >= tower.upgradeCost ? `(+${fireRateImprovement})` : ''}`;
+    
+    // Update upgrade button based on affordability
+    upgradeBtn.textContent = `UPGRADE (${tower.upgradeCost}💶)`;
+    if (money >= tower.upgradeCost) {
+        upgradeBtn.classList.add('upgrade', 'hover-upgrade');
     } else {
-        document.querySelector(".hp-title-display").textContent = stats.oldStats.health;
-        document.querySelector(".range-title-display").textContent = stats.oldStats.range;
-        document.querySelector(".firerate-title-display").textContent = stats.oldStats.fireRate;
-        document.querySelector(".tower-upgrade-price").textContent = stats.oldStats.upgradeCost;
-        towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
-        towerUpgradeElement.innerText = "Insufficient balance";
+        upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
     }
 }
 
 
 /**
- * Rewritten Projectile handler
- *               
-
- * @param: action, amount
- * @author:    Anarox, Quetzalcoatl
- * Created:   09.03.2025
-**/
+ * Handles projectile movement and collision detection.
+ * 
+ * @function projectileHandler
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-03-09
+ */
 export function projectileHandler(){
     const activeProjectiles = [];
 

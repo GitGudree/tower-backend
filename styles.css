@@ -4,14 +4,19 @@
 }
 
 :root {
-    --background-color: #ffa500;
-    --border-color: #a37800;
+    --background-color: #1a1a1a;
+    --border-color: #2d2d2d;
+    --ui-background: #2d2d2d;
+    --ui-secondary: #3d3d3d;
+    --text-color: #e0e0e0;
+    --highlight-color: #4a4a4a;
+    --accent-color: #505050;
     --transparent: rgba(0,0,0,0);
 }
 
 html, body {
-    height: 100%; /* VIKTIG: sørger for at body alltid er 100% høyde */
-    margin: 0;    /* Fjern default margin */
+    height: 100%; /* IMPORTANT: ensures body is always 100% height */
+    margin: 0;    /* Remove default margin */
     padding: 0;
 }
 
@@ -20,12 +25,13 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: fixed; /* NYTT: holder bakgrunnen i ro selv om du scroller */
+    background-attachment: fixed; /* NEW: keeps background fixed while scrolling */
     background-color: #1a1a1a;
     
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: var(--text-color);
 }
 
 
@@ -38,12 +44,13 @@ canvas {
     /* border: 2px solid black; */
     display: block;
     margin: 1rem auto auto;
-    background-color: #f0f0f0;
+    background-color: #333333; /* Darker game board background */
 }
 
 .menu {
     text-align: center;
-    background-color: #ffa500;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
 }
 
 .tabs {
@@ -51,6 +58,8 @@ canvas {
     grid-template-columns: repeat(4, 1fr);
     text-align: center;
     padding-top: .5rem;
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tabs>span {
@@ -58,13 +67,15 @@ canvas {
     padding: 0.5rem 1rem;
     border: 1px solid var(--transparent);
     border-bottom-color: var(--border-color);
+    color: var(--text-color);
 }
 
 .tabs>span:not(.selected):hover {
-    background-color: var(--border-color);
+    background-color: var(--highlight-color);
 }
 
 .tabs>span.selected {
+    background-color: var(--ui-secondary);
     border-color: var(--border-color);
     border-bottom-color: var(--transparent);
 }
@@ -80,6 +91,7 @@ canvas {
     display: none;
     padding: 0.5rem 1rem;
     text-align: left;
+    background-color: var(--ui-background);
 }
 
 .tab.open {
@@ -105,11 +117,41 @@ canvas {
 }
 
 .cards > .card {
-    background-color: #b67a20;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
-    gap: .5rem;
+    gap: .8rem;
     align-items: center;
     user-select: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+}
+
+.cards > .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6);
+    border-color: var(--highlight-color);
+}
+
+.cards > .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.cards > .card:hover::before {
+    transform: rotate(45deg) translate(50%, 50%);
 }
 
 .cards > .card img {
@@ -117,21 +159,135 @@ canvas {
     aspect-ratio: 1/1;
     margin: 1px;
     user-select: none;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
+}
+
+.cards > .card:hover img {
+    transform: scale(1.1);
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
+}
+
+.cards > .card p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.tower-unlock-price-title {
+    color: var(--text-color);
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .tab-title {
     text-align: center;
     user-select: none;
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .display-card {
-    justify-self: center;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    width: 280px;
+    min-height: 280px;
+    margin: 0 auto;
+}
+
+.display-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.display-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
+}
+
+.display-card img[src="public/sprites/emptyicon.png"] {
+    display: none;
+}
+
+.display-card h1 {
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    font-size: 1.5em;
+    margin: 0.5rem 0;
+}
+
+.display-card p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.1em;
+    margin: 0.3rem 0;
+}
+
+.tower-stats {
+    margin: 1rem 0;
+    padding: 0.8rem;
+    background: linear-gradient(145deg, rgba(45,45,45,0.1), rgba(26,26,26,0.1));
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.tower-stats p {
+    margin: 0.5rem 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;  /* Sentrer innhold horisontalt */
-    justify-content: center; /* Sentrer innhold vertikalt */
-    gap: .5em;
-    user-select: none;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
+}
+
+.tower-upgrade-btn {
+    font-weight: bold;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    min-width: 120px;
+    margin-top: 1rem;
+}
+
+.tower-upgrade-btn:not(.upgrade) {
+    background: linear-gradient(90deg, #dc3545, #b02a37);
+    border: 1px solid #842029;
+    color: var(--text-color);
+    cursor: not-allowed;
+}
+
+.hover-upgrade:hover {
+    background-image: linear-gradient(#34c134, #28a745);
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3), 0 0 30px rgba(40, 167, 69, 0.2);
+    color: var(--text-color);
+    text-shadow: black 1px 1px;
+    transform: translateY(-2px);
+}
+
+.green-text {
+    color: #32CD32;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .tower-title {
@@ -178,13 +334,13 @@ canvas {
 
 
 .upgrade {
-    background: linear-gradient(90deg, #6afe4c, #ffac33, #00ea69, #6afe4c);
+    background: linear-gradient(90deg, #2d8a2d, #1a661a, #339933, #2d8a2d);
     background-size: 350% 350%;
     cursor: pointer;
-    box-shadow: 0 0 15px #c5eb1f, 0 0 10px #d39103;
-
-    /* transition-timing-function: ease-in; */
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.2), 0 0 10px rgba(40, 167, 69, 0.1);
     animation: smooth-gradient 2s infinite alternate ease-in-out;
+    border: 1px solid #28a745;
+    color: var(--text-color);
 }
 
 @keyframes smooth-gradient {
@@ -193,19 +349,8 @@ canvas {
     }
     100% {
         background-position: -50% 50%;
-        color: white;
-        border: 3px solid rgb(4, 59, 4);
+        color: var(--text-color);
     }
-  }
-
-.hover-upgrade:hover {
-    background-image: linear-gradient(#6afe4c, #00ea69);
-    border: 3px solid rgba(0, 0, 0, 0.623);
-    box-shadow: 0 0 15px #00ea69, 0 0 30px #6afe4c;
-    color: white;
-    text-shadow: black 1px 1px;
-    transition: all 0.5s ease-in-out;
-
 }
 
 .unlock-btn {
@@ -250,12 +395,8 @@ canvas {
     color: red;
 }
 
-.green-text {
-    color: green;
-}
-
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Adjusting the settings layout */
@@ -295,34 +436,81 @@ canvas {
     margin: 0 auto;
 }
 
+/* Settings popup styling */
 .popup {
-    /* IKKE sett display her – det styres av JS og .hidden-klassen */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh; /* dekker hele høyden av skjermen */
-    background: rgba(0, 0, 0, 0.5); /* semi-transparent sort */
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 5vh;
-    z-index: 9999;
-  }
-
-  /* Vis popup når .popup IKKE har .hidden */
-.popup:not(.hidden) {
-    display: flex;
-  }
-
-.popup-content {
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 300px;
+    padding-top: 100px;
+    z-index: 1000;
 }
 
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: var(--ui-background);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    width: 300px;
+    transform: translateY(0);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.popup-content h2 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.popup-content label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    color: var(--text-color);
+}
+
+.popup-content input[type="range"] {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#closeSettings {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+#closeSettings:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
 
 /* Bredde og plassering av sliderne */
 .popup-content input[type="range"] {
@@ -342,105 +530,249 @@ canvas {
 /* --- Generell styling --- */
 
 
-/* Holder items i en ryddig liste */
-.shop-items {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    justify-items: center;
-}
-
-/* Hver enkelt vare i butikken */
+/* Each individual shop item */
 .shop-item {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-align: center;
-    width: 100px;
-}
-
-.shop-item img {
-    width: 40px;
-    height: 40px;
-    border-radius: 5px;
-}
-
-.shop-item p {
-    color: white;
-    margin: 5px 0;
-}
-
-
-
-.itemdesc {
-    background-color: rgba(30, 30, 30, 0.85); /* Mørk semi-transparens */
-    border-radius: 20px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.itemdesc .desc {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: white;
-    text-align: center;
-    gap: 10px;
+    gap: .8rem;
+    user-select: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    width: 150px;
+    margin: 0 auto;
 }
 
-.itemdesc .desc img {
-    width: 200px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+.shop-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: var(--highlight-color);
 }
 
-/* Ny knappestil for kjøpsknappen */
-.buybtn {
+.shop-item::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.shop-item:hover::before {
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+.shop-item img {
+    height: 48px;
+    width: 48px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
+}
+
+.shop-item:hover img {
+    transform: scale(1.1);
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
+}
+
+.shop-item p {
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 4px 0;
+}
+
+.shop-item .item-price {
+    color: var(--text-color);
     font-weight: bold;
-    background-color: #fbbf24; /* gul */
-    color: white;
-    border: none;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Update shop items grid layout */
+.shop-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    justify-items: center;
+}
+
+/*--- Item Description Styling ---*/
+.itemdesc {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    width: 280px;
+    min-height: 280px;
+    margin: 0 auto;
+}
+
+.itemdesc::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.desc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    color: var(--text-color);
+    text-align: center;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    height: 100%;
+    padding: 0.5rem;
     border-radius: 10px;
-    padding: 10px 20px;
-    margin-top: 10px;
-    font-size: 16px;
+}
+
+.desc img {
+    width: 100px;
+    height: 60px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
+    border-radius: 15px;
+    background-color: white;
+    padding: 6px 10px;
+}
+
+.desc img[src=""],
+.desc img[src="images/item.png"] {
+    display: none;
+}
+
+.desc img:hover {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3));
+    transform: scale(1.02);
+}
+
+.desc h1 {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.5em;
+    margin: 0.5rem 0;
+}
+
+.desc p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.1em;
+    margin: 0.3rem 0;
+    max-width: 250px;
+}
+
+.buybtn,
+.usebtn,
+.deletebtn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.1s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
 }
 
+.usebtn:hover,
+.deletebtn:hover,
 .buybtn:hover {
-    background-color: #fbbf24;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
 }
 
+.deletebtn {
+    background: linear-gradient(145deg, #ff6b6b, #ff4040);
+    color: white;
+}
+
+.deletebtn:hover {
+    background: linear-gradient(145deg, #ff8080, #ff5555);
+}
 
 /*--- Inventory Slots ---*/
 .slots {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
-    gap: 10px;
-    padding: 5px;
-    background-color: #b67a20;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 12px;
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
 }
 
 .slot {
-    border: 1px solid#ccc;
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    user-select: none;
+    padding: 0.5rem;
     border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    background-color: #f9f9f9;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+}
+
+.slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: var(--highlight-color);
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
 }
 
 .slots > .slot img {
-    height: 60px;
-    width: 60px;
-    aspect-ratio: 1/1;
+    height: 40px;
+    width: 40px;
+    border-radius: 6px;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
+}
+
+.slot p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 0.9em;
+    margin: 2px 0;
+    text-align: center;
 }
 
 /*--- Inventory Item-selection ---*/
@@ -474,13 +806,14 @@ canvas {
   }
   
 .purchase-message .message-box {
-    background-color: #4caf50;
-    color: white;
+    background-color: var(--ui-secondary);
+    color: var(--text-color);
     padding: 1.25rem 2.5rem; /* tilsvarer 20px 40px */
     border-radius: 0.625rem; /* 10px */
     font-size: 1.5rem;
     font-weight: bold;
     box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
+    border: 1px solid var(--border-color);
   }
   
   /* Inventory Use & Delete Buttons */
@@ -518,6 +851,172 @@ canvas {
 .deletebtn:hover {
     background-color: #ff5b6b;
     transform: scale(1.05);
+}
+
+#price-display:not(.hidden) {
+    margin-top: 1rem;
+}
+
+/* Game board and canvas */
+#gameCanvas {
+    background-color: #424242; /* Lighter gray for the game board */
+}
+
+/* Most specific header targeting possible */
+body > main > div:first-child,
+#gameCanvas + div,
+div[style*="background-color: rgb(255, 165, 0)"],
+div[style*="background-color: #ffa500"],
+div[style*="background: orange"],
+.menu > div:first-child,
+[style*="background-color: orange"] {
+    background-color: var(--ui-background) !important;
+    background: var(--ui-background) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Override any potential inline styles */
+[class*="header"],
+[class*="top-bar"],
+[class*="status"],
+.menu > *:first-child {
+    background-color: var(--ui-background) !important;
+    background: var(--ui-background) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Ensure menu background is dark */
+.menu {
+    background-color: var(--ui-background);
+    border: 1px solid var(--border-color);
+}
+
+/* Tab styling reinforcement */
+.tabs {
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    background-color: var(--ui-background);
+}
+
+/* Make sure no gradients are using orange */
+.tower-unlock-price-title,
+.item-price {
+    background: linear-gradient(90deg, var(--text-color), var(--highlight-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+/* Start Wave button styling */
+.start-wave-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.start-wave-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+/* Settings button styling */
+.settings-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.settings-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+/* Buy and Use buttons */
+.buybtn, .usebtn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.buybtn:hover, .usebtn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+/* Price displays */
+.tower-unlock-price-title, .item-price {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Auto wave checkbox area */
+.auto-wave-control {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Tower damage display */
+#towerDamageTotal {
+    color: var(--text-color);
+}
+
+/* Top status bar (money, resources, wave) */
+.status-bar {
+    background-color: var(--ui-background);
+    color: var(--text-color);
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Make sure all headings are visible */
+h1, h2, h3 {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Ensure all text in cards and info sections is readable */
+.card p, .desc p, .itemdesc p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Update the background of the game canvas area */
+#gameCanvas {
+    background-color: #333333;
+}
+
+/* Make sure tab headers are properly styled */
+.tabs {
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    background-color: var(--ui-background);
 }
 
   

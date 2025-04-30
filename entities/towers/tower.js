@@ -7,12 +7,15 @@ import { cellSize, rows } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 
 /**
- * Tower Class
- *
-
- * @constructor (x, y, row)
- * Author:    Anarox, Quetzalcoatl
- * Created:   25.01.2025
+ * Base Tower class implementing core tower functionality.
+ * 
+ * @class Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} row - Row position
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-01-25
  **/
 export class Tower {
     constructor(x, y, type, row) {
@@ -29,7 +32,7 @@ export class Tower {
         this.timer = 0;
         //this.isFiring = false;
         this.iFrames = 0;
-        this.stopEnemy = 100; // can cause rubberbanding if value exceeds 100
+        this.stopEnemy = 100; // Maximum value to prevent rubber-banding effects
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
@@ -209,14 +212,14 @@ export class Tower {
     }
     
     /**
-     * getUpgradeStats
-     *
-
-    * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
-    * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
-    * Author:    Anarox
-    * Created:   09.03.2025
-    **/
+     * Retrieves current and next upgrade statistics for the tower.
+     * 
+     * @method getUpgradeStats
+     * @returns {Object} Contains current and projected upgrade statistics
+     * @description Provides two objects containing current and projected stats after upgrade
+     * @author Anarox
+     * @date 2025-03-09
+     **/
     getUpgradeStats() {
 
         const oldStats = {

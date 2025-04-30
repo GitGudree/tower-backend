@@ -22,7 +22,7 @@ export class Cell {
         const enemyWithinRect = enemies.filter(enemy => gridRectColission(this, enemy)).length > 0;
 
         if (mouse.x && mouse.y && gridRectColission(this, mouse)) {
-            ctx.strokeStyle = enemyWithinRect ? 'gray' : 'black';
+            ctx.strokeStyle = enemyWithinRect ? '#ff4444' : '#e0e0e0';
             ctx.lineWidth = 1;
             ctx.strokeRect(this.x, this.y, this.width, this.height);
         }

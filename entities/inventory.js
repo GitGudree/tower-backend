@@ -1,10 +1,16 @@
-import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
+import { updateMoney, money } from "../game/game.js"; // Import money and updateMoney functions
 import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
 
 let inventory = [];
 let selectedItem = null;
-let refundRate = 0.5; // 50 % tilbake ved sletting
+let refundRate = 0.5; // 50% refund on deletion
 
+/**
+ * Updates the inventory display in the UI.
+ * 
+ * @function updateInventory
+ * @private
+ */
 function updateInventory() {
     const inventorySlots = [];
 
@@ -30,8 +36,14 @@ function selectItem(item) {
     document.getElementById("selected-item-description").textContent = item.description;
 }
 
+/**
+ * Adds a new item to the inventory.
+ * 
+ * @function addInventoryItem
+ * @param {Object} item - Item to add to inventory
+ */
 function addInventoryItem(item) {
-    // Lag en ny kopi hvis item har en constructor
+    // Create a new copy if item has a constructor
     const newItem = item.constructor ? new item.constructor() : { ...item };
     inventory.push(newItem);
     updateInventory();
@@ -61,7 +73,7 @@ function useItem(gameState) {
         selectedItem.effect(gameState);
     }
 
-    // Fjern kun én forekomst av itemet
+    // Remove only one instance of the item
     const index = inventory.indexOf(selectedItem);
     if (index !== -1 && !selectedItem.reusable) {
         inventory.splice(index, 1);
@@ -95,7 +107,7 @@ function clearSelectedDisplay() {
     document.getElementById("selected-item-description").textContent = "Choose an item.";
 }
 
-// Eksporter funksjoner
+// Export functions
 export { addInventoryItem, useItem, deleteButton, inventory };
 
 window.useItem = useItem;

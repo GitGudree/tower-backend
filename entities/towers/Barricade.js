@@ -2,11 +2,16 @@ import { Tower } from "./tower.js";
 import { cellSize} from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 /**
- * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
- *
- * @constructor (x, y, row)
- * Author:    Randomfevva, Quetzalcoatl
- * Created:   15.04.2025
+ * Barricade tower class implementing defensive blocking functionality.
+ * 
+ * @class Barricade
+ * @extends Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva, Quetzalcoatl
+ * @date 2025-04-15
  **/
 export class Barricade extends Tower {
     constructor(x, y, type, laneIndex) {
@@ -14,7 +19,7 @@ export class Barricade extends Tower {
         this.name = "barricade";
         this.x = x;
         this.y = y;
-        this.health = 500; // Mye helse for å blokkere fiender
+        this.health = 500; // High health for blocking enemies
         this.background = 'darkgray';
         this.textColor = 'white';
         this.selected = false;
@@ -29,7 +34,7 @@ export class Barricade extends Tower {
     
     destroy() {
         console.log("Barricade destroyed!");
-        // Fjern barricaden fra spillbrettet
+        // Remove barricade from the game board
         Barricade.splice(Barricade.indexOf(this), 1);
     }
 
@@ -88,15 +93,15 @@ export class Barricade extends Tower {
             }
             
             /**
-             * getUpgradeStats
-             *
-        
-            * @description Two objects, { old ... new } The new object is an instance of the old one, and are further tweaked to use newer upgrade stats,
-            * serves as a temporarily data-placeholder for adding additional objects before project structure will be rewritten.
-            * Author:    Anarox
-            * Editor:    Quetzalcoatl
-            * Created:   09.03.2025
-            **/
+             * Retrieves current and next upgrade statistics for the barricade.
+             * 
+             * @method getUpgradeStats
+             * @returns {Object} Contains current and projected upgrade statistics
+             * @description Provides two objects containing current and projected stats after upgrade
+             * @author Anarox
+             * @contributor Quetzalcoatl
+             * @date 2025-03-09
+             **/
             getUpgradeStats() {
         
                 const oldStats = {

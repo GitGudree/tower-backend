@@ -33,11 +33,11 @@
                 
                 <p>Tower damage: <span id="towerDamageTotal">0</span></p>
             
-                <!-- Knapp for å åpne settings -->
+                <!-- Settings button -->
                 <button class="settings-btn">⚙️ Settings</button>
 
             
-               <!-- Pop-up meny -->
+               <!-- Settings popup menu -->
                <div id="settingsPopup" class="popup hidden">
                <div class="popup-content">
                <h2>Game Settings</h2>
@@ -62,7 +62,7 @@
                             alt=""
                             >
                             <p>Normal tower</p>
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">200 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                         <div class="card" tower-type = "sniper">
                             <img 
@@ -70,7 +70,7 @@
                             alt=""
                             >
                             <p>Sniper tower</p>    
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">400 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                         <div class="card" tower-type = "gatling">
                             <img 
@@ -78,7 +78,7 @@
                             alt=""
                             >
                             <p>Gatling tower</p>    
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">1000 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                         <div class="card" > <!-- tower-type = "laser" -->
                             <img 
@@ -86,7 +86,7 @@
                             alt=""
                             >
                             <p>Laser tower</p>    
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">2500 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                         <div class="card" tower-type = "rocket">
                             <img 
@@ -94,7 +94,7 @@
                             alt=""
                             >
                             <p>rocket tower</p>    
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">5000 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                         <div class="card"> <!-- tower-type = "tower a" -->
                             <img 
@@ -102,7 +102,7 @@
                             alt=""
                             >
                             <p>Tower A</p>    
-                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">8000 ⚒️</span></p>    
+                            <p class="tower-unlock-price-title"><span class="tower-unlock-price">50 💶</span></p>    
                         </div>
                     </div>
                 </div>           
@@ -110,16 +110,17 @@
                     <h2 class="tab-title grid-full-width">Tower Info</h2>
                     <div class="cards grid grid-full-width">
                         <div class="display-card">
-                            <img src="public/sprites/emptyicon.png" alt="">
-                            <p class="tower-title"><span class="tower-title-display"></span>, Lvl <span class="tower-lvl"></span></p>
-                            <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
-                            <p class="range-title">Range: <span class="range-title-display"></span> 🏹</p>
-                            <p class="firerate-title">Fire rate: <span class="firerate-title-display"></span> 💥</p>
-                            <p class="price-title">Price: <span class="tower-upgrade-price green-text"></span> 💶</p>
+                            <img id="tower-image" src="public/sprites/emptyicon.png" alt="">
+                            <h1 id="tower-title">Select a tower!</h1>
+                            <p id="tower-description">Choose a tower to view its stats.</p>
+                            <div id="tower-stats" class="tower-stats hidden">
+                                <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
+                                <p class="range-title">Range: <span class="range-title-display"></span> 🏹</p>
+                                <p class="firerate-title">Fire rate: <span class="firerate-title-display"></span> 💥</p>
+                            </div>
+                            <button class="tower-upgrade-btn" onclick="upgradeTower()">UPGRADE</button>
                         </div>
                     </div>
-                <!-- <button class="unlock-btn unlock hover-unlock">UNLOCK 🔒🔓</button> -->
-                <button class="tower-upgrade-btn" onclick="upgradeTower()">Insufficient balance</button>
                 </div>
             </div>
                 <div class="tab inventory-tab grid-split">
@@ -145,7 +146,7 @@
                     <div class="grid grid-split">
                         <h2 class="tab-title grid-full-width">Available Items</h2>
                         <div class="shop-items grid grid-full-width grid-split">
-                            <!-- Dynamisk genererte item cards her -->
+                            <!-- Dynamically generated item cards here -->
                         </div>
                     </div>              
                     <div class="grid grid-split">
@@ -153,14 +154,14 @@
                         <div class="itemdesc grid grid-full-width">
                             <div class="desc">
                                 <img id="item-image" src="images/item.png" alt="Item">
-                                <p id="item-name"></p>
-                                <p id="item-description"></p>
-                                <p>Price: <span id="item-price"></span>💶</p>
+                                <h1 id="item-name">Select an item to purchase!</h1>
+                                <p id="item-description">Choose an item from the Available Items section.</p>
+                                <p id="price-display" class="hidden">Price: <span id="item-price"></span>💶</p>
                                 <button id="buy-button" class="buybtn">Buy</button>
                             </div>
                         </div>
                     </div>               
-                    <!-- Bruk kun én script-tag med type="module" -->
+                    <!-- Use only one script tag with type="module" -->
                     <script type="module" src="./entities/shop.js"></script>
                 </div>                
                 <div id="purchase-message" class="hidden">

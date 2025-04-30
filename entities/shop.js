@@ -1,16 +1,23 @@
-import { items } from "./items.js"; // Importer items fra en separat modul
-import { addInventoryItem } from "./inventory.js"; // Importerer inventory-funksjonen
-import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
+// Import items from separate module
+import { items } from "./items.js";
+// Import inventory function
+import { addInventoryItem } from "./inventory.js";
+// Import money and updateMoney functions
+import { updateMoney, money } from "../game/game.js";
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
 
-// Generer butikkens innhold når DOM er klar
+/**
+ * Initialize shop content when DOM is ready.
+ * 
+ * @listens DOMContentLoaded
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const shopItemsContainer = document.querySelector(".shop-items");
-    shopItemsContainer.innerHTML = ""; // Tøm eksisterende innhold
+    shopItemsContainer.innerHTML = ""; // Clear existing content
 
-    // Generer butikkens item-elementer
+    // Generate shop item elements
     for (let itemKey in items) {
         const item = items[itemKey];
 
@@ -26,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         shopItemsContainer.appendChild(itemElement);
     }
 
-    // Kjøpsknapp-logikk
+    // Purchase button logic
     const buyButton = document.getElementById("buy-button");
     const purchaseMessage = document.getElementById("purchase-message");
 
@@ -35,13 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const price = window.selectedItem.price;
 
             if (money >= price) {
-                // Trekk penger
+                // Deduct money
                 updateMoney("decrease", price);
 
-                // Legg til item i inventory
+                // Add item to inventory
                 addInventoryItem(window.selectedItem);
 
-                // Vis kjøpsmelding
+                // Show purchase message
                 purchaseMessage.textContent = "Item purchased!";
                 purchaseMessage.classList.remove("hidden");
 
@@ -57,14 +64,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Når du klikker på et item, oppdater visningen
+/**
+ * Update display when clicking an item.
+ * 
+ * @function selectItem
+ * @param {string} itemKey - Key of the selected item
+ */
 function selectItem(itemKey) {
     const item = items[itemKey];
     if (item) {
         document.getElementById("item-image").src = item.image;
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;
-        document.getElementById("item-price").textContent = item.price;
+        document.getElementById("item-price").textContent = `${item.price} 💶`;
 
         window.selectedItem = item;
     }

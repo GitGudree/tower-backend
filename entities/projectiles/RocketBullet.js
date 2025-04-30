@@ -1,11 +1,16 @@
 import { cellSize } from "../../game/grid.js";
 import { projectiles } from "./projectiles.js";
 /**
- * laser bullet class
- *
- * @author:    Randomfevva
- * editor:     Quetzalcoatl
- * Created:   27.03.2025
+ * Rocket projectile class implementing explosive behavior.
+ * 
+ * @class RocketBullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {Object} enemy - Target enemy instance
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva
+ * @contributor Quetzalcoatl
+ * @date 2025-03-27
  **/
 export class RocketBullet {
     constructor(x, y, enemy, laneIndex) {
@@ -14,7 +19,7 @@ export class RocketBullet {
         this.target = enemy;
         this.name = "rocket"
         this.exploded = false;
-        this.bulletDamage = 3; // Rakett gjør middels skade
+        this.bulletDamage = 3; // Medium damage for rocket type
         this.speed = 0.05;
         this.width = 5;
         this.height = 5;
@@ -28,7 +33,7 @@ export class RocketBullet {
 
     move() {
         if (!this.exploded) {
-            this.x += (this.target.x - this.x) * this.speed; // Juster fart mot fienden
+            this.x += (this.target.x - this.x) * this.speed; // Adjust speed towards enemy
             this.y += (this.target.y - this.y) * this.speed;
         }
     }
@@ -58,7 +63,7 @@ export class RocketBullet {
         if (!this.exploded) {
             enemy.health -= this.bulletDamage;
 
-            // Eksplosjonseffekt - skader flere fiender innenfor radius
+            // Explosion effect - damages enemies within radius
             enemies.forEach(e => {
                 if (Math.abs(e.x - this.x) < this.aoe && Math.abs(e.y - this.y) < this.aoe) {
                     e.health -= this.bulletDamage;
@@ -68,7 +73,7 @@ export class RocketBullet {
             this.exploded = true;
         }
     }
-    doesLaserHit() { // this is more preformant than doing a check in projectileHandler
+    doesLaserHit() { // Performance optimization for projectile handler
         return false;
     }
 

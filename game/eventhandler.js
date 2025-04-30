@@ -4,8 +4,10 @@ import { canvas, money, price, updateMoney, updateResources, updateTowerStats } 
 import { cellSize } from "./grid.js";
 import { getChosenTower } from "../entities/towers/towerState.js";
 
-
-
+/**
+ * Mouse position tracking object.
+ * @type {Object}
+ */
 export const mouse = {
     x: 10,
     y: 10,
@@ -14,13 +16,13 @@ export const mouse = {
 }
 
 /**
- * handleCanvasClick-event
- *               
-
- * @description Event that listens to clicks on the gameCanvas. 
- * Author:    Anarox
- * Created:   23.01.2025
- **/
+ * Handles click events on the game canvas.
+ * 
+ * @function handleCanvasClick
+ * @description Processes tower placement and selection on canvas click
+ * @author Anarox
+ * @date 2025-01-23
+ */
 export function handleCanvasClick() {
     // The closest grid cellvalue to where the mouse is.
     const gridMousePosX = mouse.x - (mouse.x % cellSize);
@@ -32,13 +34,13 @@ export function handleCanvasClick() {
     }
 
     /**
-     * Handles tower selection and ensures that the right tower is selected.
-     *               
-
-     * Author:    Anarox
-     * Editor: Quetzalcoatl
-     * Created:   27.02.2025
-     **/
+     * Handles tower selection logic.
+     * 
+     * @function
+     * @author Anarox
+     * @contributor Quetzalcoatl
+     * @date 2025-02-27
+     */
     if (towers) {
         const selectedTower = towers.find(tower => tower.selected);
         if (selectedTower) selectedTower.selected = false;
@@ -51,15 +53,23 @@ export function handleCanvasClick() {
         }
     }
 
-    if (money >= price && !towers.some(tower => tower.selected)) {
-        var type = getChosenTower();
-        console.log(type);
-        var laneIndex = gridMousePosY / 50; // find what lane tower is in for laneIndex
-        const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
-        towers.push(tower);
-        tower.selected = true;
-        updateMoney("decrease", price);
-        updateResources("increase", 10);
+    const type = getChosenTower();
+    if (type) {
+        const isInventoryItem = ['barricade', 'mine', 'slowtrap'].includes(type.toLowerCase());
+        
+        if ((money >= price || isInventoryItem) && !towers.some(tower => tower.selected)) {
+            console.log(type);
+            var laneIndex = gridMousePosY / 50; // find what lane tower is in for laneIndex
+            const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
+            towers.push(tower);
+            tower.selected = true;
+            
+            // Only charge money if it's not an inventory item
+            if (!isInventoryItem) {
+                updateMoney("decrease", price);
+            }
+            updateResources("increase", 10);
+        }
     }
     
     if (towers) {
@@ -68,27 +78,25 @@ export function handleCanvasClick() {
     }
 }
 
-
 /**
- * Remove contextmenu
- *               
-
- * @description Event that removes contextmenu/right-click and solves a game bug.
- * Author:    Anarox
- * Created:   17.03.2025
- **/
+ * Prevents context menu from appearing on right-click.
+ * 
+ * @event contextmenu
+ * @description Prevents default context menu to avoid game interaction issues
+ * @author Anarox
+ * @date 2025-03-17
+ */
 canvas.addEventListener("contextmenu", e => e.preventDefault())
 
-
-
 /**
- * MouseMouse event
- *               
-
- * @description Event that listens to where the mouse is on the screen. 
- * Author:    Anarox
- * Created:   27.02.2025
- **/
+ * Tracks mouse movement on the canvas.
+ * 
+ * @function mouseMove
+ * @param {Event} event - Mouse event object
+ * @description Updates mouse position relative to canvas
+ * @author Anarox
+ * @date 2025-02-27
+ */
 export function mouseMove(event) {
     let canvasPosition = canvas.getBoundingClientRect();
 
@@ -111,25 +119,22 @@ export function gridRectColission(first, second) {
     }
 }
 
-
 function openTab(btn) {
-    // Fjern 'selected' fra alle knapper
+    // Remove 'selected' from all buttons
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
     });
     btn.classList.add('selected');
 
-    // Lukk alle faner før åpning av ny
+    // Close all tabs before opening new one
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('open');
     });
 
-    // Åpne valgt fane
+    // Open selected tab
     const tabName = btn.getAttribute('data-tab');
     document.querySelector(`.tab.${tabName}`).classList.add('open');
 }
-
-
 
 window.upgradeTower = () => {
     const tower = towers.find(tower => tower.selected);

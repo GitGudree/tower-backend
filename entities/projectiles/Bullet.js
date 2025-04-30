@@ -1,8 +1,13 @@
 /**
- * normal Bullet class
- *               
- * @author:    Anarox, Quetzalcoatl
- * Created:   25.01.2025
+ * Base Bullet class implementing core projectile functionality.
+ * 
+ * @class Bullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Bullet type
+ * @param {number} laneIndex - Lane position
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-01-25
  **/
 
 
@@ -37,7 +42,7 @@ export class Bullet {
         }
     }
 
-    doesLaserHit() { // this is more preformant than doing a check in projectileHandler
+    doesLaserHit() { // Method for performance optimization in projectileHandler
         return false;
     }
 

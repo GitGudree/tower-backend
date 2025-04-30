@@ -3,12 +3,14 @@ import { cellSize } from "../../game/grid.js";
 
 
 /**
- * Enemy class (DEFAULT)
- *
- * @constructor row, wave, type
- * @author:    Anarox
- * @contributor: Randomfevva 
- * Created:   25.01.2025
+ * Base Enemy class implementing core enemy functionality.
+ * 
+ * @class Enemy
+ * @param {number} row - Row position
+ * @param {number} wave - Current wave number
+ * @author Anarox
+ * @contributor Randomfevva
+ * @date 2025-01-25
  **/
 export class Enemy {
     constructor(row, wave) {

@@ -1,9 +1,15 @@
 import { cellSize } from "../../game/grid.js";
 /**
- * laser bullet class
- *
- * @author:    Randomfevva, Quetzalcoatl
- * Created:   27.03.2025
+ * Laser projectile class implementing laser-specific behavior.
+ * 
+ * @class LaserBullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {number} targetX - Target X coordinate
+ * @param {number} targetY - Target Y coordinate
+ * @param {Object} source - Source tower instance
+ * @author Randomfevva, Quetzalcoatl
+ * @date 2025-03-27
  **/
 
 export class LaserBullet {
@@ -15,16 +21,16 @@ export class LaserBullet {
         this.height = 2;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.bulletDamage = 4; // Laser gjør mer skade
+        this.bulletDamage = 4; // Higher damage for laser type
         this.pierceAmount = 1;
-        this.localIframes = 0; // how often laser damages enemies
+        this.localIframes = 0; // Damage frequency control
         this.lifetime = 1;
         this.bulletSource = source;
         this.name = "laser";
     }
 
     move() {
-        // Laser trenger ikke å bevege seg, den treffer umiddelbart
+        // Laser hits instantly, no movement needed
     }
 
     isAlive() {
