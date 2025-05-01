@@ -21,23 +21,25 @@ export class LaserBullet {
         this.height = 2;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.bulletDamage = 4; // Higher damage for laser type
-        this.pierceAmount = 1;
-        this.localIframes = 0; // Damage frequency control
-        this.lifetime = 1;
+        this.bulletDamage = 0.5;
         this.bulletSource = source;
-        this.name = "laser";
+        this.localIframes = 0;
+        this.lifetime = 2;
+        this.pierceAmount = 1;
     }
 
     move() {
-        // Laser hits instantly, no movement needed
-    }
-
-    isAlive() {
-        return this.lifetime > 0 && this.bulletSource?.health > 0;
+        if (this.lifetime > 0) {
+            this.lifetime--;
+        }
+        if (this.localIframes > 0) {
+            this.localIframes--;
+        }
     }
 
     draw(ctx) {
+        if (this.bulletSource?.isDead || this.lifetime <= 0) return;
+        
         ctx.strokeStyle = "cyan";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -47,28 +49,40 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        console.log(this.lifetime)
-        enemy.health -= this.bulletDamage;
-        this.localIframes = 30;
+        if (!this.bulletSource?.isDead) {
+            enemy.health -= this.bulletDamage;
+            this.localIframes = 30;
+        }
     }
 
     doesLaserHit(enemy) {
+        if (this.bulletSource?.isDead) return false;
+        
+        // Sjekk om fienden er nær nok laserens linje
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
-        const lengthSqr = dx * dx + dy * dy;
-    
-        const t = ((enemy.x - this.x) * dx + (enemy.y - this.y) * dy) / lengthSqr;
-
-        const clampedT = Math.max(0, Math.min(1, t));
-    
-        const closestX = this.x + clampedT * dx;
-        const closestY = this.y + clampedT * dy;
-    
-        const distX = enemy.x - closestX;
-        const distY = enemy.y - closestY;
-        const distanceSqr = distX * distX + distY * distY;
-    
-        return distanceSqr < 400;
+        
+        // Beregn avstanden fra fienden til laserlinjen
+        const enemyDx = enemy.x - this.x;
+        const enemyDy = enemy.y - this.y;
+        
+        // Projiser fienden på laserlinjen
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length === 0) return false;
+        
+        const dot = (enemyDx * dx + enemyDy * dy) / length;
+        const projX = this.x + (dot * dx) / length;
+        const projY = this.y + (dot * dy) / length;
+        
+        // Sjekk om projeksjonen er på laserlinjen
+        const isOnLine = dot >= 0 && dot <= length;
+        
+        // Beregn avstand fra fienden til projeksjonen
+        const distX = enemy.x - projX;
+        const distY = enemy.y - projY;
+        const distance = Math.sqrt(distX * distX + distY * distY);
+        
+        return isOnLine && distance < 30;
     }
 }
 

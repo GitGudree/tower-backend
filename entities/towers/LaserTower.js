@@ -19,55 +19,39 @@ export class LaserTower extends Tower {
         this.height = 5;
         this.health = 30;
         this.range = 1000;
-        this.damage = 4;
+        this.damage = 0.5;
         this.fireRate = 5;
         this.projectiles = [];
-        this.fireRate = 50;
         this.bulletType = type;
         this.background = "purple";
         this.laneIndex = laneIndex;
+        this.currentBullet = null;
 
         this.deathDuration = 0;
         this.deathTimer = this.deathDuration;
-        this.isDead;
+        this.isDead = false;
     }
 
-    update (deltaTime) {}
-    
-    attack(enemies, bullets) {
-        if (this.timer <= 0) {
-            const target = enemies.find(enemy =>
-                Math.abs(enemy.y - this.y) < 10 &&
-                Math.abs(enemy.x - this.x) < this.range
-            );
-    
-            if (target) {
-                const bullet = new LaserBullet(this.x, this.y, target.x, target.y, this);
-                bullet.bulletDamage = this.damage;
-                bullets.push(bullet);
-            }
-    
-            this.timer = this.fireRate;
-        } else {
-            this.timer--;
+    update(deltaTime) {
+        super.update(deltaTime);
+        
+        if (this.health <= 0 && !this.isDead) {
+            this.isDead = true;
         }
     }
-    /*
-      attack(enemies, bullets) {
-             if (this.timer <= 0) {
-                 enemies.forEach(enemy => {
-                     if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                         const bullet = new LaserBullet(this.x, this.y, enemy.x, enemy.y);
-                         bullet.bulletDamage = this.damage;
-                         bullets.push(bullet);
-                     }            
-                 });
-     
-     
-                 this.timer = this.fireRate;
-             } else {
-                 this.timer--;
-             }
-         }
-             */
+    
+    attack(enemies, bullets) {
+        if (this.isDead) return;
+
+        const target = enemies.find(enemy =>
+            Math.abs(enemy.y - this.y) < 10 &&
+            Math.abs(enemy.x - this.x) < this.range
+        );
+
+        if (target) {
+            const bullet = new LaserBullet(this.x, this.y, target.x, target.y, this);
+            bullet.bulletDamage = this.damage;
+            bullets.push(bullet);
+        }
+    }
 }
