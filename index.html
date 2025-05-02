@@ -11,6 +11,8 @@
     <script src="game/eventhandler.js" type="module"></script>
     <script src="./entities/shop.js" type="module"></script>
     <script src="./entities/inventory.js" type="module"></script>
+    <script src="./game/towerHandler.js" type="module"></script>
+    <script src="./game/towerUnlockSystem.js" type="module"></script>
 
 </head>
 <body>
@@ -24,34 +26,37 @@
                 <span onclick="openTab(this)" data-tab="shop-tab">SHOP</span>
             </div>
             <div class="tab game-tab">
-                <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
-                
-                <div class="auto-wave-control">
-                    <label for="autoWaveCheckbox">Auto Wave</label>
-                    <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                <div class="game-tab-container">
+                    <div class="game-controls">
+                        <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
+                        <button class="settings-btn">⚙️ Settings</button>
+                    </div>
+                    
+                    <div class="game-stats">
+                        <div class="auto-wave-control">
+                            <label for="autoWaveCheckbox">Auto Wave</label>
+                            <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                        </div>
+                        
+                        <p>Tower damage: <span id="towerDamageTotal">0</span></p>
+                    </div>
                 </div>
-                
-                <p>Tower damage: <span id="towerDamageTotal">0</span></p>
             
-                <!-- Settings button -->
-                <button class="settings-btn">⚙️ Settings</button>
-
-            
-               <!-- Settings popup menu -->
-               <div id="settingsPopup" class="popup hidden">
-               <div class="popup-content">
-               <h2>Game Settings</h2>
-               <br>
-               <label for="speedSlider">Speed:</label>
-               <input type="range" id="speedSlider" min="0" max="1.0" step="0.01">
-               <br>
-               <label for="volumeSlider">Volume:</label>
-               <input type="range" id="volumeSlider" min="0" max="1.0" step="0.01">
-               <br>
-               <button id="closeSettings">Close</button>
-              </div>
-            </div>    
-        </div>
+                <!-- Settings popup menu -->
+                <div id="settingsPopup" class="popup hidden">
+                    <div class="popup-content">
+                        <h2>Game Settings</h2>
+                        <br>
+                        <label for="speedSlider">Speed:</label>
+                        <input type="range" id="speedSlider" min="0" max="1.0" step="0.01">
+                        <br>
+                        <label for="volumeSlider">Volume:</label>
+                        <input type="range" id="volumeSlider" min="0" max="1.0" step="0.01">
+                        <br>
+                        <button id="closeSettings">Close</button>
+                    </div>
+                </div>    
+            </div>
             <div class="tab tower-tab grid-split open">
                 <div class="grid grid-split">
                     <h2 class="tab-title grid-full-width">Towers</h2>
@@ -156,7 +161,7 @@
                                 <img id="item-image" src="images/item.png" alt="Item">
                                 <h1 id="item-name">Select an item to purchase!</h1>
                                 <p id="item-description">Choose an item from the Available Items section.</p>
-                                <p id="price-display" class="hidden">Price: <span id="item-price"></span>💶</p>
+                                <p id="price-display" class="hidden">Price: <span id="item-price"></span></p>
                                 <button id="buy-button" class="buybtn">Buy</button>
                             </div>
                         </div>

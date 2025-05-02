@@ -96,9 +96,82 @@ canvas {
 
 .tab.open {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: min-content;
     gap: 1rem;
+    width: 900px;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+/* Game tab specific layout */
+.tab.game-tab {
+    padding: 1rem;
+}
+
+.game-tab-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 150px;
+}
+
+.game-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 0.5rem;
+}
+
+.auto-wave-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+.start-wave-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+    width: 100%;
+}
+
+.settings-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+    width: 100%;
+}
+
+.start-wave-btn:hover,
+.settings-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+#towerDamageTotal {
+    color: var(--text-color);
+    font-weight: bold;
 }
 
 .tab.grid-split, 
@@ -116,11 +189,20 @@ canvas {
     grid-column: 1/-1;
 }
 
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+}
+
 .cards > .card {
     background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
-    gap: .8rem;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     user-select: none;
     padding: 0.8rem;
     border-radius: 12px;
@@ -129,56 +211,106 @@ canvas {
     position: relative;
     overflow: hidden;
     border: 2px solid var(--border-color);
+    width: 150px;
+    margin: 0 auto;
+    gap: 0.3rem;
 }
 
 .cards > .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6);
-    border-color: var(--highlight-color);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    border-color: #4a4a4a;
 }
 
 .cards > .card::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-    transform: rotate(45deg);
-    transition: all 0.3s ease;
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        transparent 40%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 60%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
 }
 
 .cards > .card:hover::before {
-    transform: rotate(45deg) translate(50%, 50%);
+    transform: translateX(100%);
 }
 
 .cards > .card img {
-    height: 48px;
+    height: 40px;
     aspect-ratio: 1/1;
     margin: 1px;
     user-select: none;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
     transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
 }
 
 .cards > .card:hover img {
-    transform: scale(1.1);
-    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
+    transform: scale(1.2);
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4)) brightness(1.2);
 }
 
 .cards > .card p {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     font-weight: 600;
-    font-size: 1.1em;
+    font-size: 1em;
+    white-space: nowrap;
+    margin: 0.2rem 0;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-.tower-unlock-price-title {
+.cards > .card:hover p {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+/* Add glow effect for locked cards */
+.card.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2em;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255,255,255,0.6);
+    }
+}
+
+.tower-unlock-price-title,
+.item-price {
     color: var(--text-color);
     font-weight: bold;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    margin-top: 0.5rem;
+}
+
+/* Remove the gradient that was making the text transparent */
+.tower-unlock-price-title,
+.item-price {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
 }
 
 .tab-title {
@@ -430,9 +562,9 @@ canvas {
 /* Adjustment of cards */
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
-    max-width: 400px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -547,6 +679,7 @@ canvas {
     border: 1px solid var(--border-color);
     width: 150px;
     margin: 0 auto;
+    cursor: pointer;
 }
 
 .shop-item:hover {
@@ -555,21 +688,35 @@ canvas {
     border-color: var(--highlight-color);
 }
 
-.shop-item::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-    transform: rotate(45deg);
-    transition: all 0.3s ease;
-    pointer-events: none;
+/* Selected shop item styling */
+.shop-item.select {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    background: linear-gradient(145deg, #2d2d2d, #1f1f1f);
+    transform: translateY(-2px);
+    position: relative;
 }
 
-.shop-item:hover::before {
-    transform: rotate(45deg) translate(50%, 50%);
+.shop-item.select::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.shop-item.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
 }
 
 .shop-item img {
@@ -744,11 +891,47 @@ canvas {
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
+    overflow: visible;
+    border: 2px solid var(--border-color);
     width: 90px;
     height: 90px;
     margin: 0 auto;
+    cursor: pointer;
+}
+
+/* Add selection styling for inventory slots */
+.slot.select {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    background: linear-gradient(145deg, #454545, #353535);
+    transform: translateY(-2px);
+    position: relative;
+    z-index: 1;
+}
+
+.slot.select::after {
+    content: '✓';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+    z-index: 2;
+}
+
+.slot.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+    border-color: #5CDF60;
 }
 
 .slot:hover {
@@ -905,11 +1088,9 @@ div[style*="background: orange"],
 /* Make sure no gradients are using orange */
 .tower-unlock-price-title,
 .item-price {
-    background: linear-gradient(90deg, var(--text-color), var(--highlight-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: none;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
 }
 
 /* Start Wave button styling */
@@ -1017,6 +1198,163 @@ h1, h2, h3 {
 
 .tab {
     background-color: var(--ui-background);
+}
+
+/* Toast Message Styling */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 250px;
+    max-width: 400px;
+    background: var(--ui-background);
+    color: var(--text-color);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.toast-message {
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    transition: width linear;
+}
+
+/* Toast types */
+.toast-container.success {
+    border-left: 4px solid #4CAF50;
+}
+.toast-container.success .toast-progress {
+    background-color: #4CAF50;
+}
+
+.toast-container.error {
+    border-left: 4px solid #f44336;
+}
+.toast-container.error .toast-progress {
+    background-color: #f44336;
+}
+
+.toast-container.warning {
+    border-left: 4px solid #ff9800;
+}
+.toast-container.warning .toast-progress {
+    background-color: #ff9800;
+}
+
+.toast-container.info {
+    border-left: 4px solid #2196F3;
+}
+.toast-container.info .toast-progress {
+    background-color: #2196F3;
+}
+
+/* Toast animation */
+@keyframes toast-progress {
+    from { width: 100%; }
+    to { width: 0; }
+}
+
+.toast-progress {
+    animation: toast-progress linear forwards;
+}
+
+/* Locked tower styling */
+.card.locked {
+    opacity: 0.7;
+    filter: grayscale(70%);
+    position: relative;
+}
+
+.card.locked::before {
+    content: '🔒';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+.card.locked:hover {
+    opacity: 0.8;
+    filter: grayscale(50%);
+}
+
+.card.locked img {
+    filter: brightness(0.7);
+}
+
+/* Unlock button styling */
+.unlock-btn {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.unlock-btn:hover {
+    background: linear-gradient(145deg, #5a5a5a, #4d4d4d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.card.select {
+    border: 2px solid #4CAF50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    position: relative;
+}
+
+.card.select::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.card.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
 }
 
   

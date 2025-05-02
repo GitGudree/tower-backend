@@ -1,8 +1,11 @@
 import { Tower, towers } from "../entities/towers/tower.js";
 import { createTower } from "../entities/towers/towerFactory.js";
-import { canvas, money, price, updateMoney, updateResources, updateTowerStats } from "./game.js";
+import { canvas, money, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
 import { getChosenTower } from "../entities/towers/towerState.js";
+import { getTowerPrice, isTowerUnlocked } from "./towerUnlockSystem.js";
+import { toastError } from "./toast-message.js";
+import { removeSelectedItem } from "../entities/inventory.js";
 
 /**
  * Mouse position tracking object.
@@ -33,23 +36,17 @@ export function handleCanvasClick() {
         return;
     }
 
-    /**
-     * Handles tower selection logic.
-     * 
-     * @function
-     * @author Anarox
-     * @contributor Quetzalcoatl
-     * @date 2025-02-27
-     */
     if (towers) {
         const selectedTower = towers.find(tower => tower.selected);
         if (selectedTower) selectedTower.selected = false;
     }
 
+    // Check for tower selection first
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-            break;
+            updateTowerStats(tower);
+            return;
         }
     }
 
@@ -57,24 +54,35 @@ export function handleCanvasClick() {
     if (type) {
         const isInventoryItem = ['barricade', 'mine', 'slowtrap'].includes(type.toLowerCase());
         
-        if ((money >= price || isInventoryItem) && !towers.some(tower => tower.selected)) {
-            console.log(type);
-            var laneIndex = gridMousePosY / 50; // find what lane tower is in for laneIndex
-            const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
-            towers.push(tower);
-            tower.selected = true;
+        // Check if the spot is available
+        if (!towers.some(tower => tower.x === gridMousePosX && tower.y === gridMousePosY)) {
+            const towerPrice = getTowerPrice(type);
             
-            // Only charge money if it's not an inventory item
-            if (!isInventoryItem) {
-                updateMoney("decrease", price);
+            // Different logic for inventory items vs regular towers
+            if (isInventoryItem || (isTowerUnlocked(type) && money >= towerPrice)) {
+                var laneIndex = gridMousePosY / 50;
+                const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
+                towers.push(tower);
+                tower.selected = true;
+                
+                if (isInventoryItem) {
+                    removeSelectedItem(); // Remove from inventory after successful placement
+                } else {
+                    updateMoney("decrease", towerPrice);
+                }
+                
+                updateResources("increase", 10);
+                
+                // Dispatch towerPlaced event
+                document.dispatchEvent(new CustomEvent('towerPlaced', {
+                    detail: { towerType: type }
+                }));
+                
+                updateTowerStats(tower);
+            } else if (!isInventoryItem && money < towerPrice) {
+                toastError("Not enough money to place this tower!");
             }
-            updateResources("increase", 10);
         }
-    }
-    
-    if (towers) {
-        const selectedTower = towers.find(tower => tower.selected);
-        updateTowerStats(selectedTower);
     }
 }
 

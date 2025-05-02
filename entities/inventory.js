@@ -1,5 +1,6 @@
 import { updateMoney, money } from "../game/game.js"; // Import money and updateMoney functions
 import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
+import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../game/toast-message.js";
 
 let inventory = [];
 let selectedItem = null;
@@ -17,10 +18,16 @@ function updateInventory() {
     for (let item of inventory) {
         const itemSlot = document.createElement('div');
         itemSlot.classList.add('slot');
+        // Add data attribute for easier selection matching
+        itemSlot.setAttribute('data-item-name', item.name);
         itemSlot.innerHTML = `
             <img src="${item.image}" alt="${item.name}"/>
             <h3>${item.name}</h3>
         `;
+        // Add selected class if this is the currently selected item
+        if (selectedItem && selectedItem.name === item.name) {
+            itemSlot.classList.add('select');
+        }
         itemSlot.addEventListener('click', () => selectItem(item));
         inventorySlots.push(itemSlot);
     }
@@ -30,6 +37,17 @@ function updateInventory() {
 }
 
 function selectItem(item) {
+    // Remove selection from all slots
+    document.querySelectorAll('.slot').forEach(slot => {
+        slot.classList.remove('select');
+    });
+
+    // Find and select the slot containing this item
+    const slot = document.querySelector(`.slot[data-item-name="${item.name}"]`);
+    if (slot) {
+        slot.classList.add('select');
+    }
+
     selectedItem = item;
     document.getElementById("selected-item-image").src = item.image;
     document.getElementById("selected-item-name").textContent = item.name;
@@ -43,15 +61,19 @@ function selectItem(item) {
  * @param {Object} item - Item to add to inventory
  */
 function addInventoryItem(item) {
-    // Create a new copy if item has a constructor
-    const newItem = item.constructor ? new item.constructor() : { ...item };
-    inventory.push(newItem);
+    if (inventory.length >= 9) {
+        toastError(TOAST_MESSAGES.SHOP.INVENTORY_FULL);
+        return false;
+    }
+    
+    inventory.push(item);
     updateInventory();
+    return true;
 }
 
 function useItem(gameState) {
     if (!selectedItem) {
-        alert("Velg et item før du bruker det.");
+        toastWarning("Please select an item first");
         return;
     }
 
@@ -64,24 +86,34 @@ function useItem(gameState) {
 
     const towerType = itemToTowerType[selectedItem.name];
     if (towerType) {
-        if (gameState) {
-            gameState.selectedTowerType = towerType;
-        }
         setChosenTower(towerType);
         console.log("Ready to place:", towerType);
     } else if (typeof selectedItem.effect === "function") {
         selectedItem.effect(gameState);
+        // For instant-use items, remove them immediately
+        const index = inventory.indexOf(selectedItem);
+        if (index !== -1 && !selectedItem.reusable) {
+            inventory.splice(index, 1);
+        }
+        selectedItem = null;
+        updateInventory();
+        clearSelectedDisplay();
+        toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
     }
+}
 
-    // Remove only one instance of the item
+// Add new function to handle successful placement
+function removeSelectedItem() {
+    if (!selectedItem) return;
+    
     const index = inventory.indexOf(selectedItem);
     if (index !== -1 && !selectedItem.reusable) {
         inventory.splice(index, 1);
+        updateInventory();
+        clearSelectedDisplay();
+        toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
     }
-
     selectedItem = null;
-    updateInventory();
-    clearSelectedDisplay();
 }
 
 function deleteButton() {
@@ -99,16 +131,24 @@ function deleteButton() {
     selectedItem = null;
     updateInventory();
     clearSelectedDisplay();
+    toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_DELETED);
 }
 
 function clearSelectedDisplay() {
     document.getElementById("selected-item-image").src = "";
     document.getElementById("selected-item-name").textContent = "No item chosen!";
     document.getElementById("selected-item-description").textContent = "Choose an item.";
+    // Clear any selected slots
+    document.querySelectorAll('.slot').forEach(slot => {
+        slot.classList.remove('select');
+    });
 }
 
 // Export functions
-export { addInventoryItem, useItem, deleteButton, inventory };
+export { addInventoryItem, useItem, deleteButton, inventory, removeSelectedItem };
 
 window.useItem = useItem;
 window.deleteButton = deleteButton;
+
+// Initialize inventory display when DOM is loaded
+document.addEventListener('DOMContentLoaded', updateInventory);

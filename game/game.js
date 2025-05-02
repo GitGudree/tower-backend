@@ -19,7 +19,6 @@ export const towerUpgradeElement = document.querySelector('.tower-upgrade-btn');
 window.startWaveButton = startWaveButton;
 
 export let money = 1000;
-export let price = 50;
 export let resources = 100;
 export let gameOver;
 export let isUpgradeBtnActive = false;

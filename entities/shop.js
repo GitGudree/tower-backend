@@ -4,6 +4,8 @@ import { items } from "./items.js";
 import { addInventoryItem } from "./inventory.js";
 // Import money and updateMoney functions
 import { updateMoney, money } from "../game/game.js";
+// Import toast messages
+import { toastSuccess, toastError, TOAST_MESSAGES } from "../game/toast-message.js";
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
@@ -23,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const itemElement = document.createElement("div");
         itemElement.classList.add("shop-item");
+        itemElement.setAttribute("data-item-key", itemKey);
         itemElement.innerHTML = `
             <img src="${item.image}" alt="${item.name}">
             <p>${item.name}</p>
@@ -35,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Purchase button logic
     const buyButton = document.getElementById("buy-button");
-    const purchaseMessage = document.getElementById("purchase-message");
 
     buyButton.addEventListener("click", () => {
         if (window.selectedItem) {
@@ -48,18 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Add item to inventory
                 addInventoryItem(window.selectedItem);
 
-                // Show purchase message
-                purchaseMessage.textContent = "Item purchased!";
-                purchaseMessage.classList.remove("hidden");
-
-                setTimeout(() => {
-                    purchaseMessage.classList.add("hidden");
-                }, 2000);
+                // Show success message
+                toastSuccess(TOAST_MESSAGES.SHOP.PURCHASE_SUCCESS);
             } else {
-                alert("Not enough money!");
+                // Show error message
+                toastError(TOAST_MESSAGES.SHOP.PURCHASE_ERROR);
             }
         } else {
-            alert("Select an item first!");
+            toastWarning("Please select an item first");
         }
     });
 });
@@ -73,10 +71,23 @@ document.addEventListener("DOMContentLoaded", () => {
 function selectItem(itemKey) {
     const item = items[itemKey];
     if (item) {
+        // Remove select class from all items
+        document.querySelectorAll('.shop-item').forEach(item => {
+            item.classList.remove('select');
+        });
+
+        // Add select class to clicked item
+        const selectedItemElement = document.querySelector(`[data-item-key="${itemKey}"]`);
+        if (selectedItemElement) {
+            selectedItemElement.classList.add('select');
+        }
+
+        // Update item details display
         document.getElementById("item-image").src = item.image;
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;
         document.getElementById("item-price").textContent = `${item.price} 💶`;
+        document.getElementById("price-display").classList.remove("hidden");
 
         window.selectedItem = item;
     }
