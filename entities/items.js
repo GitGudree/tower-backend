@@ -30,7 +30,7 @@ class Item {
  */
 class MineInfo extends Item {
     constructor() {
-        super("Mine", 150, "Explodes when enemies step on it, dealing high damage.", "public/sprites/landmineicon.png");
+        super("Mine", 150, "Explodes when enemies step on it, dealing high damage.", "public/sprites/landmine.png");
     }
 }
 
@@ -40,7 +40,7 @@ class MineInfo extends Item {
  */
 class SlowTrapInfo extends Item {
     constructor() {
-        super("Slow Trap", 120, "Slows down enemies that step on it for a short duration.", "public/sprites/beartrapiconmidl.png");
+        super("Slow Trap", 120, "Slows down enemies that step on it for a short duration.", "public/sprites/slowtrap.png");
     }
 }
 
@@ -50,7 +50,7 @@ class SlowTrapInfo extends Item {
  */
 class BarricadeInfo extends Item {
     constructor() {
-        super("Barricade", 100, "Blocks enemy movement but does no damage.", "public/sprites/barricadeicon.png");
+        super("Barricade", 100, "Blocks enemy movement but does no damage.", "public/sprites/barricade.png");
     }
 }
 
