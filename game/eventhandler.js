@@ -36,15 +36,22 @@ export function handleCanvasClick() {
         return;
     }
 
+    // Deselect previously selected tower
     if (towers) {
         const selectedTower = towers.find(tower => tower.selected);
-        if (selectedTower) selectedTower.selected = false;
+        if (selectedTower) {
+            selectedTower.selected = false;
+            // Force a synergy check when deselecting
+            selectedTower.checkSynergies(towers, true);
+        }
     }
 
     // Check for tower selection first
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
+            // Force a synergy check when selecting
+            tower.checkSynergies(towers, true);
             updateTowerStats(tower);
             return;
         }
@@ -66,12 +73,15 @@ export function handleCanvasClick() {
                 tower.selected = true;
                 
                 if (isInventoryItem) {
-                    removeSelectedItem(); // Remove from inventory after successful placement
+                    removeSelectedItem();
                 } else {
                     updateMoney("decrease", towerPrice);
                 }
                 
                 updateResources("increase", 10);
+                
+                // Force synergy check for all towers when placing a new one
+                towers.forEach(t => t.checkSynergies(towers, true));
                 
                 // Dispatch towerPlaced event
                 document.dispatchEvent(new CustomEvent('towerPlaced', {

@@ -108,8 +108,13 @@ export function updateGameState(deltaTime) {
     setEnemies(enemiesArray);
     tryEndWave();
 
+    // Check synergies for all towers
+    towers.forEach(tower => {
+        tower.checkSynergies(towers);
+    });
+
     //towers.forEach((tower, towerIndex) => {
-    for (let i = towers.length - 1; i >= 0; i--) { // byttet fra for each for å unngå edge cases -quetz
+    for (let i = towers.length - 1; i >= 0; i--) {
         const tower = towers[i];
         tower.update(deltaTime);
         tower.stopEnemyMovement(enemies)
@@ -233,23 +238,62 @@ export function updateTowerStats(tower) {
     // Show tower information when selected
     towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
     towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
-    towerDescription.textContent = 'A powerful defensive tower.';
-    towerStats.classList.remove('hidden');
-    upgradeBtn.classList.remove('hidden');
-
+    
     // Calculate stat improvements (assuming 20% increase per upgrade)
     const healthImprovement = Math.round(tower.health * 0.2);
     const rangeImprovement = Math.round(tower.range * 0.2);
     const fireRateImprovement = Math.round(tower.fireRate * 0.2);
 
-    // Update stats with improvement indicators
+    // Update stats with improvement indicators and synergy bonuses
+    const healthText = `${tower.baseHealth}`;
+    const synergyHealthText = tower.synergyBonus?.health > 0 ? ` (+${tower.synergyBonus.health} 🔮)` : '';
+    const upgradeHealthText = money >= tower.upgradeCost ? ` (+${healthImprovement})` : '';
     document.querySelector('.hp-title-display').textContent = 
-        `${tower.health} ${money >= tower.upgradeCost ? `(+${healthImprovement})` : ''}`;
-    document.querySelector('.range-title-display').textContent = 
-        `${tower.range} ${money >= tower.upgradeCost ? `(+${rangeImprovement})` : ''}`;
-    document.querySelector('.firerate-title-display').textContent = 
-        `${tower.fireRate} ${money >= tower.upgradeCost ? `(+${fireRateImprovement})` : ''}`;
+        healthText + synergyHealthText + upgradeHealthText;
     
+    // Show base range and synergy bonus separately
+    const rangeText = `${tower.baseRange}`;
+    const synergyRangeText = tower.synergyBonus?.range > 0 ? ` (+${tower.synergyBonus.range} 🔮)` : '';
+    const upgradeRangeText = money >= tower.upgradeCost ? ` (+${rangeImprovement})` : '';
+    document.querySelector('.range-title-display').textContent = 
+        rangeText + synergyRangeText + upgradeRangeText;
+    
+    // Show base fire rate and synergy bonus separately
+    const fireRateText = `${tower.baseFireRate}`;
+    const synergyFireRateText = tower.synergyBonus?.fireRate > 0 ? ` (+${tower.synergyBonus.fireRate} 🔮)` : '';
+    const upgradeFireRateText = money >= tower.upgradeCost ? ` (+${fireRateImprovement})` : '';
+    document.querySelector('.firerate-title-display').textContent = 
+        fireRateText + synergyFireRateText + upgradeFireRateText;
+
+    // Show base damage and synergy bonus separately
+    const damageText = `${tower.baseDamage}`;
+    const synergyDamageText = tower.synergyBonus?.damage > 0 ? ` (+${tower.synergyBonus.damage} 🔮)` : '';
+    const upgradeDamageText = money >= tower.upgradeCost ? ` (+${Math.round(tower.baseDamage * 0.2)})` : '';
+    document.querySelector('.damage-title-display').textContent = 
+        damageText + synergyDamageText + upgradeDamageText;
+
+    // Update description to include special synergy effects
+    let description = 'A powerful defensive tower.';
+    if (tower.synergizedWith.size > 0) {
+        description += '\n🔮 Synergy Active!';
+        
+        // Add special effect descriptions
+        const towerName = tower.name.toLowerCase();
+        if (towerName === 'laser' && tower.synergyBonus?.piercing) {
+            description += '\n⚡ Laser pierces through enemies';
+        } else if (towerName === 'slowtrap' && tower.synergyBonus?.slowEffect) {
+            description += '\n❄️ Double slow effect';
+        } else if (towerName === 'rocket' && tower.synergyBonus?.range) {
+            description += '\n🎯 Increased range and damage';
+        } else if (towerName === 'mine' && tower.synergyBonus?.damage) {
+            description += '\n💥 Large damage boost';
+        }
+    }
+    towerDescription.textContent = description;
+    
+    towerStats.classList.remove('hidden');
+    upgradeBtn.classList.remove('hidden');
+
     // Update upgrade button based on affordability
     upgradeBtn.textContent = `UPGRADE (${tower.upgradeCost}💶)`;
     if (money >= tower.upgradeCost) {

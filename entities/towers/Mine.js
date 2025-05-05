@@ -100,6 +100,9 @@ export class Mine extends Tower {
             ctx.moveTo(this.x + cellSize*3/4, this.y + cellSize/4);
             ctx.lineTo(this.x + cellSize/4, this.y + cellSize*3/4);
             ctx.stroke();
+
+            // Draw synergy effects without the sprite
+            this.drawSynergyEffects(ctx);
         } else if (this.explosionTimer < this.explosionLifetime) {
             // Draw explosion effect
             const alpha = 1 - (this.explosionTimer / this.explosionLifetime);

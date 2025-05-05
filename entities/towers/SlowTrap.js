@@ -105,6 +105,9 @@ export class SlowTrap extends Tower {
                 ctx.arc(this.x + cellSize/2, this.y + cellSize/2, cellSize/2, 0, Math.PI * 2);
                 ctx.stroke();
             }
+
+            // Draw synergy effects
+            this.drawSynergyEffects(ctx);
         }
     }
 

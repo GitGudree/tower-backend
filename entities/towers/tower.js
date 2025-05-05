@@ -22,23 +22,44 @@ export class Tower {
         this.x = x;
         this.y = y;
         this.name = "Shooter";
-        this.health = 80;
-        this.range = 500;
-        this.damage = 5;
+        this.baseHealth = 80;
+        this.baseRange = 500;
+        this.baseDamage = 5;
+        this.baseFireRate = 40;
+        
+        this.health = this.baseHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
+        
         this.width = cellSize;
         this.height = cellSize;
         this.projectiles = [];
-        this.fireRate = 40;
         this.timer = 0;
-        //this.isFiring = false;
         this.iFrames = 0;
-        this.stopEnemy = 100; // Maximum value to prevent rubber-banding effects
+        this.stopEnemy = 100;
         this.upgradeCost = 150;
         this.upgrades = 0;
         this.selected = false;
         this.bulletType = type;
         this.isColliding = false;
         this.laneIndex = row;
+
+        // Synergy related properties
+        this.synergyRange = 2;
+        this.synergyBonus = {
+            damage: 0,
+            fireRate: 0,
+            range: 0,
+            health: 0,
+            piercing: 0,
+            slowEffect: 0
+        };
+        this.synergizedWith = new Set();
+        this.synergyGlowColor = null;
+        this.hasActiveSynergies = false;
+        this.lastSynergyCheck = 0;
+        this.appliedSynergyBonuses = new Set(); // Track which towers we've already applied bonuses for
 
         // Tower style
         this.background = 'blue';
@@ -118,13 +139,85 @@ export class Tower {
         }
     }
     
-        draw (ctx) {
-            if (!this.isDead){
-                this.animatorLive.draw(ctx, this.x, this.y);
-            } else {
-                this.animatorDead.draw(ctx, this.x, this.y);
-            }
+    draw(ctx) {
+        this.drawSprite(ctx);
+        this.drawSynergyEffects(ctx);
+    }
+
+    drawSprite(ctx) {
+        // Draw the tower sprite
+        if (!this.isDead) {
+            this.animatorLive.draw(ctx, this.x, this.y);
+        } else {
+            this.animatorDead.draw(ctx, this.x, this.y);
         }
+    }
+
+    drawSynergyEffects(ctx) {
+        // Draw synergy effects
+        if (this.hasActiveSynergies) {
+            ctx.save();
+            
+            // Draw subtle border glow
+            ctx.strokeStyle = this.synergyGlowColor;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.4;
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+            // Draw connection lines
+            ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.3;
+            for (const otherTower of this.synergizedWith) {
+                ctx.beginPath();
+                ctx.moveTo(this.x + this.width / 2, this.y + this.height / 2);
+                ctx.lineTo(otherTower.x + otherTower.width / 2, otherTower.y + otherTower.height / 2);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+
+            // Draw single synergy icon based on effect
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = this.synergyGlowColor;
+            ctx.globalAlpha = 1;
+            
+            // Choose single most relevant icon based on tower type and synergy
+            let synergyIcon = '';
+            const towerName = this.name.toLowerCase();
+            
+            if (towerName === 'laser' && this.synergyBonus.piercing) {
+                synergyIcon = '⚡'; // Piercing effect
+            } else if (towerName === 'gatling' && (this.synergyBonus.damage > 0 || this.synergyBonus.fireRate > 0)) {
+                synergyIcon = this.synergyBonus.damage > 0 ? '⚔️' : '⚡'; // Damage or fire rate boost
+            } else if (towerName === 'sniper' && this.synergyBonus.range > 0) {
+                synergyIcon = '🎯'; // Range boost
+            } else if (towerName === 'barricade' && this.synergyBonus.health > 0) {
+                synergyIcon = '❤️'; // Health boost
+            } else if (towerName === 'rocket' && (this.synergyBonus.range > 0 || this.synergyBonus.damage > 0)) {
+                synergyIcon = '🎯'; // Range boost (includes damage)
+            } else if (towerName === 'mine' && this.synergyBonus.damage > 0) {
+                synergyIcon = '⚔️'; // Large damage boost
+            } else if (towerName === 'slowtrap' && this.synergyBonus.slowEffect > 0) {
+                synergyIcon = '❄️'; // Double slow effect
+            }
+
+            if (synergyIcon) {
+                ctx.fillText(synergyIcon, this.x + this.width / 2, this.y - 5);
+            }
+
+            ctx.restore();
+        }
+
+        // Draw selection outline if selected
+        if (this.selected) {
+            ctx.save();
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+            ctx.restore();
+        }
+    }
     
         attack(enemies, bullets) {
             if (this.timer <= 0 && !this.isDead) {
@@ -280,6 +373,193 @@ export class Tower {
         };
 
         return { oldStats, newStats };
+    }
+
+    /**
+     * Check for and apply synergies with nearby towers
+     * @param {Array} towers - All towers in the game
+     * @param {boolean} force - Force synergy check regardless of time
+     */
+    checkSynergies(towers, force = false) {
+        const currentTime = Date.now();
+        if (!force && currentTime - this.lastSynergyCheck < 1000) {
+            return;
+        }
+        this.lastSynergyCheck = currentTime;
+
+        // Store old synergies to detect changes
+        const oldSynergies = new Set(this.synergizedWith);
+        
+        // Reset synergy tracking but NOT the bonuses
+        this.synergizedWith.clear();
+        this.synergyGlowColor = null;
+
+        // Check for synergies
+        for (const otherTower of towers) {
+            if (otherTower === this) continue;
+
+            const thisGridX = Math.floor(this.x / cellSize);
+            const thisGridY = Math.floor(this.y / cellSize);
+            const otherGridX = Math.floor(otherTower.x / cellSize);
+            const otherGridY = Math.floor(otherTower.y / cellSize);
+
+            // Check if towers are in the same row
+            if (thisGridY !== otherGridY) continue;
+
+            // Check horizontal distance (max 2 cells)
+            const gridDistance = Math.abs(thisGridX - otherGridX);
+            if (gridDistance <= this.synergyRange) {
+                this.applySynergyEffects(otherTower);
+            }
+        }
+
+        // Check if synergy state changed
+        const synergyStateChanged = 
+            this.synergizedWith.size !== oldSynergies.size ||
+            ![...this.synergizedWith].every(tower => oldSynergies.has(tower));
+
+        if (synergyStateChanged) {
+            this.hasActiveSynergies = this.synergizedWith.size > 0;
+            
+            // Remove bonuses from broken synergies
+            for (const oldSynergyTower of oldSynergies) {
+                if (!this.synergizedWith.has(oldSynergyTower)) {
+                    this.removeSynergyBonuses(oldSynergyTower);
+                }
+            }
+
+            // Apply bonuses for new synergies
+            for (const newSynergyTower of this.synergizedWith) {
+                if (!oldSynergies.has(newSynergyTower)) {
+                    this.applySynergyBonuses(newSynergyTower);
+                }
+            }
+
+            if (this.hasActiveSynergies) {
+                console.log(`${this.name} tower synergies updated:`, {
+                    synergiesWith: [...this.synergizedWith].map(t => t.name),
+                    bonuses: this.synergyBonus
+                });
+            }
+        }
+    }
+
+    applySynergyBonuses(otherTower) {
+        // Only apply bonuses if we haven't already for this tower
+        if (!this.appliedSynergyBonuses.has(otherTower)) {
+            const thisName = this.name.toLowerCase();
+            const otherName = otherTower.name.toLowerCase();
+
+            // Apply bonuses based on the synergy type
+            if (thisName === "laser" && otherName === "gatling") {
+                this.piercing = true;
+                this.synergyBonus.piercing = 1;
+            } else if (thisName === "gatling" && otherName === "laser") {
+                this.damage += 2;
+                this.synergyBonus.damage = 2;
+            } else if (thisName === "sniper" && otherName === "barricade") {
+                this.range += 100;
+                this.synergyBonus.range = 100;
+            } else if (thisName === "barricade" && otherName === "sniper") {
+                this.health += 50;
+                this.synergyBonus.health = 50;
+            } else if (thisName === "rocket" && otherName === "mine") {
+                this.range += 50;
+                this.damage += 2;
+                this.synergyBonus.range = 50;
+                this.synergyBonus.damage = 2;
+            } else if (thisName === "mine" && otherName === "rocket") {
+                this.damage += 5;
+                this.synergyBonus.damage = 5;
+            } else if (thisName === "slowtrap" && otherName === "gatling") {
+                this.slowEffect = 2; // Double slow effect
+                this.synergyBonus.slowEffect = 1;
+            } else if (thisName === "gatling" && otherName === "slowtrap") {
+                this.fireRate = Math.max(1, this.fireRate - 5);
+                this.synergyBonus.fireRate = 5;
+            }
+
+            this.appliedSynergyBonuses.add(otherTower);
+        }
+    }
+
+    removeSynergyBonuses(otherTower) {
+        const thisName = this.name.toLowerCase();
+        const otherName = otherTower.name.toLowerCase();
+
+        // Remove bonuses based on the synergy type
+        if (thisName === "laser" && otherName === "gatling") {
+            this.piercing = false;
+            this.synergyBonus.piercing = 0;
+        } else if (thisName === "gatling" && otherName === "laser") {
+            this.damage -= 2;
+            this.synergyBonus.damage = 0;
+        } else if (thisName === "sniper" && otherName === "barricade") {
+            this.range -= 100;
+            this.synergyBonus.range = 0;
+        } else if (thisName === "barricade" && otherName === "sniper") {
+            this.health -= 50;
+            this.synergyBonus.health = 0;
+        } else if (thisName === "rocket" && otherName === "mine") {
+            this.range -= 50;
+            this.damage -= 2;
+            this.synergyBonus.range = 0;
+            this.synergyBonus.damage = 0;
+        } else if (thisName === "mine" && otherName === "rocket") {
+            this.damage -= 5;
+            this.synergyBonus.damage = 0;
+        } else if (thisName === "slowtrap" && otherName === "gatling") {
+            this.slowEffect = 1; // Reset to normal slow effect
+            this.synergyBonus.slowEffect = 0;
+        } else if (thisName === "gatling" && otherName === "slowtrap") {
+            this.fireRate = Math.min(this.fireRate + 5, this.baseFireRate);
+            this.synergyBonus.fireRate = 0;
+        }
+
+        this.appliedSynergyBonuses.delete(otherTower);
+    }
+
+    getBaseStats() {
+        return {
+            health: this.baseHealth,
+            range: this.baseRange,
+            damage: this.baseDamage,
+            fireRate: this.baseFireRate
+        };
+    }
+
+    getCurrentStats() {
+        return {
+            health: this.health,
+            range: this.range,
+            damage: this.damage,
+            fireRate: this.fireRate,
+            synergyBonus: { ...this.synergyBonus }
+        };
+    }
+
+    applySynergyEffects(otherTower) {
+        const thisName = this.name.toLowerCase();
+        const otherName = otherTower.name.toLowerCase();
+
+        // Just set up the visual effects and track the synergy, don't apply bonuses here
+        if ((thisName === "laser" && otherName === "gatling") ||
+            (thisName === "gatling" && otherName === "laser")) {
+            this.synergyGlowColor = '#ff00ff'; // Purple glow
+            this.synergizedWith.add(otherTower);
+        } else if ((thisName === "sniper" && otherName === "barricade") ||
+            (thisName === "barricade" && otherName === "sniper")) {
+            this.synergyGlowColor = '#00ff00'; // Green glow
+            this.synergizedWith.add(otherTower);
+        } else if ((thisName === "rocket" && otherName === "mine") ||
+            (thisName === "mine" && otherName === "rocket")) {
+            this.synergyGlowColor = '#ff0000'; // Red glow
+            this.synergizedWith.add(otherTower);
+        } else if ((thisName === "slowtrap" && otherName === "gatling") ||
+            (thisName === "gatling" && otherName === "slowtrap")) {
+            this.synergyGlowColor = '#00ffff'; // Cyan glow
+            this.synergizedWith.add(otherTower);
+        }
     }
 }
 

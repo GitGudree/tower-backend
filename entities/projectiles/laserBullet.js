@@ -25,7 +25,8 @@ export class LaserBullet {
         this.bulletSource = source;
         this.localIframes = 0;
         this.lifetime = 2;
-        this.pierceAmount = 1;
+        this.pierceAmount = source?.synergyBonus?.piercing ? Infinity : 1;
+        this.hitEnemies = new Set();
     }
 
     move() {
@@ -49,14 +50,17 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        if (!this.bulletSource?.isDead) {
+        if (!this.bulletSource?.isDead && !this.hitEnemies.has(enemy)) {
             enemy.health -= this.bulletDamage;
-            this.localIframes = 30;
+            this.localIframes = this.bulletSource?.synergyBonus?.piercing ? 15 : 30; // Faster hit rate when piercing
+            if (!this.bulletSource?.synergyBonus?.piercing) {
+                this.hitEnemies.add(enemy);
+            }
         }
     }
 
     doesLaserHit(enemy) {
-        if (this.bulletSource?.isDead) return false;
+        if (this.bulletSource?.isDead || (!this.bulletSource?.synergyBonus?.piercing && this.hitEnemies.has(enemy))) return false;
         
         // Sjekk om fienden er nær nok laserens linje
         const dx = this.targetX - this.x;
