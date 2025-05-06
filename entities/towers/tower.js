@@ -2,9 +2,11 @@ import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 import { Bullet } from "../projectiles/Bullet.js";
 import { collision } from "../../game/hitreg.js";
-import { updateResources, towerDamageElement, towerUpgradePriceElement } from "../../game/game.js";
+import { updateResources, towerDamageElement, towerUpgradePriceElement, resources } from "../../game/game.js";
 import { cellSize, rows } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
+import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../../game/toast-message.js";
+import { getTowerPrice } from "../../game/towerUnlockSystem.js";
 
 /**
  * Base Tower class implementing core tower functionality.
@@ -44,6 +46,7 @@ export class Tower {
         this.bulletType = type;
         this.isColliding = false;
         this.laneIndex = row;
+        this.maxHealth = this.baseHealth;
 
         // Synergy related properties
         this.synergyRange = 2;
@@ -59,7 +62,7 @@ export class Tower {
         this.synergyGlowColor = null;
         this.hasActiveSynergies = false;
         this.lastSynergyCheck = 0;
-        this.appliedSynergyBonuses = new Set(); // Track which towers we've already applied bonuses for
+        this.appliedSynergyBonuses = new Set();
 
         // Tower style
         this.background = 'blue';
@@ -68,7 +71,7 @@ export class Tower {
         this.isFiring = false;
         this.deathDuration = 50;
         this.deathTimer = this.deathDuration;
-        this.isDead;
+        this.isDead = false;
         this.animationExtend = 3;
         this.fireAnimation = 0;
         this.frameInterval = 100;
@@ -99,17 +102,11 @@ export class Tower {
                     enemy.stopMove();
                     enemy.attack(this);
                         
-        
                     if (this.health <= 0) {
                         this.isDead = true;
                         this.deathTimer = this.deathDuration;
                         this.isColliding = false;
-                        this.deathMessage = "-5 Resources";
-                        this.deathMessageTimer = 60;
-            
-                        updateResources("decrease", 5);
-            
-            
+                        
                         for (let enemy of enemies) {
                             enemy.resumeMove();
                         }
@@ -118,10 +115,9 @@ export class Tower {
                 this.iFrames += enemy.attackspeed;
             }
                
-        } else{
+        } else {
             this.iFrames--;
         }
-    
     }
     
        
@@ -560,6 +556,48 @@ export class Tower {
             this.synergyGlowColor = '#00ffff'; // Cyan glow
             this.synergizedWith.add(otherTower);
         }
+    }
+
+    /**
+     * Repairs the tower's health using resources
+     * @returns {boolean} Whether the repair was successful
+     */
+    repair() {
+        if (this.health >= this.maxHealth) {
+            toastWarning("Tower is already at full health!");
+            return false;
+        }
+
+        const missingHealth = this.maxHealth - this.health;
+        const repairCost = Math.ceil(missingHealth * 0.5); // 0.5 resources per missing HP
+
+        if (resources >= repairCost) {
+            updateResources("decrease", repairCost);
+            this.health = this.maxHealth;
+            toastSuccess("Tower repaired successfully!");
+            return true;
+        } else {
+            toastError("Not enough resources to repair tower!");
+            return false;
+        }
+    }
+
+    /**
+     * Scraps the tower for a refund
+     * @returns {boolean} Whether the scrap was successful
+     */
+    scrap() {
+        const refundAmount = Math.ceil(getTowerPrice(this.bulletType) * 0.7); // 70% refund
+        updateMoney("increase", refundAmount);
+        
+        // Remove tower from the game
+        const towerIndex = towers.findIndex(t => t === this);
+        if (towerIndex !== -1) {
+            towers.splice(towerIndex, 1);
+        }
+
+        toastSuccess(TOAST_MESSAGES.TOWER.SOLD);
+        return true;
     }
 }
 

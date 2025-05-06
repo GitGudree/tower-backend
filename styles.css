@@ -1357,4 +1357,66 @@ h1, h2, h3 {
     box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
 }
 
-  
+.tower-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.tower-upgrade-btn {
+    grid-column: 1 / span 2;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    width: 100%;
+}
+
+.tower-repair-btn, 
+.tower-scrap-btn {
+    width: 100%;
+    font-weight: bold;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    color: var(--text-color);
+}
+
+.tower-repair-btn {
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.tower-scrap-btn {
+    background: linear-gradient(90deg, #ff9800, #f57c00);
+}
+
+.tower-repair-btn:hover:not(:disabled),
+.tower-upgrade-btn:hover:not(:disabled) {
+    background: linear-gradient(90deg, #45a049, #3d8b40);
+    transform: translateY(-2px);
+}
+
+.tower-scrap-btn:hover:not(:disabled) {
+    background: linear-gradient(90deg, #f57c00, #ef6c00);
+    transform: translateY(-2px);
+}
+
+.tower-repair-btn:disabled,
+.tower-scrap-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: linear-gradient(90deg, #666666, #555555);
+}

@@ -6,6 +6,7 @@ import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
 import { GatlingTower } from "../entities/towers/GatlingTower.js";
+import { getTowerPrice } from "./towerUnlockSystem.js";
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -93,8 +94,22 @@ export function updateGameState(deltaTime) {
         enemy.move();
 
         if (enemy.health <= 0) {
+            // Resource rewards based on enemy type
+            switch(enemy.type) {
+                case "fast":
+                    updateResources('increase', 3);
+                    break;
+                case "tank":
+                    updateResources('increase', 8);
+                    break;
+                case "boss":
+                    updateResources('increase', 10);
+                    break;
+                default: // normal enemy
+                    updateResources('increase', 5);
+                    break;
+            }
             updateMoney('increase', 20);
-            updateResources('increase', 1);
             continue;
         }
 
@@ -113,18 +128,25 @@ export function updateGameState(deltaTime) {
         tower.checkSynergies(towers);
     });
 
-    //towers.forEach((tower, towerIndex) => {
+    // Update towers and handle projectiles
     for (let i = towers.length - 1; i >= 0; i--) {
         const tower = towers[i];
         tower.update(deltaTime);
-        tower.stopEnemyMovement(enemies)
-        tower.updateTowerCollision(enemies, i)
-        tower.attack(enemies, projectiles);
-
-        if (tower.isDead && tower.deathTimer <= 0){
-            towers.splice(i, 1)
+        tower.stopEnemyMovement(enemies);
+        tower.updateTowerCollision(enemies, i);
+        
+        // Make sure tower is not dead before attacking
+        if (!tower.isDead) {
+            tower.attack(enemies, projectiles);
         }
-    };
+
+        if (tower.isDead && tower.deathTimer <= 0) {
+            towers.splice(i, 1);
+        }
+    }
+    
+    // Handle projectile movement and collisions
+    projectileHandler();
     
     if (resources <= 0) {
         gameOver = true;
@@ -224,6 +246,8 @@ export function updateTowerStats(tower) {
     const towerDescription = document.getElementById('tower-description');
     const towerStats = document.getElementById('tower-stats');
     const upgradeBtn = document.querySelector('.tower-upgrade-btn');
+    const repairBtn = document.querySelector('.tower-repair-btn');
+    const scrapBtn = document.querySelector('.tower-scrap-btn');
 
     if (!tower) {
         // Default state when no tower is selected
@@ -232,6 +256,8 @@ export function updateTowerStats(tower) {
         towerDescription.textContent = 'Choose a tower to view its stats.';
         towerStats.classList.add('hidden');
         upgradeBtn.classList.add('hidden');
+        repairBtn.classList.add('hidden');
+        scrapBtn.classList.add('hidden');
         return;
     }
 
@@ -245,7 +271,7 @@ export function updateTowerStats(tower) {
     const fireRateImprovement = Math.round(tower.fireRate * 0.2);
 
     // Update stats with improvement indicators and synergy bonuses
-    const healthText = `${tower.baseHealth}`;
+    const healthText = `${tower.health}/${tower.maxHealth}`;
     const synergyHealthText = tower.synergyBonus?.health > 0 ? ` (+${tower.synergyBonus.health} 🔮)` : '';
     const upgradeHealthText = money >= tower.upgradeCost ? ` (+${healthImprovement})` : '';
     document.querySelector('.hp-title-display').textContent = 
@@ -293,6 +319,8 @@ export function updateTowerStats(tower) {
     
     towerStats.classList.remove('hidden');
     upgradeBtn.classList.remove('hidden');
+    repairBtn.classList.remove('hidden');
+    scrapBtn.classList.remove('hidden');
 
     // Update upgrade button based on affordability
     upgradeBtn.textContent = `UPGRADE (${tower.upgradeCost}💶)`;
@@ -301,6 +329,16 @@ export function updateTowerStats(tower) {
     } else {
         upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
     }
+
+    // Update repair button
+    const missingHealth = tower.maxHealth - tower.health;
+    const repairCost = Math.ceil(missingHealth * 0.5);
+    repairBtn.textContent = `REPAIR (${repairCost}🔧)`;
+    repairBtn.disabled = tower.health >= tower.maxHealth;
+
+    // Update scrap button
+    const scrapValue = Math.ceil(getTowerPrice(tower.bulletType) * 0.7);
+    scrapBtn.textContent = `SCRAP (+${scrapValue}💶)`;
 }
 
 

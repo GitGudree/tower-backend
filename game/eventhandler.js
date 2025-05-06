@@ -78,8 +78,6 @@ export function handleCanvasClick() {
                     updateMoney("decrease", towerPrice);
                 }
                 
-                updateResources("increase", 10);
-                
                 // Force synergy check for all towers when placing a new one
                 towers.forEach(t => t.checkSynergies(towers, true));
                 
@@ -159,14 +157,30 @@ window.upgradeTower = () => {
     console.log("H" + towers.length)
     
     if (tower) {
-
         tower.oldStats = { 
             ...tower.newStats
         };
 
-
         tower.upgrade();
         updateTowerStats(tower);
+    }
+}
+
+window.repairTower = () => {
+    const tower = towers.find(tower => tower.selected);
+    if (tower) {
+        tower.repair();
+        updateTowerStats(tower);
+    }
+}
+
+window.scrapTower = () => {
+    const tower = towers.find(tower => tower.selected);
+    if (tower) {
+        if (tower.scrap()) {
+            // Clear the tower info display since the tower is gone
+            updateTowerStats(null);
+        }
     }
 }
 

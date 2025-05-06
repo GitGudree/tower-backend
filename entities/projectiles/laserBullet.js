@@ -24,7 +24,7 @@ export class LaserBullet {
         this.bulletDamage = 0.5;
         this.bulletSource = source;
         this.localIframes = 0;
-        this.lifetime = 2;
+        this.lifetime = 30;
         this.pierceAmount = source?.synergyBonus?.piercing ? Infinity : 1;
         this.hitEnemies = new Set();
     }

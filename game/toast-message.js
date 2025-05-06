@@ -58,7 +58,10 @@ export const TOAST_MESSAGES = {
         UNLOCK_ERROR: 'Not enough money to unlock tower',
         LOCKED: 'This tower is locked. Click unlock to purchase access.',
         PLACED: 'Tower placed successfully',
-        SOLD: 'Tower sold'
+        SOLD: 'Tower scrapped successfully',
+        REPAIR_SUCCESS: 'Tower repaired successfully!',
+        REPAIR_ERROR: 'Not enough resources to repair tower',
+        REPAIR_NOT_NEEDED: 'Tower is already at full health'
     },
     SHOP: {
         PURCHASE_SUCCESS: 'Item purchased successfully!',
