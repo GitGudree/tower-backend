@@ -27,6 +27,11 @@ export const TOWER_DATA = {
         price: 200,
         unlocked: false,
         unlockPrice: 400
+    },
+    artillery: {
+        price: 200,
+        unlocked: false,
+        unlockPrice: 500
     }
 };
 
@@ -42,7 +47,22 @@ export function getTowerPrice(towerType) {
 
 // Function to get tower unlock price
 export function getUnlockPrice(towerType) {
-    return TOWER_DATA[towerType]?.unlockPrice ?? 0;
+    switch(towerType) {
+        case 'basic':
+            return 0; // Already unlocked
+        case 'sniper':
+            return 50;
+        case 'gatling':
+            return 50;
+        case 'laser':
+            return 50;
+        case 'rocket':
+            return 50;
+        case 'artillery':
+            return 500;
+        default:
+            return 999999; // High price for unknown towers
+    }
 }
 
 // Function to unlock a tower

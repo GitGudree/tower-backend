@@ -16,10 +16,17 @@ import { money, updateMoney } from "../../game/game.js";
 export class Barricade extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);
-        this.name = "barricade";
+        this.name = "Barricade";
         this.x = x;
         this.y = y;
-        this.health = 500; // High health for blocking enemies
+        this.baseHealth = 100;
+        this.baseRange = 0;
+        this.baseDamage = 0;
+        this.baseFireRate = 0;
+        this.health = this.baseHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
         this.background = 'darkgray';
         this.textColor = 'white';
         this.selected = false;
@@ -61,90 +68,42 @@ export class Barricade extends Tower {
         this.drawSynergyEffects(ctx);
     }
     upgrade() {
-                if (money < this.upgradeCost || this.upgradeCost === -1) return;
-        
-                // DO NOT REMOVE THIS CODE!!!
-                // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-        
-                // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-                //     const upgrade = towerUpgrades[upgradeKey];
-                //     this[upgradeKey] = upgrade[upgradeKey];
-                // }
-        
-                const cost = this.upgradeCost;
-                switch (this.upgrades) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        return;
-                }
-        
-                updateMoney('decrease', cost);
-        
-                this.health += 50;
-                this.upgrades++;
-                
-                
-                //towerDamageElement.textContent = this.damage;
-                //towerUpgradePriceElement.textContent = this.upgradeCost;
-        
-            }
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        this.maxHealth += 50;
+        this.health += 50;
+        this.upgrades++;
+    }
             
-            /**
-             * Retrieves current and next upgrade statistics for the barricade.
-             * 
-             * @method getUpgradeStats
-             * @returns {Object} Contains current and projected upgrade statistics
-             * @description Provides two objects containing current and projected stats after upgrade
-             * @author Anarox
-             * @contributor Quetzalcoatl
-             * @date 2025-03-09
-             **/
-            getUpgradeStats() {
-        
-                const oldStats = {
-                    health: this.health,
-                    range: this.range,
-                    fireRate: this.fireRate,
-                    damage: this.damage,
-                    upgradeCost: this.upgradeCost
-                };
-        
-                let newRange = this.range;
-                let newFireRate = this.fireRate;
-                let newDamage = this.damage;
-                let newUpgradeCost = this.upgradeCost;
-        
-                switch (this.upgrades) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        return {
-                            oldStats,
-                            newStats: oldStats
-                        };
-                }
-        
-                const newStats = {
-                    health: oldStats.health + 50,
-                    range: newRange,
-                    fireRate: newFireRate,
-                    damage: newDamage,
-                    upgradeCost: newUpgradeCost
-                };
-        
-                return { oldStats, newStats };
-            }
+    /**
+     * Retrieves current and next upgrade statistics for the barricade.
+     * 
+     * @method getUpgradeStats
+     * @returns {Object} Contains current and projected upgrade statistics
+     * @description Provides two objects containing current and projected stats after upgrade
+     * @author Anarox
+     * @contributor Quetzalcoatl
+     * @date 2025-03-09
+     **/
+    getUpgradeStats() {
+        const oldStats = {
+            health: this.health,
+            range: this.range,
+            fireRate: this.fireRate,
+            damage: this.damage,
+            upgradeCost: this.upgradeCost
+        };
+
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const newStats = {
+            health: oldStats.health + 50,
+            range: oldStats.range,
+            fireRate: oldStats.fireRate,
+            damage: oldStats.damage,
+            upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
+        };
+
+        return { oldStats, newStats };
+    }
 }

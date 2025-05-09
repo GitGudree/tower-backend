@@ -65,6 +65,14 @@ export function handleCanvasClick() {
         if (!towers.some(tower => tower.x === gridMousePosX && tower.y === gridMousePosY)) {
             const towerPrice = getTowerPrice(type);
             
+            // Artillery row restriction
+            if (type.toLowerCase() === 'artillery') {
+                const row = gridMousePosY / cellSize;
+                if (towers.some(tower => tower.towerType === 'artillery' && Math.floor(tower.y / cellSize) === row)) {
+                    toastError('Only one Artillery Tower can be placed per row!');
+                    return;
+                }
+            }
             // Different logic for inventory items vs regular towers
             if (isInventoryItem || (isTowerUnlocked(type) && money >= towerPrice)) {
                 var laneIndex = gridMousePosY / 50;

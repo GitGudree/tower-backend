@@ -24,12 +24,13 @@ export class Tower {
         this.x = x;
         this.y = y;
         this.name = "Shooter";
-        this.baseHealth = 80;
+        this.baseHealth = 100;
         this.baseRange = 500;
         this.baseDamage = 5;
         this.baseFireRate = 40;
         
-        this.health = this.baseHealth;
+        this.maxHealth = this.baseHealth;
+        this.health = this.maxHealth;
         this.range = this.baseRange;
         this.damage = this.baseDamage;
         this.fireRate = this.baseFireRate;
@@ -46,7 +47,6 @@ export class Tower {
         this.bulletType = type;
         this.isColliding = false;
         this.laneIndex = row;
-        this.maxHealth = this.baseHealth;
 
         // Synergy related properties
         this.synergyRange = 2;
@@ -147,6 +147,15 @@ export class Tower {
         } else {
             this.animatorDead.draw(ctx, this.x, this.y);
         }
+
+        // Draw selection outline if selected
+        if (this.selected) {
+            ctx.save();
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.x, this.y, cellSize, cellSize);
+            ctx.restore();
+        }
     }
 
     drawSynergyEffects(ctx) {
@@ -158,7 +167,7 @@ export class Tower {
             ctx.strokeStyle = this.synergyGlowColor;
             ctx.lineWidth = 2;
             ctx.globalAlpha = 0.4;
-            ctx.strokeRect(this.x, this.y, this.width, this.height);
+            ctx.strokeRect(this.x, this.y, cellSize, cellSize);
 
             // Draw connection lines
             ctx.setLineDash([3, 3]);
@@ -210,7 +219,7 @@ export class Tower {
             ctx.save();
             ctx.strokeStyle = 'yellow';
             ctx.lineWidth = 2;
-            ctx.strokeRect(this.x, this.y, this.width, this.height);
+            ctx.strokeRect(this.x, this.y, cellSize, cellSize);
             ctx.restore();
         }
     }
@@ -241,63 +250,36 @@ export class Tower {
         }
 
     upgrade() {
-        if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        // DO NOT REMOVE THIS CODE!!!
-        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-
-        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-        //     const upgrade = towerUpgrades[upgradeKey];
-        //     this[upgradeKey] = upgrade[upgradeKey];
-        // }
-
-        const cost = this.upgradeCost;
-        switch (this.upgrades) {
-            case 0:
-                this.range += 50;
-                this.fireRate = 25;
-                this.damage = 2;
-
-                // Next upgrade cost
-                this.upgradeCost = 300;
-                break;
-            case 1:
-                this.range += 100;
-                this.fireRate = 20;
-                this.damage = 3;
-
-                // Next upgrade cost
-                this.upgradeCost = 1_000;
-                break;
-            case 2:
-                this.range += 150;
-                this.fireRate = 15;
-                this.damage = 5;
-
-                // Next upgrade cost
-                this.upgradeCost = 5_000;
-                break;
-            case 3:
-                this.range += 200;
-                this.fireRate = 20;
-                this.damage = 20;
-
-                // Next upgrade cost - 1e3=1.000, 1e6=1.000.000
-                this.upgradeCost = 1e9;
-                break;
-            default:
-                return;
-        }
-
-        updateMoney('decrease', cost);
-
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        
+        // Increase health
+        this.baseHealth += 50;
+        this.maxHealth += 50;
         this.health += 50;
+        
+        // Increase other stats based on upgrade level
+        const nextLevel = this.upgrades + 1;
+        
+        // Update base stats according to upgrade path
+        if (nextLevel >= 2) {
+            this.baseRange = Math.floor(this.baseRange * (1 + 0.1)); // 10% increase
+            this.baseFireRate = Math.floor(this.baseFireRate * (1 - 0.05)); // 5% faster
+            
+            // Damage increases from level 3 onwards
+            if (nextLevel >= 3) {
+                this.baseDamage += nextLevel; // Increase damage by level number
+            }
+        }
+        
+        // Update current stats with level multiplier
+        const statMultiplier = 1 + (nextLevel * 0.1); // 10% increase per level
+        this.range = Math.floor(this.baseRange * statMultiplier);
+        this.damage = Math.floor(this.baseDamage * statMultiplier);
+        this.fireRate = Math.floor(this.baseFireRate * (1 - (nextLevel * 0.05))); // 5% faster per level
+        
         this.upgrades++;
-        
-        
-        //towerDamageElement.textContent = this.damage;
-        //towerUpgradePriceElement.textContent = this.upgradeCost;
-
     }
     
     /**
@@ -310,7 +292,6 @@ export class Tower {
      * @date 2025-03-09
      **/
     getUpgradeStats() {
-
         const oldStats = {
             health: this.health,
             range: this.range,
@@ -319,53 +300,16 @@ export class Tower {
             upgradeCost: this.upgradeCost
         };
 
-        let newRange = this.range;
-        let newFireRate = this.fireRate;
-        let newDamage = this.damage;
-        let newUpgradeCost = this.upgradeCost;
-
-        switch (this.upgrades) {
-            case 0:
-                newRange += 50;
-                newFireRate = 25; // lower = better
-                newDamage = 3;
-
-                newUpgradeCost = 300;
-                break;
-            case 1:
-                newRange += 100;
-                newFireRate = 20; // lower = better
-                newDamage = 3;
-
-                newUpgradeCost = 1_000;
-                break;
-            case 2:
-                newRange += 150;
-                newFireRate = 15; // lower = better
-                newDamage = 5;
-
-                newUpgradeCost = 5_000;
-                break;
-            case 3:
-                newRange += 150;
-                newFireRate = 20; // lower = better
-                newDamage = 20;
-
-                newUpgradeCost = 1e9;
-                break;
-            default:
-                return {
-                    oldStats,
-                    newStats: oldStats
-                };
-        }
-
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const nextLevel = this.upgrades + 1;
+        const statMultiplier = 1 + (nextLevel * 0.1); // 10% increase per level
+        
         const newStats = {
             health: oldStats.health + 50,
-            range: newRange,
-            fireRate: newFireRate,
-            damage: newDamage,
-            upgradeCost: newUpgradeCost
+            range: Math.floor(this.baseRange * statMultiplier),
+            fireRate: Math.floor(this.baseFireRate * (1 - (nextLevel * 0.05))),
+            damage: Math.floor(this.baseDamage * statMultiplier),
+            upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
         };
 
         return { oldStats, newStats };

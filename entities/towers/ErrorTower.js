@@ -11,11 +11,15 @@ export class ErrorTower extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);
         this.name = "error";
-        this.health = 60;
-        this.range = 300;
-        this.damage = 1;
+        this.baseHealth = 60;
+        this.baseRange = 300;
+        this.baseDamage = 1;
+        this.baseFireRate = 10;
+        this.health = this.baseHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
         this.projectiles = [];
-        this.fireRate = 10;
         this.bulletType = type;
         this.background = "black";
         this.laneIndex = laneIndex;
@@ -28,39 +32,12 @@ export class ErrorTower extends Tower {
     update (deltaTime) {}
 
     upgrade() {
-        if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        // DO NOT REMOVE THIS CODE!!!
-        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-
-        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-        //     const upgrade = towerUpgrades[upgradeKey];
-        //     this[upgradeKey] = upgrade[upgradeKey];
-        // }
-
-        const cost = this.upgradeCost;
-        switch (this.upgrades) {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            default:
-                return;
-        }
-
-        updateMoney('decrease', cost);
-
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        this.maxHealth += 50;
         this.health += 50;
         this.upgrades++;
-        
-        
-        //towerDamageElement.textContent = this.damage;
-        //towerUpgradePriceElement.textContent = this.upgradeCost;
-
     }
     
     /**

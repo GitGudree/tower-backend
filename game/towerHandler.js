@@ -5,11 +5,12 @@ import { setChosenTower } from "../entities/towers/towerState.js";
 
 // Tower type display names
 const TOWER_NAMES = {
-    'basic': 'Normal tower',
-    'sniper': 'Sniper tower',
-    'gatling': 'Gatling tower',
-    'laser': 'Laser tower',
-    'rocket': 'Rocket tower',
+    'basic': 'Normal Tower',
+    'sniper': 'Sniper Tower',
+    'gatling': 'Gatling Tower',
+    'laser': 'Laser Tower',
+    'rocket': 'Rocket Tower',
+    'artillery': 'Artillery Tower',
     // Add inventory items
     'barricade': 'Barricade',
     'mine': 'Mine',

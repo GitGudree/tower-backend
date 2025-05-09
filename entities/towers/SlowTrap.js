@@ -6,7 +6,7 @@ import { collision } from "../../game/hitreg.js";
 export class SlowTrap extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);
-        this.name = "slowtrap";
+        this.name = "SlowTrap";
         this.x = x;
         this.y = y;
         this.slowFactor = 0.5; // Reduces enemy speed by 50%
@@ -16,7 +16,14 @@ export class SlowTrap extends Tower {
         this.selected = false;
         this.laneIndex = laneIndex;
         this.isActive = true;
-        this.health = 100; // Can be used a few times before breaking
+        this.baseHealth = 100;
+        this.baseRange = 0;
+        this.baseDamage = 0;
+        this.baseFireRate = 0;
+        this.health = this.baseHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
         this.affectedEnemies = new Map(); // Track affected enemies and their timers
         
         // Completely disable collision handling
@@ -122,37 +129,30 @@ export class SlowTrap extends Tower {
 
     // Basic upgrade functionality
     upgrade() {
-        if (money < this.upgradeCost || this.upgradeCost === -1) return;
-        
-        const cost = this.upgradeCost;
-        switch (this.upgrades) {
-            case 0:
-                this.slowDuration += 1000; // Add 1 second to slow duration
-                this.health = 100; // Restore health
-                break;
-            default:
-                return;
-        }
-        
-        updateMoney('decrease', cost);
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        this.maxHealth += 50;
+        this.health += 50;
         this.upgrades++;
     }
 
     getUpgradeStats() {
         const oldStats = {
             health: this.health,
-            range: 0,
-            fireRate: 0,
-            damage: 0,
+            range: this.range,
+            fireRate: this.fireRate,
+            damage: this.damage,
             upgradeCost: this.upgradeCost
         };
 
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
         const newStats = {
-            health: 100, // Full health after upgrade
-            range: 0,
-            fireRate: 0,
-            damage: 0,
-            upgradeCost: -1 // Can only upgrade once
+            health: oldStats.health + 50,
+            range: oldStats.range,
+            fireRate: oldStats.fireRate,
+            damage: oldStats.damage,
+            upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
         };
 
         return { oldStats, newStats };

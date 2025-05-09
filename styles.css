@@ -389,56 +389,6 @@ canvas {
     font-size: 1em;
 }
 
-.tower-upgrade-btn {
-    font-weight: bold;
-    padding: 0.6rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    min-width: 120px;
-    margin-top: 1rem;
-}
-
-.tower-upgrade-btn:not(.upgrade) {
-    background: linear-gradient(90deg, #dc3545, #b02a37);
-    border: 1px solid #842029;
-    color: var(--text-color);
-    cursor: not-allowed;
-}
-
-.hover-upgrade:hover {
-    background-image: linear-gradient(#34c134, #28a745);
-    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3), 0 0 30px rgba(40, 167, 69, 0.2);
-    color: var(--text-color);
-    text-shadow: black 1px 1px;
-    transform: translateY(-2px);
-}
-
-.green-text {
-    color: #32CD32;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-
-.tower-title {
-    font-weight: bold;
-    color: white;
-    text-shadow: black 1px 1px;
-    user-select: none;
-}
-
-.display-card img {
-    height: 50px;
-    aspect-ratio: 1/1;
-    box-shadow: black 5px 3px 10px;
-}
-
-.price-placeholder {
-    margin-top: 0.5rem;
-}
-
 .tower-upgrade-btn,
 .start-wave-btn,
 .usebtn,
@@ -789,12 +739,11 @@ canvas {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    gap: 0.8rem;
+    gap: 0.1rem;
     color: var(--text-color);
     text-align: center;
-    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-    height: 100%;
-    padding: 0.5rem;
+    background: var(--ui-background);
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
     border-radius: 10px;
 }
 
@@ -803,11 +752,11 @@ canvas {
     height: 60px;
     object-fit: contain;
     transition: all 0.3s ease;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem;
     filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
     border-radius: 15px;
-    background-color: white;
-    padding: 6px 10px;
+    background: transparent;
+    padding: 0;
 }
 
 .desc img[src=""],
@@ -824,14 +773,14 @@ canvas {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     font-size: 1.5em;
-    margin: 0.5rem 0;
+    margin: 0.1rem 0;
 }
 
 .desc p {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     font-size: 1.1em;
-    margin: 0.3rem 0;
+    margin: 0.05rem 0;
     max-width: 250px;
 }
 
@@ -964,16 +913,12 @@ canvas {
     grid-template-columns: 1fr;
 }
 
-.desc {
-    text-align: center;
-    background-color: #b67a20;
-    gap: .5rem;
-    user-select: none;
-}
-
 .itemdesc > .desc img {
     height: 195px;
     aspect-ratio: 1/1;
+    border-radius: 15px;
+    background: transparent;
+    padding: 0;
 }
 
 .purchase-message {
@@ -1357,66 +1302,55 @@ h1, h2, h3 {
     box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
 }
 
-.tower-action-buttons {
+/* Single source of truth for tower action buttons */
+.display-card .tower-action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     margin-top: 1rem;
     width: 100%;
+    max-width: 100%;
 }
 
-.tower-upgrade-btn {
+.display-card .tower-action-buttons button {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    height: 32px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.display-card .tower-action-buttons .tower-upgrade-btn {
     grid-column: 1 / span 2;
     background: linear-gradient(90deg, #4CAF50, #45a049);
-    color: var(--text-color);
-    font-weight: bold;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    width: 100%;
 }
 
-.tower-repair-btn, 
-.tower-scrap-btn {
-    width: 100%;
-    font-weight: bold;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    color: var(--text-color);
-}
-
-.tower-repair-btn {
+.display-card .tower-action-buttons .tower-repair-btn {
     background: linear-gradient(90deg, #4CAF50, #45a049);
 }
 
-.tower-scrap-btn {
+.display-card .tower-action-buttons .tower-scrap-btn {
     background: linear-gradient(90deg, #ff9800, #f57c00);
 }
 
-.tower-repair-btn:hover:not(:disabled),
-.tower-upgrade-btn:hover:not(:disabled) {
-    background: linear-gradient(90deg, #45a049, #3d8b40);
+.display-card .tower-action-buttons button:hover:not(:disabled) {
     transform: translateY(-2px);
 }
 
-.tower-scrap-btn:hover:not(:disabled) {
-    background: linear-gradient(90deg, #f57c00, #ef6c00);
-    transform: translateY(-2px);
-}
-
-.tower-repair-btn:disabled,
-.tower-scrap-btn:disabled {
+.display-card .tower-action-buttons button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
     background: linear-gradient(90deg, #666666, #555555);
+}
+
+.display-card .tower-action-buttons .tower-upgrade-btn:not(.upgrade) {
+    background: linear-gradient(90deg, #dc3545, #b02a37);
+    cursor: not-allowed;
 }

@@ -261,40 +261,65 @@ export function updateTowerStats(tower) {
         return;
     }
 
+    // Standard upgrade costs for all towers
+    const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
+
     // Show tower information when selected
     towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
     towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
     
-    // Calculate stat improvements (assuming 20% increase per upgrade)
-    const healthImprovement = Math.round(tower.health * 0.2);
-    const rangeImprovement = Math.round(tower.range * 0.2);
-    const fireRateImprovement = Math.round(tower.fireRate * 0.2);
+    // Determine upgrade cost for this level
+    let upgradeCost = UPGRADE_COSTS[tower.upgrades] || -1;
+    tower.upgradeCost = upgradeCost;
 
-    // Update stats with improvement indicators and synergy bonuses
+    // Use getUpgradeStats to get actual stat improvements
+    let upgradeStats = null;
+    if (typeof tower.getUpgradeStats === 'function') {
+        const { oldStats, newStats } = tower.getUpgradeStats();
+        upgradeStats = { oldStats, newStats };
+    }
+
+    // Health
     const healthText = `${tower.health}/${tower.maxHealth}`;
     const synergyHealthText = tower.synergyBonus?.health > 0 ? ` (+${tower.synergyBonus.health} 🔮)` : '';
-    const upgradeHealthText = money >= tower.upgradeCost ? ` (+${healthImprovement})` : '';
+    let upgradeHealthText = '';
+    if (upgradeStats && upgradeStats.newStats.health > upgradeStats.oldStats.health && money >= tower.upgradeCost) {
+        upgradeHealthText = ` (+${upgradeStats.newStats.health - upgradeStats.oldStats.health})`;
+    }
     document.querySelector('.hp-title-display').textContent = 
         healthText + synergyHealthText + upgradeHealthText;
     
-    // Show base range and synergy bonus separately
-    const rangeText = `${tower.baseRange}`;
+    // Range
+    const rangeText = `${tower.range}`;
     const synergyRangeText = tower.synergyBonus?.range > 0 ? ` (+${tower.synergyBonus.range} 🔮)` : '';
-    const upgradeRangeText = money >= tower.upgradeCost ? ` (+${rangeImprovement})` : '';
+    let upgradeRangeText = '';
+    if (upgradeStats && upgradeStats.newStats.range > upgradeStats.oldStats.range && money >= tower.upgradeCost) {
+        upgradeRangeText = ` (+${upgradeStats.newStats.range - upgradeStats.oldStats.range})`;
+    }
     document.querySelector('.range-title-display').textContent = 
         rangeText + synergyRangeText + upgradeRangeText;
     
-    // Show base fire rate and synergy bonus separately
-    const fireRateText = `${tower.baseFireRate}`;
-    const synergyFireRateText = tower.synergyBonus?.fireRate > 0 ? ` (+${tower.synergyBonus.fireRate} 🔮)` : '';
-    const upgradeFireRateText = money >= tower.upgradeCost ? ` (+${fireRateImprovement})` : '';
+    // Fire rate (convert to shots per second and show improvement if it increases)
+    const shotsPerSecond = (60 / tower.fireRate).toFixed(1);  // Convert frames to shots/sec
+    const fireRateText = `${shotsPerSecond} shots/sec`;
+    const synergyFireRateText = tower.synergyBonus?.fireRate > 0 ? ` (+${(60 / (tower.fireRate - tower.synergyBonus.fireRate) - 60 / tower.fireRate).toFixed(1)} 🔮)` : '';
+    let upgradeFireRateText = '';
+    if (upgradeStats && upgradeStats.newStats.fireRate < upgradeStats.oldStats.fireRate && money >= tower.upgradeCost) {
+        const newShotsPerSecond = 60 / upgradeStats.newStats.fireRate;
+        const oldShotsPerSecond = 60 / upgradeStats.oldStats.fireRate;
+        upgradeFireRateText = ` (+${(newShotsPerSecond - oldShotsPerSecond).toFixed(1)})`;
+    }
     document.querySelector('.firerate-title-display').textContent = 
         fireRateText + synergyFireRateText + upgradeFireRateText;
 
-    // Show base damage and synergy bonus separately
-    const damageText = `${tower.baseDamage}`;
+    // Damage
+    const damageText = `${tower.name.toLowerCase() === 'laser' ? tower.damage.toFixed(1) : tower.damage}`;
     const synergyDamageText = tower.synergyBonus?.damage > 0 ? ` (+${tower.synergyBonus.damage} 🔮)` : '';
-    const upgradeDamageText = money >= tower.upgradeCost ? ` (+${Math.round(tower.baseDamage * 0.2)})` : '';
+    let upgradeDamageText = '';
+    if (upgradeStats && upgradeStats.newStats.damage > upgradeStats.oldStats.damage && money >= tower.upgradeCost) {
+        const damageIncrease = upgradeStats.newStats.damage - upgradeStats.oldStats.damage;
+        upgradeDamageText = ` (+${tower.name.toLowerCase() === 'laser' ? damageIncrease.toFixed(1) : damageIncrease})`;
+    }
     document.querySelector('.damage-title-display').textContent = 
         damageText + synergyDamageText + upgradeDamageText;
 
@@ -322,19 +347,26 @@ export function updateTowerStats(tower) {
     repairBtn.classList.remove('hidden');
     scrapBtn.classList.remove('hidden');
 
-    // Update upgrade button based on affordability
-    upgradeBtn.textContent = `UPGRADE (${tower.upgradeCost}💶)`;
-    if (money >= tower.upgradeCost) {
-        upgradeBtn.classList.add('upgrade', 'hover-upgrade');
-    } else {
+    // Update upgrade button based on affordability and max level
+    if (upgradeCost === -1 || tower.upgrades >= 5) {
+        upgradeBtn.disabled = true;
         upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = 'MAX LEVEL';
+    } else if (money >= upgradeCost) {
+        upgradeBtn.disabled = false;
+        upgradeBtn.classList.add('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = `UPGRADE (${upgradeCost}💶)`;
+    } else {
+        upgradeBtn.disabled = true;
+        upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = `UPGRADE (${upgradeCost}💶)`;
     }
 
     // Update repair button
     const missingHealth = tower.maxHealth - tower.health;
     const repairCost = Math.ceil(missingHealth * 0.5);
-    repairBtn.textContent = `REPAIR (${repairCost}🔧)`;
-    repairBtn.disabled = tower.health >= tower.maxHealth;
+    repairBtn.disabled = missingHealth <= 0;
+    repairBtn.textContent = repairBtn.disabled ? 'REPAIR (MAX)' : `REPAIR (${repairCost}🔧)`;
 
     // Update scrap button
     const scrapValue = Math.ceil(getTowerPrice(tower.bulletType) * 0.7);

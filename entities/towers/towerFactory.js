@@ -8,6 +8,7 @@ import { Mine } from "./Mine.js";
 import { SlowTrap } from "./SlowTrap.js";
 import { setChosenTower } from "./towerState.js";
 import { Tower } from "./tower.js";
+import { ArtilleryTower } from './ArtilleryTower.js';
 /**
  * towerFactory class
  *
@@ -46,6 +47,9 @@ export function createTower(x, y, type, laneIndex) {
             break;
         case "basic":
             tower = new Tower(x, y, "basic", laneIndex)
+            break;
+        case "artillery":
+            tower = new ArtilleryTower(x, y, "artillery", laneIndex)
             break;
         default:
             tower = new ErrorTower(x, y, "error", laneIndex);

@@ -14,11 +14,17 @@ export class RocketTower extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);
         this.name = "Rocket";
-        this.health = 30;
-        this.range = 700;
-        this.damage = 10;
+        this.description = "A powerful rocket launcher with splash damage.";
+        this.baseHealth = 70;
+        this.baseRange = 600;
+        this.baseDamage = 10;
+        this.baseFireRate = 150;
+        this.maxHealth = this.baseHealth;
+        this.health = this.maxHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
         this.projectiles = [];
-        this.fireRate = 160;
         this.bulletType = type;
         this.background = "grey"; 
         this.laneIndex = laneIndex;
@@ -60,57 +66,25 @@ export class RocketTower extends Tower {
     }
 
     upgrade() {
-        if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        const cost = this.upgradeCost;
-        switch (this.upgrades) {
-            case 0:
-                this.range += 50;
-                this.damage = 14;
-
-                // Next upgrade cost
-                this.upgradeCost = 300;
-                break;
-            case 1:
-                this.range += 100;
-                this.fireRate = 150;
-                this.damage = 18;
-
-                // Next upgrade cost
-                this.upgradeCost = 1_000;
-                break;
-            case 2:
-                this.range += 150;
-                this.fireRate = 140;
-                this.damage = 22;
-
-                // Next upgrade cost
-                this.upgradeCost = 5_000;
-                break;
-            case 3:
-                this.range += 200;
-                this.fireRate = 120;
-                this.damage = 28;
-
-                // Next upgrade cost - 1e3=1.000, 1e6=1.000.000
-                this.upgradeCost = 1e9;
-                break;
-            default:
-                return;
-        }
-
-        updateMoney('decrease', cost);
-
-        this.health += 50;
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        
+        // Rocket-specific upgrades
+        this.baseHealth += 25;  // Update base health
+        this.maxHealth += 25;
+        this.health += 25;
+        this.baseDamage += 8;   // Update base damage
+        this.damage += 8;
+        this.baseRange += 40;   // Update base range
+        this.range += 40;
+        this.baseFireRate = Math.max(100, this.baseFireRate - 15); // Update base fire rate
+        this.fireRate = this.baseFireRate;
+        
         this.upgrades++;
-        
-        
-        //towerDamageElement.textContent = this.damage;
-        //towerUpgradePriceElement.textContent = this.upgradeCost;
-
     }
-    getUpgradeStats() {
 
+    getUpgradeStats() {
         const oldStats = {
             health: this.health,
             range: this.range,
@@ -119,50 +93,13 @@ export class RocketTower extends Tower {
             upgradeCost: this.upgradeCost
         };
 
-        let newRange = this.range;
-        let newFireRate = this.fireRate;
-        let newDamage = this.damage;
-        let newUpgradeCost = this.upgradeCost;
-
-        switch (this.upgrades) {
-            case 0:
-                newRange += 50;
-                newDamage = 20;
-
-                newUpgradeCost = 300;
-                break;
-            case 1:
-                newRange += 100;
-                newDamage = 25;
-
-                newUpgradeCost = 1_000;
-                break;
-            case 2:
-                newRange += 150;
-                newDamage = 30;
-
-                newUpgradeCost = 5_000;
-                break;
-            case 3:
-                newRange += 150;
-                newFireRate = 100; // lower = better
-                newDamage = 35;
-
-                newUpgradeCost = 1e9;
-                break;
-            default:
-                return {
-                    oldStats,
-                    newStats: oldStats
-                };
-        }
-
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
         const newStats = {
-            health: oldStats.health + 50,
-            range: newRange,
-            fireRate: newFireRate,
-            damage: newDamage,
-            upgradeCost: newUpgradeCost
+            health: oldStats.health + 25,
+            range: oldStats.range + 40,
+            fireRate: Math.max(100, oldStats.fireRate - 15),
+            damage: oldStats.damage + 8,
+            upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
         };
 
         return { oldStats, newStats };
