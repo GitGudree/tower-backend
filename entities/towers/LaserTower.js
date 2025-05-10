@@ -1,14 +1,13 @@
 import { Tower } from "./tower.js";
 import { LaserBullet } from "../projectiles/laserBullet.js";
-import { collision } from "../../game/hitreg.js";
-import { updateResources} from "../../game/game.js";
-import { money, updateMoney } from "../../game/game.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 
 /**
  * Laser tower class
  *
  * @constructor (x, y, row)
- * Author:    Quetzalcoatl
+ * Author:    Quetzalcoatl, Randomfevva
  * Created:   27.03.2025
  **/
 export class LaserTower extends Tower {
@@ -27,23 +26,34 @@ export class LaserTower extends Tower {
         this.fireRate = this.baseFireRate;
         this.width = 5;
         this.height = 5;
+        this.health = 30; 
+        this.range = 1000;
+        this.damage = 0.5;
+        this.fireRate = 5;
         this.projectiles = [];
         this.bulletType = type;
         this.background = "purple";
         this.laneIndex = laneIndex;
         this.currentBullet = null;
 
-        this.deathDuration = 0;
+        this.deathDuration = 50;
         this.deathTimer = this.deathDuration;
         this.isDead = false;
+
+        this.animatorLive = new SpriteAnimator (sprites.laser, 0, 50, 50, 10, 200); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.laser, 50, 50, 50, 2, 200);
     }
 
     update(deltaTime) {
         super.update(deltaTime);
+        if (!this.isDead) {
+            this.animatorLive.update(deltaTime);
+        }
         
         if (this.health <= 0 && !this.isDead) {
             this.isDead = true;
         }
+            
     }
     
     attack(enemies, bullets) {
@@ -55,7 +65,7 @@ export class LaserTower extends Tower {
         );
 
         if (target) {
-            const bullet = new LaserBullet(this.x, this.y, target.x, target.y, this);
+            const bullet = new LaserBullet(this.x + 16, this.y - 1, target.x, target.y, this);
             bullet.bulletDamage = this.damage;
             bullets.push(bullet);
         }

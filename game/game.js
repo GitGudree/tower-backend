@@ -91,7 +91,7 @@ export function updateGameState(deltaTime) {
 
     const enemiesArray = [];
     for (let enemy of enemies) {
-        enemy.move();
+        enemy.move(deltaTime);
 
         if (enemy.health <= 0) {
             // Resource rewards based on enemy type
