@@ -2,6 +2,7 @@ import { Tower } from "./tower.js";
 import { LaserBullet } from "../projectiles/laserBullet.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { money, updateMoney } from "../../game/game.js";
 
 /**
  * Laser tower class
@@ -26,7 +27,7 @@ export class LaserTower extends Tower {
         this.fireRate = this.baseFireRate;
         this.width = 5;
         this.height = 5;
-        this.health = 30; 
+        this.health = 50; 
         this.range = 1000;
         this.damage = 0.5;
         this.fireRate = 5;
