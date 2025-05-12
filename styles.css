@@ -594,22 +594,22 @@ canvas {
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Bredde og plassering av sliderne */
+/* Width and placement of sliders */
 .popup-content input[type="range"] {
-    width: 80%;  /* Gjør sliderne litt mindre enn hele bredden på containeren */
-    margin: 10px 0;  /* Plasserer avstand mellom sliderne */
+    width: 80%;  /* Make sliders a bit smaller than the container */
+    margin: 10px 0;  /* Place space between sliders */
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Legger til plass til etikettene */
+/* Adding space to the labels */
 .popup-content label {
     display: block;
     margin-bottom: 5px;
 }
 
-/* --- Generell styling --- */
+/* --- General styling --- */
 
 
 /* Each individual shop item */
@@ -923,20 +923,20 @@ canvas {
 
 .purchase-message {
     position: fixed;
-    inset: 0; /* dekker hele viewporten */
+    inset: 0; /* covers the entire viewport */
     display: flex;
     justify-content: center;
     align-items: center;
   
     /* Overlay stil */
-    background-color: rgba(0, 0, 0, 0.4); /* gir litt bakgrunn, kan endres om ønsket */
+    background-color: rgba(0, 0, 0, 0.4); /* gives a bit of background, can be changed if desired */
     z-index: 9999;
   }
   
 .purchase-message .message-box {
     background-color: var(--ui-secondary);
     color: var(--text-color);
-    padding: 1.25rem 2.5rem; /* tilsvarer 20px 40px */
+    padding: 1.25rem 2.5rem; /* equals 20px 40px */
     border-radius: 0.625rem; /* 10px */
     font-size: 1.5rem;
     font-weight: bold;
@@ -961,7 +961,7 @@ canvas {
 
 /* Use button style */
 .usebtn {
-    background-color: #28a745; /* grønn */
+    background-color: #28a745; /* green */
     color: white;
 }
 
@@ -972,7 +972,7 @@ canvas {
 
 /* Delete button style */
 .deletebtn {
-    background-color: #dc3545; /* rød */
+    background-color: #dc3545; /* red */
     color: white;
 }
 
