@@ -26,8 +26,8 @@ export async function spawnWave() {
     wave++;
     isWaveStarted = true;
 
-    // Switch to gameplay music
-    soundManager.playMusic('gameplay');
+    // Fade out background music, then play gameplay music
+    soundManager.fadeOutMusic('background_music', 800, () => soundManager.playMusic('gameplay'));
 
     // Set amount of enemies to spawn
     const spawnEnemies = wave * 2;

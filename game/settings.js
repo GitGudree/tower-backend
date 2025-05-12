@@ -5,6 +5,8 @@
  * @description Handles game settings and their persistence
  */
 
+import { soundManager } from './soundManager.js';
+
 const Settings = {
     speedMultiplier: 1, // Game speed multiplier (1 = normal)
     volume: 1, // Sound volume (0 = mute, 1 = max)
@@ -67,6 +69,7 @@ const Settings = {
             volumeSlider.value = this.volume;
             volumeSlider.addEventListener('input', (e) => {
                 this.volume = parseFloat(e.target.value);
+                soundManager.setVolume(this.volume); // Set master volume
                 this.saveSettings();
             });
         }

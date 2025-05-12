@@ -3,13 +3,13 @@ export class SoundManager {
         this.sounds = new Map();
         this.soundVolumes = new Map(); // Store custom volumes
         this.muted = false;
-        this.volume = 0.5;
+        this.volume = 1.0; // Default to max volume
         this.loops = new Map(); // Track looping sounds
         this.loopStopTimeouts = new Map(); // Track debounce timeouts
         this.music = {
             current: null,
             tracks: {},
-            volume: 0.4 // Default music volume
+            volume: 1.0 // Default music volume is also max
         };
         console.log("SoundManager initialized");
     }
@@ -122,6 +122,11 @@ export class SoundManager {
         this.volume = Math.max(0, Math.min(1, volume));
         this.sounds.forEach(sound => sound.volume = this.volume);
         this.loops.forEach(loopAudio => loopAudio.volume = this.volume);
+        // Update music volume live
+        this.music.volume = this.volume;
+        if (this.music.current) {
+            this.music.current.volume = this.volume;
+        }
         console.log(`Volume set to: ${this.volume}`);
     }
 
@@ -131,6 +136,31 @@ export class SoundManager {
             loopAudio.muted = this.muted;
         });
         console.log(`Sound ${this.muted ? 'muted' : 'unmuted'}`);
+    }
+
+    fadeOutMusic(trackName, duration = 800, callback) {
+        const track = this.music.tracks[trackName];
+        if (!track) {
+            if (callback) callback();
+            return;
+        }
+        const startVolume = track.volume;
+        const steps = 30;
+        let currentStep = 0;
+        const stepTime = duration / steps;
+        const fade = () => {
+            currentStep++;
+            track.volume = startVolume * (1 - currentStep / steps);
+            if (currentStep < steps) {
+                setTimeout(fade, stepTime);
+            } else {
+                track.pause();
+                track.currentTime = 0;
+                track.volume = this.music.volume;
+                if (callback) callback();
+            }
+        };
+        fade();
     }
 }
 
