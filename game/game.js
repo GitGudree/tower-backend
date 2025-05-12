@@ -431,18 +431,46 @@ export function projectileHandler(){
 
 export function initGame() {
     console.log("Initializing game and loading sounds...");
+    
+    // Create and show sound initialization message
+    const soundMessage = document.createElement('div');
+    soundMessage.style.position = 'fixed';
+    soundMessage.style.top = '10px';
+    soundMessage.style.left = '50%';
+    soundMessage.style.transform = 'translateX(-50%)';
+    soundMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    soundMessage.style.color = 'white';
+    soundMessage.style.padding = '10px 20px';
+    soundMessage.style.borderRadius = '5px';
+    soundMessage.style.zIndex = '1000';
+    soundMessage.textContent = 'Click anywhere to enable sound';
+    document.body.appendChild(soundMessage);
+
+    // Remove message after user interaction
+    const removeMessage = () => {
+        soundMessage.remove();
+        document.removeEventListener('click', removeMessage);
+    };
+    document.addEventListener('click', removeMessage);
+
     // Initialize sound effects
-    soundManager.loadSound('tower_shoot', '/assets/sounds/tower_shoot.mp3');
-    soundManager.loadSound('tower_destroy', '/assets/sounds/tower_destroy.mp3');
-    soundManager.loadSound('enemy_hit', '/assets/sounds/enemy_hit.mp3');
-    soundManager.loadSound('laser', '/assets/sounds/laser.mp3');
-    soundManager.loadSound('rocket', '/assets/sounds/rocket.mp3');
-    soundManager.loadSound('mine_trigger', '/assets/sounds/mine_trigger.mp3');
-    soundManager.loadSound('slow_trap', '/assets/sounds/slow_trap.mp3');
-    soundManager.loadSound('artillery_fire', '/assets/sounds/artillery_fire.mp3');
-    soundManager.loadSound('gatling_fire', '/assets/sounds/gatling_fire.mp3');
-    soundManager.loadSound('sniper_fire', '/assets/sounds/sniper_fire.mp3');
-    soundManager.loadSound('background_music', '/assets/sounds/Backround.mp3');
-    soundManager.loadSound('gameplay_music', '/assets/sounds/Gameplay.mp3');
-    console.log("All sounds loaded");
+    const soundPromises = [
+        soundManager.loadSound('tower_shoot', '/assets/sounds/tower_shoot.mp3'),
+        soundManager.loadSound('tower_destroy', '/assets/sounds/tower_destroy.mp3'),
+        soundManager.loadSound('enemy_hit', '/assets/sounds/enemy_hit.mp3'),
+        soundManager.loadSound('laser', '/assets/sounds/laser.mp3'),
+        soundManager.loadSound('rocket', '/assets/sounds/rocket.mp3'),
+        soundManager.loadSound('mine_trigger', '/assets/sounds/mine_trigger.mp3'),
+        soundManager.loadSound('slow_trap', '/assets/sounds/slow_trap.mp3'),
+        soundManager.loadSound('artillery_fire', '/assets/sounds/artillery_fire.mp3'),
+        soundManager.loadSound('gatling_fire', '/assets/sounds/gatling_fire.mp3'),
+        soundManager.loadSound('sniper_fire', '/assets/sounds/sniper_fire.mp3'),
+        soundManager.loadSound('background_music', '/assets/sounds/Backround.mp3'),
+        soundManager.loadSound('gameplay_music', '/assets/sounds/Gameplay.mp3')
+    ];
+    
+    return Promise.all(soundPromises).then(() => {
+        console.log("All sounds loaded");
+        soundManager.playMusic('background');
+    });
 }

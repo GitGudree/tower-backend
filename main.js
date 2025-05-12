@@ -9,8 +9,10 @@ import { setChosenTower } from "./entities/towers/towerState.js"
 import { soundManager } from "./game/soundManager.js";
 
 // Initialize game systems (including sound)
-initGame();
-soundManager.playMusic('background');
+initGame().then(() => {
+    // Start game loop after initialization is complete
+    gameLoop();
+});
 
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);
@@ -53,9 +55,7 @@ function gameLoop(currentTime) {
     // console.log('projectileHandler:', projectileHandlerTime);
 }
 
-gameLoop();
-
- //passes data along to setChosenTower
+//passes data along to setChosenTower
 document.querySelectorAll('[tower-type]').forEach(button => {
     button.addEventListener('click', () => {
         const towerType = button.getAttribute('tower-type');
