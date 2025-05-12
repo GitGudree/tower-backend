@@ -61,12 +61,20 @@ export class RocketBullet {
 
     dealDamage(enemy, enemies) {
         if (!this.exploded) {
-            enemy.health -= this.bulletDamage;
+            if (typeof enemy.takeDamage === 'function') {
+                enemy.takeDamage(this.bulletDamage);
+            } else {
+                enemy.health -= this.bulletDamage;
+            }
 
             // Explosion effect - damages enemies within radius
             enemies.forEach(e => {
                 if (Math.abs(e.x - this.x) < this.aoe && Math.abs(e.y - this.y) < this.aoe) {
-                    e.health -= this.bulletDamage;
+                    if (typeof e.takeDamage === 'function') {
+                        e.takeDamage(this.bulletDamage);
+                    } else {
+                        e.health -= this.bulletDamage;
+                    }
                 }
             });
 

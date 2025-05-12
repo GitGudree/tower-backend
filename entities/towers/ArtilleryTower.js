@@ -1,6 +1,7 @@
 import { Tower } from './tower.js';
 import { ArtilleryShell } from '../projectiles/ArtilleryShell.js';
 import { money, updateMoney } from '../../game/game.js';
+import { soundManager } from '../../game/soundManager.js';
 
 export class ArtilleryTower extends Tower {
     constructor(x, y) {
@@ -52,6 +53,7 @@ export class ArtilleryTower extends Tower {
                 this.timer = this.fireRate;
                 this.fireAnimation = 500;
                 this.animatorLive.reset();
+                soundManager.play('artillery_fire');
             }
         } else {
             this.timer--;

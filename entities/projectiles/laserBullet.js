@@ -51,7 +51,11 @@ export class LaserBullet {
 
     dealDamage(enemy) {
         if (!this.bulletSource?.isDead && !this.hitEnemies.has(enemy)) {
-            enemy.health -= this.bulletDamage;
+            if (typeof enemy.takeDamage === 'function') {
+                enemy.takeDamage(this.bulletDamage);
+            } else {
+                enemy.health -= this.bulletDamage;
+            }
             this.localIframes = this.bulletSource?.synergyBonus?.piercing ? 15 : 30; // Faster hit rate when piercing
             if (!this.bulletSource?.synergyBonus?.piercing) {
                 this.hitEnemies.add(enemy);

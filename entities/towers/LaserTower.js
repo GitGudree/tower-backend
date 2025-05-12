@@ -3,6 +3,7 @@ import { LaserBullet } from "../projectiles/laserBullet.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 import { money, updateMoney } from "../../game/game.js";
+import { soundManager } from "../../game/soundManager.js";
 
 /**
  * Laser tower class
@@ -43,6 +44,9 @@ export class LaserTower extends Tower {
 
         this.animatorLive = new SpriteAnimator (sprites.laser, 0, 50, 50, 10, 200); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.laser, 50, 50, 50, 2, 200);
+
+        this.isLoopingSound = false;
+        this.wasFiringLastTick = false;
     }
 
     update(deltaTime) {
@@ -65,11 +69,22 @@ export class LaserTower extends Tower {
             Math.abs(enemy.x - this.x) < this.range
         );
 
+        // Only start/stop the loop if the firing state changed
+        if (target && !this.wasFiringLastTick) {
+            soundManager.playLoop('laser');
+            this.isLoopingSound = true;
+        } else if (!target && this.wasFiringLastTick) {
+            soundManager.stopLoop('laser');
+            this.isLoopingSound = false;
+        }
+
         if (target) {
             const bullet = new LaserBullet(this.x + 16, this.y - 1, target.x, target.y, this);
             bullet.bulletDamage = this.damage;
             bullets.push(bullet);
         }
+
+        this.wasFiringLastTick = !!target;
     }
 
     upgrade() {

@@ -1,11 +1,16 @@
 import { gameGrid, createGrid, handleGameGrid } from "./game/grid.js";
-import { drawGame, projectileHandler, updateGameState } from "./game/game.js";
+import { drawGame, projectileHandler, updateGameState, initGame } from "./game/game.js";
 import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventhandler.js";
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
 import { setChosenTower } from "./entities/towers/towerState.js"
+import { soundManager } from "./game/soundManager.js";
+
+// Initialize game systems (including sound)
+initGame();
+soundManager.playMusic('background');
 
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);

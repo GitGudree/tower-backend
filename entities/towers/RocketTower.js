@@ -3,6 +3,7 @@ import { RocketBullet } from "../projectiles/RocketBullet.js";
 import { money, updateMoney } from "../../game/game.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { soundManager } from "../../game/soundManager.js";
 /**
  * Rocket tower class
  *
@@ -57,6 +58,7 @@ export class RocketTower extends Tower {
             if (fired){
                 this.fireAnimation = 500
                 this.animatorLive.reset();
+                soundManager.play('rocket');
             }
             
             this.timer = this.fireRate;

@@ -2,6 +2,7 @@ import { Tower } from "./tower.js";
 import { cellSize } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 import { collision } from "../../game/hitreg.js";
+import { soundManager } from "../../game/soundManager.js";
 
 export class SlowTrap extends Tower {
     constructor(x, y, type, laneIndex) {
@@ -76,6 +77,7 @@ export class SlowTrap extends Tower {
                     });
 
                     this.health -= 25; // Reduce trap health each time it's triggered
+                    soundManager.play('slow_trap');
                     console.log("Slow trap activated!");
                 }
             }

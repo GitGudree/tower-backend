@@ -5,6 +5,7 @@ import { collision } from "../../game/hitreg.js";
 import { updateResources } from "../../game/game.js";
 import { money, updateMoney } from "../../game/game.js";
 import { Tower} from "./tower.js";
+import { soundManager } from "../../game/soundManager.js";
 
 
 /**
@@ -38,8 +39,9 @@ export class GatlingTower extends Tower {
         this.deathTimer = this.deathDuration;
         this.isDead;
         
+        this.isLoopingSound = false;
+        this.wasFiringLastTick = false;
         
-
         this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.gatling, 50, 50, 50, 2, 200);
     }
@@ -93,6 +95,42 @@ export class GatlingTower extends Tower {
         };
 
         return { oldStats, newStats };
+    }
+
+    attack(enemies, bullets) {
+        if (this.timer <= 0 && !this.isDead) {
+            let fired = false;
+            enemies.forEach(enemy => {
+                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    this.animationExtend = this.animationExtend;
+                    const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
+                    bullet.bulletDamage = this.damage;
+                    bullets.push(bullet);
+                    fired = true;
+                }           
+            });
+
+            // Only start/stop the loop if the firing state changed
+            if (fired && !this.wasFiringLastTick) {
+                soundManager.playLoop('gatling_fire');
+                this.isLoopingSound = true;
+            } else if (!fired && this.wasFiringLastTick) {
+                soundManager.stopLoop('gatling_fire');
+                this.isLoopingSound = false;
+            }
+
+            this.isFiring = fired;
+            this.wasFiringLastTick = fired;
+            this.timer = this.fireRate;
+        } else {
+            this.timer--;
+            // If not firing, ensure the loop is stopped
+            if (this.timer <= 0 && this.isLoopingSound) {
+                soundManager.stopLoop('gatling_fire');
+                this.isLoopingSound = false;
+                this.wasFiringLastTick = false;
+            }
+        }
     }
 
 }

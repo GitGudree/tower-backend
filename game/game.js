@@ -7,6 +7,7 @@ import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
 import { GatlingTower } from "../entities/towers/GatlingTower.js";
 import { getTowerPrice } from "./towerUnlockSystem.js";
+import { soundManager } from './soundManager.js';
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -426,4 +427,22 @@ export function projectileHandler(){
 
     projectiles.length = 0;
     projectiles.push(...activeProjectiles);
+}
+
+export function initGame() {
+    console.log("Initializing game and loading sounds...");
+    // Initialize sound effects
+    soundManager.loadSound('tower_shoot', '/assets/sounds/tower_shoot.mp3');
+    soundManager.loadSound('tower_destroy', '/assets/sounds/tower_destroy.mp3');
+    soundManager.loadSound('enemy_hit', '/assets/sounds/enemy_hit.mp3');
+    soundManager.loadSound('laser', '/assets/sounds/laser.mp3');
+    soundManager.loadSound('rocket', '/assets/sounds/rocket.mp3');
+    soundManager.loadSound('mine_trigger', '/assets/sounds/mine_trigger.mp3');
+    soundManager.loadSound('slow_trap', '/assets/sounds/slow_trap.mp3');
+    soundManager.loadSound('artillery_fire', '/assets/sounds/artillery_fire.mp3');
+    soundManager.loadSound('gatling_fire', '/assets/sounds/gatling_fire.mp3');
+    soundManager.loadSound('sniper_fire', '/assets/sounds/sniper_fire.mp3');
+    soundManager.loadSound('background_music', '/assets/sounds/Backround.mp3');
+    soundManager.loadSound('gameplay_music', '/assets/sounds/Gameplay.mp3');
+    console.log("All sounds loaded");
 }

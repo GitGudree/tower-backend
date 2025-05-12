@@ -5,6 +5,7 @@ import { collision } from "../../game/hitreg.js";
 import { updateResources } from "../../game/game.js";
 import { money, updateMoney } from "../../game/game.js";
 import { Tower} from "./tower.js";
+import { soundManager } from "../../game/soundManager.js";
 
 /**
  * Sniper tower class
@@ -164,4 +165,29 @@ export class SniperTower extends Tower {
         return { oldStats, newStats };
     }
     
+    attack(enemies, bullets) {
+        if (this.timer <= 0 && !this.isDead) {
+            let fired = false;
+            enemies.forEach(enemy => {
+                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    this.animationExtend = 5;
+                    const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
+                    bullet.bulletDamage = this.damage;
+                    bullets.push(bullet);
+                    fired = true;
+                }           
+            });
+
+            if (fired){
+                this.fireAnimation = 500
+                this.animatorLive.reset();
+                soundManager.play('sniper_fire');
+            }
+
+            this.isFiring = fired;
+            this.timer = this.fireRate;
+        } else {
+            this.timer--;
+        }
+    }
 }

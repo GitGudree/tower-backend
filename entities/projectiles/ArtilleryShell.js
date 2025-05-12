@@ -81,7 +81,11 @@ export class ArtilleryShell extends Bullet {
 
     dealDamage(enemy) {
         if (!this.hit) {
-            enemy.health -= this.bulletDamage;
+            if (typeof enemy.takeDamage === 'function') {
+                enemy.takeDamage(this.bulletDamage);
+            } else {
+                enemy.health -= this.bulletDamage;
+            }
             this.hit = true;
         }
     }

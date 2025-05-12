@@ -56,9 +56,13 @@ export class Bullet {
     }
 
     dealDamage(enemy) {
+        if (typeof enemy.takeDamage === 'function') {
+            enemy.takeDamage(this.bulletDamage);
+        } else {
             enemy.health -= this.bulletDamage;
-            this.pierceAmount --
-            this.hitEnemies.add(enemy)
+        }
+        this.pierceAmount --
+        this.hitEnemies.add(enemy)
     }
 }
 

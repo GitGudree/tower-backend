@@ -1,6 +1,7 @@
 import { Tower } from "./tower.js";
 import { cellSize } from "../../game/grid.js";
 import { collision } from "../../game/hitreg.js";
+import { soundManager } from "../../game/soundManager.js";
 
 export class Mine extends Tower {
     constructor(x, y, type, laneIndex) {
@@ -49,6 +50,7 @@ export class Mine extends Tower {
                 // Check if enemy is in the same lane and colliding
                 if (enemy.laneIndex === this.laneIndex && collision(this, enemy)) {
                     console.log("Mine triggered!");
+                    soundManager.play('mine_trigger');
                     
                     // Deal damage to triggering enemy
                     enemy.health -= this.damage;

@@ -7,6 +7,7 @@ import { cellSize, rows } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../../game/toast-message.js";
 import { getTowerPrice } from "../../game/towerUnlockSystem.js";
+import { soundManager } from "../../game/soundManager.js";
 
 /**
  * Base Tower class implementing core tower functionality.
@@ -106,6 +107,7 @@ export class Tower {
                         this.isDead = true;
                         this.deathTimer = this.deathDuration;
                         this.isColliding = false;
+                        soundManager.play('tower_destroy');
                         
                         for (let enemy of enemies) {
                             enemy.resumeMove();
@@ -238,8 +240,11 @@ export class Tower {
                 });
 
                 if (fired){
+                    console.log("Tower fired! Attempting to play sound...");
                     this.fireAnimation = 500
                     this.animatorLive.reset();
+                    soundManager.play('tower_shoot');
+                    console.log("Sound play called");
                 }
     
                 this.isFiring = fired;

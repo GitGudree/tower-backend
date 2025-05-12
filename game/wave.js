@@ -1,6 +1,7 @@
 import { rows } from "./grid.js"; 
 import { enemies, getRandomEnemyType } from "../entities/enemies/enemy.js";
 import { createEnemy } from "../entities/enemies/enemyFactory.js";
+import { soundManager } from "./soundManager.js";
 
 let wave = 0;
 let isWaveStarted = false;
@@ -24,6 +25,9 @@ export async function spawnWave() {
     
     wave++;
     isWaveStarted = true;
+
+    // Switch to gameplay music
+    soundManager.playMusic('gameplay');
 
     // Set amount of enemies to spawn
     const spawnEnemies = wave * 2;
@@ -52,6 +56,12 @@ export function tryEndWave() {
     }
 
     isWaveStarted = false;
+
+    // Switch back to background music if autowave is not enabled
+    const autoWaveEnabled = document.getElementById('autoWaveCheckbox')?.checked;
+    if (!autoWaveEnabled) {
+        soundManager.playMusic('background');
+    }
 }
 
 export function getWave() {

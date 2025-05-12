@@ -2,6 +2,7 @@ import { canvas} from "../../game/game.js";
 import { cellSize } from "../../game/grid.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { soundManager } from "../../game/soundManager.js";
 
 
 /**
@@ -30,6 +31,7 @@ export class Enemy {
         
         this.damage = 2;
         this.attackspeed  = 15;
+        this.lastHitSoundTime = 0;
 
         this.setAnimations();
     }
@@ -85,6 +87,15 @@ export class Enemy {
     
     attack(tower) {
         tower.health -= this.damage;
+    }
+
+    takeDamage(amount) {
+        this.health -= amount;
+        const now = Date.now();
+        if (!this.lastHitSoundTime || now - this.lastHitSoundTime > 1000) { // 1000ms = 1 second
+            soundManager.play('enemy_hit');
+            this.lastHitSoundTime = now;
+        }
     }
 }
 
