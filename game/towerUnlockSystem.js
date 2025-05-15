@@ -4,7 +4,7 @@ import { money, updateMoney } from "./game.js";
 // Tower unlock prices and initial states
 export const TOWER_DATA = {
     basic: {
-        price: 50,
+        price: 100,
         unlocked: true,  // Basic tower starts unlocked
         unlockPrice: 0   // No unlock price for basic tower
     },
@@ -29,7 +29,7 @@ export const TOWER_DATA = {
         unlockPrice: 400
     },
     artillery: {
-        price: 200,
+        price: 800,
         unlocked: false,
         unlockPrice: 500
     }
