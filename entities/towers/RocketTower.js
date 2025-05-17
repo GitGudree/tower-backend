@@ -44,23 +44,25 @@ export class RocketTower extends Tower {
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
-            let fired = false;
+            //let fired = false;
+            this.isFiring = false;
             for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = 5;
                     const bullet = new RocketBullet(this.x, this.y, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
-                    fired = true;
+                    this.isFiring = true;
                     break;
                 }            
             };
-            if (fired){
+            if (this.isFiring == true){
                 this.fireAnimation = 500
                 this.animatorLive.reset();
                 soundManager.play('rocket');
             }
             
+            this.isFiring = false;
             this.timer = this.fireRate;
         } else {
             this.timer--;

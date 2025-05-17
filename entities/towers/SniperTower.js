@@ -45,86 +45,7 @@ export class SniperTower extends Tower {
         this.animatorLive = new SpriteAnimator (sprites.sniper, 0, 50, 50, 5); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.sniper, 50, 50, 50, 2, 200);
     }
-    /*
-    update(deltaTime) {
-        if (this.isDead) {
-            this.animatorDead.update(deltaTime)
-            if (this.deathTimer >= 0){
-                this.deathDuration -= deltaTime;
-            }
-        } else {
-            if (this.fireAnimation > 0) {
-                this.animatorLive.update(deltaTime);
-                this.fireAnimation -= deltaTime;
-            }
-        }
-    }
-    
-        draw (ctx) {
-            if (!this.isDead){
-                this.animatorLive.draw(ctx, this.x, this.y);
-            } else {
-                this.animatorDead.draw(ctx, this.x, this.y);
-            }
-        }
-    
-        attack(enemies, bullets) {
-            if (this.timer <= 0 && !this.isDead) {
-                let fired = false;
-                enemies.forEach(enemy => {
-                    if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
-                        this.animationExtend = 5;
-                        const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
-                        bullet.bulletDamage = this.damage;
-                        bullets.push(bullet);
-                        fired = true;
-                    }           
-                });
-
-                if (fired){
-                    this.fireAnimation = 500
-                    this.animatorLive.reset();
-                }
-    
-                this.isFiring = fired;
-                this.timer = this.fireRate;
-            } else {
-                this.timer--;
-            }
-        }
-    
-        updateTowerCollision(enemies, towerIndex) {
-            if (this.iFrames <= 0) {
-                for (let enemy of enemies) {
-                    if (collision(this, enemy, "test")) {
-                        enemy.stopMove();
-                        enemy.attack(this);
-                            
-            
-                        if (this.health <= 0) {
-                            this.isDead = true;
-                            this.deathTimer = this.deathDuration;
-                            this.isColliding = false;
-                            this.deathMessage = "-5 Resources";
-                            this.deathMessageTimer = 60;
-                
-                            updateResources("decrease", 5);
-                
-                
-                            for (let enemy of enemies) {
-                                enemy.resumeMove();
-                            }
-                        }
-                    }
-                    this.iFrames += enemy.attackspeed;
-                }
-                   
-            } else{
-                this.iFrames--;
-            }
-        
-        }
-            */
+ 
     upgrade() {
         const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
@@ -167,24 +88,24 @@ export class SniperTower extends Tower {
     
     attack(enemies, bullets) {
         if (this.timer <= 0 && !this.isDead) {
-            let fired = false;
+            this.isFiring = false;
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = 5;
                     const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
-                    fired = true;
+                    this.isFiring = true;
                 }           
             });
 
-            if (fired){
+            if (this.isFiring == true){
                 this.fireAnimation = 500
                 this.animatorLive.reset();
                 soundManager.play('sniper_fire');
             }
 
-            this.isFiring = fired;
+            this.isFiring = false;
             this.timer = this.fireRate;
         } else {
             this.timer--;

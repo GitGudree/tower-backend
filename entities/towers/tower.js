@@ -75,6 +75,7 @@ export class Tower {
         this.isDead = false;
         this.animationExtend = 3;
         this.fireAnimation = 0;
+        this.fireAnimationTime = 500;
         this.frameInterval = 100;
         
 
@@ -228,27 +229,29 @@ export class Tower {
     
         attack(enemies, bullets) {
             if (this.timer <= 0 && !this.isDead) {
-                let fired = false;
+                //let fired = false;
+                this.isFiring = false;
                 enemies.forEach(enemy => {
                     if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                         this.animationExtend = this.animationExtend;
                         const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
                         bullet.bulletDamage = this.damage;
                         bullets.push(bullet);
-                        fired = true;
+                        this.isFiring = true;
                     }           
                 });
 
-                if (fired){
+                if (this.isFiring == true){
                     console.log("Tower fired! Attempting to play sound...");
-                    this.fireAnimation = 500
+                    this.fireAnimation = this.fireAnimationTime;
                     this.animatorLive.reset();
                     soundManager.play('tower_shoot');
                     console.log("Sound play called");
                 }
     
-                this.isFiring = fired;
+                this.isFiring == false;
                 this.timer = this.fireRate;
+                this.animatorLive.reset();
             } else {
                 this.timer--;
             }
