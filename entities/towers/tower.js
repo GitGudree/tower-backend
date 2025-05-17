@@ -229,8 +229,9 @@ export class Tower {
     
         attack(enemies, bullets) {
             if (this.timer <= 0 && !this.isDead) {
-                //let fired = false;
                 this.isFiring = false;
+                let foundTarget = false;
+                
                 enemies.forEach(enemy => {
                     if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                         this.animationExtend = this.animationExtend;
@@ -238,20 +239,21 @@ export class Tower {
                         bullet.bulletDamage = this.damage;
                         bullets.push(bullet);
                         this.isFiring = true;
+                        foundTarget = true;
                     }           
                 });
 
-                if (this.isFiring == true){
-                    console.log("Tower fired! Attempting to play sound...");
+                if (this.isFiring) {
                     this.fireAnimation = this.fireAnimationTime;
                     this.animatorLive.reset();
                     soundManager.play('tower_shoot');
-                    console.log("Sound play called");
+                } else if (!foundTarget) {
+                    // Reset animation when no target is found
+                    this.animatorLive.reset();
+                    this.fireAnimation = 0;
                 }
-    
-                this.isFiring == false;
+                
                 this.timer = this.fireRate;
-                this.animatorLive.reset();
             } else {
                 this.timer--;
             }

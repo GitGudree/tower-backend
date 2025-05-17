@@ -40,23 +40,28 @@ export class ArtilleryTower extends Tower {
     attack(enemies, bullets) {
         if (this.timer <= 0 && !this.isDead) {
             this.isFiring = false;
+            let foundTarget = false;
+            
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     const bullet = new ArtilleryShell(this.x + 18, this.y - 4, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                     this.isFiring = true;
+                    foundTarget = true;
                 }           
             });
 
-            if (this.isFiring == true) {
+            if (this.isFiring) {
                 this.timer = this.fireRate;
                 this.fireAnimation = 500;
                 this.animatorLive.reset();
                 soundManager.play('artillery_fire');
+            } else if (!foundTarget) {
+                // Reset animation when no target is found
+                this.animatorLive.reset();
+                this.fireAnimation = 0;
             }
-
-            this.isFiring = false;
         } else {
             this.timer--;
         }

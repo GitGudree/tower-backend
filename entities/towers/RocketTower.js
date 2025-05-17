@@ -44,8 +44,9 @@ export class RocketTower extends Tower {
     
     attack(enemies, bullets) {
         if (this.timer <= 0) {
-            //let fired = false;
             this.isFiring = false;
+            let foundTarget = false;
+            
             for (let enemy of enemies) {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = 5;
@@ -53,16 +54,21 @@ export class RocketTower extends Tower {
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                     this.isFiring = true;
+                    foundTarget = true;
                     break;
                 }            
-            };
-            if (this.isFiring == true){
-                this.fireAnimation = 500
-                this.animatorLive.reset();
-                soundManager.play('rocket');
             }
             
-            this.isFiring = false;
+            if (this.isFiring) {
+                this.fireAnimation = 500;
+                this.animatorLive.reset();
+                soundManager.play('rocket');
+            } else if (!foundTarget) {
+                // Reset animation when no target is found
+                this.animatorLive.reset();
+                this.fireAnimation = 0;
+            }
+            
             this.timer = this.fireRate;
         } else {
             this.timer--;

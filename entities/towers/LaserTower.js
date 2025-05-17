@@ -73,9 +73,11 @@ export class LaserTower extends Tower {
         if (target && !this.wasFiringLastTick) {
             soundManager.playLoop('laser');
             this.isLoopingSound = true;
+            this.animatorLive.reset();
         } else if (!target && this.wasFiringLastTick) {
             soundManager.stopLoop('laser');
             this.isLoopingSound = false;
+            this.animatorLive.reset();
         }
 
         if (target) {

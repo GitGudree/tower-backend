@@ -99,28 +99,31 @@ export class GatlingTower extends Tower {
 
     attack(enemies, bullets) {
         if (this.timer <= 0 && !this.isDead) {
-            let fired = false;
+            let foundTarget = false;
+            
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = this.animationExtend;
                     const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
-                    fired = true;
+                    foundTarget = true;
                 }           
             });
 
             // Only start/stop the loop if the firing state changed
-            if (fired && !this.wasFiringLastTick) {
+            if (foundTarget && !this.wasFiringLastTick) {
                 soundManager.playLoop('gatling_fire');
                 this.isLoopingSound = true;
-            } else if (!fired && this.wasFiringLastTick) {
+                this.animatorLive.reset();
+            } else if (!foundTarget && this.wasFiringLastTick) {
                 soundManager.stopLoop('gatling_fire');
                 this.isLoopingSound = false;
+                this.animatorLive.reset();
             }
 
-            this.isFiring = fired;
-            this.wasFiringLastTick = fired;
+            this.isFiring = foundTarget;
+            this.wasFiringLastTick = foundTarget;
             this.timer = this.fireRate;
         } else {
             this.timer--;
@@ -129,6 +132,7 @@ export class GatlingTower extends Tower {
                 soundManager.stopLoop('gatling_fire');
                 this.isLoopingSound = false;
                 this.wasFiringLastTick = false;
+                this.animatorLive.reset();
             }
         }
     }

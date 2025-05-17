@@ -89,6 +89,8 @@ export class SniperTower extends Tower {
     attack(enemies, bullets) {
         if (this.timer <= 0 && !this.isDead) {
             this.isFiring = false;
+            let foundTarget = false;
+            
             enemies.forEach(enemy => {
                 if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = 5;
@@ -96,16 +98,20 @@ export class SniperTower extends Tower {
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);
                     this.isFiring = true;
+                    foundTarget = true;
                 }           
             });
 
-            if (this.isFiring == true){
-                this.fireAnimation = 500
+            if (this.isFiring) {
+                this.fireAnimation = 500;
                 this.animatorLive.reset();
                 soundManager.play('sniper_fire');
+            } else if (!foundTarget) {
+                // Reset animation when no target is found
+                this.animatorLive.reset();
+                this.fireAnimation = 0;
             }
-
-            this.isFiring = false;
+            
             this.timer = this.fireRate;
         } else {
             this.timer--;
