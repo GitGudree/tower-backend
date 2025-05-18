@@ -1,5 +1,3 @@
-import { projectiles } from "./projectiles.js";
-
 /**
  * Hit Registration module implementing collision detection functionality.
  * 
