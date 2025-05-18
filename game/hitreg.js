@@ -1,19 +1,11 @@
 /**
- * Hit Registration module implementing collision detection functionality.
+ *  Defines collision, generic variable names as it will handle all collision types, uses centre point hit detection and a simpler method for tower-enemy collision
  * 
  * @module hitreg
- * @author Anarox
+ * @param: value 1, value 2            for example: bullet, enemy
+ * @author Anarox, Quetzalcoatl
  * @contributor Quetzalcoatl
  * @date 2025-01-25
- **/
-
-/**
- * Defines collision, generic variable names as it will handle all collision types, uses centre point hit detection and a simpler method for tower-enemy collision
- *               
-
- * @param: party 1, party 2            for example: bullet, enemy
- * @author:    Quetzalcoatl
- * Created:   15.02.2025
  **/
 export function collision(value1, value2, type) {
     switch (type) {
