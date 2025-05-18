@@ -249,8 +249,9 @@ export class Tower {
                     soundManager.play('tower_shoot');
                 } else if (!foundTarget) {
                     // Reset animation when no target is found
-                    this.animatorLive.reset();
                     this.fireAnimation = 0;
+                    this.animatorLive.reset();
+                    
                 }
                 
                 this.timer = this.fireRate;

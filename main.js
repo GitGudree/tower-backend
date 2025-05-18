@@ -5,7 +5,6 @@ import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
-import { setChosenTower } from "./entities/towers/towerState.js"
 import { soundManager } from "./game/soundManager.js";
 
 // Initialize game systems (including sound)
@@ -54,15 +53,6 @@ function gameLoop(currentTime) {
     // console.log('updateGameState:', updateGameStateTime);
     // console.log('projectileHandler:', projectileHandlerTime);
 }
-
-//passes data along to setChosenTower
-document.querySelectorAll('[tower-type]').forEach(button => {
-    button.addEventListener('click', () => {
-        const towerType = button.getAttribute('tower-type');
-        setChosenTower(towerType)
-    });
-});
-
 
 window.printCounters = e => {
     console.clear();

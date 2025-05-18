@@ -17,7 +17,7 @@ const imagePaths = {
   rocket: "./public/sprites/mortard-0002-Sheet.png",
   laser: "./public/sprites/lazoar-0001-Sheet.png",
   artillery: "./public/sprites/artyTower-0001-Sheet.png",
-  barricade:  "./public/sprites/barricade-0001.png",
+  barricade:  "./public/sprites/barricade-0001-Sheet.png",
   slowTower: "./public/sprites/slow-0001.png",
   mineTower:  "./public/sprites/mine-0001-Sheet.png",
   enemy: "./public/sprites/normEnemy-0001-Sheet.png",

@@ -36,9 +36,10 @@ export class RocketTower extends Tower {
         this.isDead;
         this.animationExtend = 3;
         this.fireAnimation = 0;
+        this.fireAnimationTime = 500;
         
 
-        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3, 500); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.rocket, 50, 50, 50, 2, 200);
     }
     
@@ -60,13 +61,13 @@ export class RocketTower extends Tower {
             }
             
             if (this.isFiring) {
-                this.fireAnimation = 500;
-                this.animatorLive.reset();
+                this.fireAnimation = this.fireAnimationTime;
                 soundManager.play('rocket');
             } else if (!foundTarget) {
                 // Reset animation when no target is found
-                this.animatorLive.reset();
                 this.fireAnimation = 0;
+                this.animatorLive.reset();
+                
             }
             
             this.timer = this.fireRate;

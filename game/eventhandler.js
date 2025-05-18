@@ -2,7 +2,7 @@ import { Tower, towers } from "../entities/towers/tower.js";
 import { createTower } from "../entities/towers/towerFactory.js";
 import { canvas, money, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
-import { getChosenTower } from "../entities/towers/towerState.js";
+import { getChosenTower, setChosenTower } from "../entities/towers/towerState.js";
 import { getTowerPrice, isTowerUnlocked } from "./towerUnlockSystem.js";
 import { toastError } from "./toast-message.js";
 import { removeSelectedItem } from "../entities/inventory.js";
@@ -191,6 +191,14 @@ window.scrapTower = () => {
         }
     }
 }
+
+//passes data along to setChosenTower
+document.querySelectorAll('[tower-type]').forEach(button => {
+    button.addEventListener('click', () => {
+        const towerType = button.getAttribute('tower-type');
+        setChosenTower(towerType)
+    });
+});
 
 window.openTab = openTab;
 
