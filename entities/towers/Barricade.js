@@ -39,7 +39,8 @@ export class Barricade extends Tower {
         this.deathTimer = this.deathDuration;
         this.isDead;
 
-         this.animatorLive = new SpriteAnimator (sprites.barricade, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.barricade, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.barricade, 50, 50, 50, 1);
     }
 
     update (deltaTime) {}
@@ -77,9 +78,15 @@ export class Barricade extends Tower {
         // Draw synergy effects
         this.drawSynergyEffects(ctx);
     }
+    
     drawSprite(ctx) {
-        // Draw the tower sprite
-        this.animatorLive.draw(ctx, this.x, this.y);
+        if(this.health <= 0){
+            this.animatorDead.draw(ctx, this.x, this.y);
+        } else{
+            this.animatorLive.draw(ctx, this.x, this.y);
+        }
+
+        
     }
     upgrade() {
         const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
