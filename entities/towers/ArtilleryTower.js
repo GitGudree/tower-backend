@@ -4,14 +4,15 @@ import { money, updateMoney } from '../../game/game.js';
 import { soundManager } from '../../game/soundManager.js';
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { cellSize } from "../../game/grid.js";
 
 export class ArtilleryTower extends Tower {
-    constructor(x, y) {
-        super(x, y, "artillery");
+    constructor(x, y, type, laneIndex) {
+        super(x, y, type, laneIndex);
         this.name = "Artillery";
         this.description = "A powerful artillery piece that fires devastating shells. Only one can be placed per row.";
         this.baseHealth = 150;
-        this.baseRange = 550;  // Fixed range
+        this.baseRange = 500;  // Match normal tower range
         this.baseDamage = 1000;
         this.baseFireRate = 3000;
         
@@ -23,11 +24,11 @@ export class ArtilleryTower extends Tower {
         this.cost = 800;
         this.projectileType = ArtilleryShell;
         this.rotationSpeed = 0.02;
-        this.timer = 0; // Initialize timer
         this.towerType = "artillery"; // Add this for the canPlace check
 
         this.animatorLive = new SpriteAnimator (sprites.artillery, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
         this.animatorDead = new SpriteAnimator (sprites.artillery, 50, 50, 50, 1);
+        this.timer = 0; // Ensure artillery is ready to fire immediately on placement
     }
 
     canPlace(grid) {
@@ -58,12 +59,14 @@ export class ArtilleryTower extends Tower {
             });
 
             if (this.isFiring) {
-                this.timer = this.fireRate;
                 this.fireAnimation = this.fireAnimationTime;
                 this.animatorLive.reset();
                 soundManager.play('artillery_fire');
+                this.timer = this.fireRate;
+                // Immediately reset to idle after firing
+                this.animatorLive.currentFrame = 0;
+                this.fireAnimation = 0;
             } else if (!foundTarget) {
-                // Reset animation when no target is found
                 this.animatorLive.reset();
                 this.fireAnimation = 0;
             }
@@ -72,8 +75,9 @@ export class ArtilleryTower extends Tower {
         }
     }
 
-    update(deltaTime, enemies, grid) {
+    update(deltaTime, enemies, grid, bullets) {
         super.update(deltaTime, enemies, grid);
+        // Do NOT call this.attack here! Let the main game loop handle it.
     }
 
     upgrade() {

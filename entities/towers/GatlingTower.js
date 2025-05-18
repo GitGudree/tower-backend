@@ -114,8 +114,8 @@ export class GatlingTower extends Tower {
             // Only start/stop the loop if the firing state changed
             if (foundTarget && !this.wasFiringLastTick) {
                 soundManager.playLoop('gatling_fire');
+                this.fireAnimation = this.fireAnimationTime;
                 this.isLoopingSound = true;
-                this.animatorLive.reset();
             } else if (!foundTarget && this.wasFiringLastTick) {
                 soundManager.stopLoop('gatling_fire');
                 this.isLoopingSound = false;
@@ -132,10 +132,23 @@ export class GatlingTower extends Tower {
                 soundManager.stopLoop('gatling_fire');
                 this.isLoopingSound = false;
                 this.wasFiringLastTick = false;
-                this.animatorLive.reset();
             }
         }
     }
 
+    update(deltaTime) {
+        if (this.isDead) {
+            this.animatorDead.update(deltaTime);
+            if (this.deathTimer >= 0) {
+                this.deathDuration -= deltaTime;
+            }
+        } else {
+            if (this.isFiring) {
+                this.animatorLive.update(deltaTime);
+            } else if (!this.isFiring && this.animatorLive.currentFrame !== 0) {
+                this.animatorLive.reset();
+            }
+        }
+    }
 }
 

@@ -29,7 +29,7 @@ export const TOWER_DATA = {
         unlockPrice: 400
     },
     artillery: {
-        price: 800,
+        price: 200,
         unlocked: false,
         unlockPrice: 500
     }
