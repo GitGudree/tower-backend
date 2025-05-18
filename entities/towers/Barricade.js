@@ -1,6 +1,8 @@
 import { Tower } from "./tower.js";
 import { cellSize} from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 /**
  * Barricade tower class implementing defensive blocking functionality.
  * 
@@ -35,6 +37,8 @@ export class Barricade extends Tower {
         this.deathDuration = 0;
         this.deathTimer = this.deathDuration;
         this.isDead;
+
+         this.animatorLive = new SpriteAnimator (sprites.barricade, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
     }
 
     update (deltaTime) {}
@@ -49,6 +53,7 @@ export class Barricade extends Tower {
 
     draw(ctx) {
         // Draw barricade base
+        /*
         ctx.fillStyle = this.background;
         ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
 
@@ -64,8 +69,16 @@ export class Barricade extends Tower {
         ctx.textAlign = 'center';
         ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
 
+        */
+
+        //  Draw mine
+        this.drawSprite(ctx);
         // Draw synergy effects
         this.drawSynergyEffects(ctx);
+    }
+    drawSprite(ctx) {
+        // Draw the tower sprite
+        this.animatorLive.draw(ctx, this.x, this.y);
     }
     upgrade() {
         const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6

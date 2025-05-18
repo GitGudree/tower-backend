@@ -3,6 +3,8 @@ import { cellSize } from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 import { collision } from "../../game/hitreg.js";
 import { soundManager } from "../../game/soundManager.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 
 export class SlowTrap extends Tower {
     constructor(x, y, type, laneIndex) {
@@ -30,6 +32,9 @@ export class SlowTrap extends Tower {
         // Completely disable collision handling
         this.stopEnemy = 0;
         this.isColliding = false;
+
+        // here live is used for inactive and dead for activated
+        this.animatorLive= new SpriteAnimator (sprites.slowTower, 0, 50, 50, 1, 50000); // image, startY, width, height, amount of frames, frame interval
     }
 
     update(deltaTime) {
@@ -86,40 +91,44 @@ export class SlowTrap extends Tower {
 
     draw(ctx) {
         if (this.health > 0) {
-            ctx.fillStyle = this.background;
-            // Draw trap base
-            ctx.beginPath();
-            ctx.moveTo(this.x + cellSize/2, this.y + cellSize/4);
-            ctx.lineTo(this.x + cellSize*3/4, this.y + cellSize*3/4);
-            ctx.lineTo(this.x + cellSize/4, this.y + cellSize*3/4);
-            ctx.closePath();
-            ctx.fill();
-
+            
+         
+            /*
             if (this.selected) {
                 ctx.strokeStyle = 'white';
                 ctx.lineWidth = 2;
                 ctx.stroke();
-            }
+            }*/
 
-            // Draw health indicator
-            ctx.fillStyle = this.textColor;
-            ctx.font = '16px Impact';
-            ctx.textAlign = 'center';
-            ctx.fillText(Math.floor(this.health), this.x + cellSize/2, this.y + cellSize/2);
 
             // Draw slow effect radius if active
             if (this.affectedEnemies.size > 0) {
-                ctx.strokeStyle = 'rgba(70, 130, 180, 0.3)';
+                ctx.strokeStyle = 'rgba(70, 130, 180, 1)';
                 ctx.beginPath();
                 ctx.arc(this.x + cellSize/2, this.y + cellSize/2, cellSize/2, 0, Math.PI * 2);
                 ctx.stroke();
             }
+                
 
             // Draw synergy effects
             this.drawSynergyEffects(ctx);
+            this.drawSprite(ctx);
         }
     }
 
+    drawSprite(ctx) {
+        // Draw the tower sprite
+        this.animatorLive.draw(ctx, this.x, this.y);
+
+        // Draw selection outline if selected
+        if (this.selected) {
+            ctx.save();
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.x, this.y, cellSize, cellSize);
+            ctx.restore();
+        }
+    }
     // Override all collision-related methods to do nothing
     stopEnemyMovement() {
         return;

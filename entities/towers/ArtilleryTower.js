@@ -2,6 +2,8 @@ import { Tower } from './tower.js';
 import { ArtilleryShell } from '../projectiles/ArtilleryShell.js';
 import { money, updateMoney } from '../../game/game.js';
 import { soundManager } from '../../game/soundManager.js';
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 
 export class ArtilleryTower extends Tower {
     constructor(x, y) {
@@ -23,6 +25,9 @@ export class ArtilleryTower extends Tower {
         this.rotationSpeed = 0.02;
         this.timer = 0; // Initialize timer
         this.towerType = "artillery"; // Add this for the canPlace check
+
+        this.animatorLive = new SpriteAnimator (sprites.artillery, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.artillery, 50, 50, 50, 1);
     }
 
     canPlace(grid) {
@@ -54,7 +59,7 @@ export class ArtilleryTower extends Tower {
 
             if (this.isFiring) {
                 this.timer = this.fireRate;
-                this.fireAnimation = 500;
+                this.fireAnimation = this.fireAnimationTime;
                 this.animatorLive.reset();
                 soundManager.play('artillery_fire');
             } else if (!foundTarget) {

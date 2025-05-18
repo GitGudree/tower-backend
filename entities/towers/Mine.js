@@ -2,6 +2,8 @@ import { Tower } from "./tower.js";
 import { cellSize } from "../../game/grid.js";
 import { collision } from "../../game/hitreg.js";
 import { soundManager } from "../../game/soundManager.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 
 export class Mine extends Tower {
     constructor(x, y, type, laneIndex) {
@@ -28,6 +30,9 @@ export class Mine extends Tower {
         this.deathTimer = 0;
         this.deathDuration = 0;
         this.isDead = false;
+
+        this.animatorLive = new SpriteAnimator (sprites.mineTower, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
+        this.animatorDead = new SpriteAnimator (sprites.mineTower, 50, 50, 50, 1, 500);
     }
 
     update(deltaTime) {
@@ -81,6 +86,7 @@ export class Mine extends Tower {
 
     draw(ctx) {
         if (!this.exploded) {
+            /*
             // Draw mine
             ctx.fillStyle = '#8B0000';
             ctx.beginPath();
@@ -92,7 +98,9 @@ export class Mine extends Tower {
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
-
+                */
+            
+            /*
             // Draw crossed lines
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 2;
@@ -102,9 +110,11 @@ export class Mine extends Tower {
             ctx.moveTo(this.x + cellSize*3/4, this.y + cellSize/4);
             ctx.lineTo(this.x + cellSize/4, this.y + cellSize*3/4);
             ctx.stroke();
+            */
 
             // Draw synergy effects without the sprite
             this.drawSynergyEffects(ctx);
+            this.drawSprite(ctx);
         } else if (this.explosionTimer < this.explosionLifetime) {
             // Draw explosion effect
             const alpha = 1 - (this.explosionTimer / this.explosionLifetime);
@@ -112,6 +122,25 @@ export class Mine extends Tower {
             ctx.beginPath();
             ctx.arc(this.x + cellSize/2, this.y + cellSize/2, this.aoe, 0, Math.PI * 2);
             ctx.fill();
+        }
+    }
+
+    drawSprite(ctx) {
+        // Draw the tower sprite
+        if(!this.exploded){
+            this.animatorLive.draw(ctx, this.x, this.y);
+        } else{
+            this.animatorDead.draw(ctx, this.x, this.y);
+        }
+        
+
+        // Draw selection outline if selected
+        if (this.selected) {
+            ctx.save();
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.x, this.y, cellSize, cellSize);
+            ctx.restore();
         }
     }
 
