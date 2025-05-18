@@ -9,7 +9,8 @@ import { soundManager } from "../../game/soundManager.js";
  * Laser tower class
  *
  * @constructor (x, y, row)
- * Author:    Quetzalcoatl, Randomfevva
+ * @author Quetzalcoatl
+ * @contributor Randomfevva
  * Created:   27.03.2025
  **/
 export class LaserTower extends Tower {

@@ -1,6 +1,16 @@
-import { updateMoney, money } from "../game/game.js"; // Import money and updateMoney functions
-import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
+import { money, updateMoney } from "../game/game.js";
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../game/toast-message.js";
+import { items } from "./items.js";
+import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
+
+/**
+ * Inventory module implementing item management functionality.
+ * 
+ * @module inventory
+ * @author Mag4nd
+ * @contributor Randomfevva
+ * @date 2025-01-25
+ **/
 
 let inventory = [];
 let selectedItem = null;

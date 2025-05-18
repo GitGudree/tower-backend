@@ -6,6 +6,18 @@ import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 import { cellSize } from "../../game/grid.js";
 
+/**
+ * Artillery Tower class implementing long-range explosive damage functionality.
+ * 
+ * @class ArtilleryTower
+ * @extends Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva
+ **/
+
 export class ArtilleryTower extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);

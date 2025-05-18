@@ -1,7 +1,9 @@
 /**
- * Game settings management module.
+ * Settings module implementing game configuration functionality.
  * 
- * @module Settings
+ * @module settings
+ * @author Randomfevva
+ * @contributor Anarox
  * @description Handles game settings and their persistence
  */
 

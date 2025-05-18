@@ -1,11 +1,15 @@
 import { Tower } from "./tower.js";
 import { money, updateMoney } from "../../game/game.js";
 /**
- * Error tower class used only if the towerFactory gets an incorrect input and thus uses the default
- *
- * @constructor (x, y, row)
- * Author:    Anarox, Quetzalcoatl
- * Created:   27.03.2025
+ * Error Tower class implementing fallback tower functionality.
+ * 
+ * @class ErrorTower
+ * @extends Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} laneIndex - Lane position
+ * @author Quetzalcoatl
  **/
 export class ErrorTower extends Tower {
     constructor(x, y, type, laneIndex) {

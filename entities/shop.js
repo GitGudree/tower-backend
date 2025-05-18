@@ -1,11 +1,14 @@
-// Import items from separate module
 import { items } from "./items.js";
-// Import inventory function
 import { addInventoryItem } from "./inventory.js";
-// Import money and updateMoney functions
 import { updateMoney, money } from "../game/game.js";
-// Import toast messages
 import { toastSuccess, toastError, TOAST_MESSAGES } from "../game/toast-message.js";
+
+/**
+ * Shop module implementing item purchase functionality.
+ * 
+ * @module shop
+ * @author Randomfevva
+ **/
 
 console.log("Shop.js loaded");
 console.log("Items:", items);

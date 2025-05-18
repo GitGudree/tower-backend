@@ -1,3 +1,12 @@
+import { soundManager } from './soundManager.js';
+
+/**
+ * Toast Message module implementing notification system functionality.
+ * 
+ * @module toast-message
+ * @author Randomfevva
+ **/
+
 /**
  * Creates and shows a toast message
  * @param {string} message - The message to display

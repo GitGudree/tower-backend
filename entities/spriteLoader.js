@@ -1,5 +1,3 @@
-//import { SlowTrap } from "./towers/SlowTrap";
-
 /**
  * sprite loader class
  * contains sprites and loads them before use

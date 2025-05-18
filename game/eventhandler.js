@@ -24,6 +24,7 @@ export const mouse = {
  * @function handleCanvasClick
  * @description Processes tower placement and selection on canvas click
  * @author Anarox
+ * @contributor Randomfevva, Quetzalcoatl
  * @date 2025-01-23
  */
 export function handleCanvasClick() {

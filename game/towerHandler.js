@@ -3,6 +3,13 @@ import { money, updateMoney } from "./game.js";
 import { isTowerUnlocked, unlockTower, TOWER_DATA } from "./towerUnlockSystem.js";
 import { setChosenTower } from "../entities/towers/towerState.js";
 
+/**
+ * Tower Handler module implementing tower management functionality.
+ * 
+ * @module towerHandler
+ * @author Randomfevva
+ **/
+
 // Tower type display names
 const TOWER_NAMES = {
     'basic': 'Normal Tower',

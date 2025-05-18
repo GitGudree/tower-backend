@@ -12,7 +12,8 @@ import { SpriteAnimator } from "../spriteAnimator.js";
  * @param {number} y - Y coordinate
  * @param {string} type - Tower type
  * @param {number} laneIndex - Lane position
- * @author Randomfevva, Quetzalcoatl
+ * @author Randomfevva
+ * @contributor Quetzalcoatl
  * @date 2025-04-15
  **/
 export class Barricade extends Tower {

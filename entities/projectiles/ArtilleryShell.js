@@ -2,6 +2,18 @@ import { Bullet } from './Bullet.js';
 import { cellSize } from "../../game/grid.js";
 import { projectiles } from "./projectiles.js";
 
+/**
+ * Artillery Shell projectile class implementing explosive damage functionality.
+ * 
+ * @class ArtilleryShell
+ * @extends Bullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {Object} target - Target enemy
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva
+ **/
+
 export class ArtilleryShell extends Bullet {
     constructor(x, y, target, laneIndex) {
         super(x, y, "basic", laneIndex);

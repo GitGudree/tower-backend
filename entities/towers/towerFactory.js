@@ -12,7 +12,8 @@ import { ArtilleryTower } from './ArtilleryTower.js';
 /**
  * towerFactory class
  *
- * @author:    Randomfevva, Quetzalcoatl
+ * @author:    Quetzalcoatl
+ * @contributor: Randomfevva
  * Created:   27.03.2025
  **/
 

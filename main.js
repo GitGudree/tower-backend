@@ -7,6 +7,13 @@ import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
 import { soundManager } from "./game/soundManager.js";
 
+/**
+ * Main game loop and initialization              
+ * @author:    Anarox
+ * @contributor: Randomfevva, Quetzalcoatl
+ * Created:   11.02.2025
+**/
+
 // Initialize game systems (including sound)
 initGame().then(() => {
     // Start game loop after initialization is complete

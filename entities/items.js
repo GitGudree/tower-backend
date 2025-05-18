@@ -2,6 +2,13 @@ import { Mine } from "./towers/Mine.js";
 import { SlowTrap } from "./towers/SlowTrap.js";
 
 /**
+ * Items module implementing game item functionality.
+ * 
+ * @module items
+ * @author Randomfevva
+ **/
+
+/**
  * Base Item class for all game items.
  * 
  * @class Item

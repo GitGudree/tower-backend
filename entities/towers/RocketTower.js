@@ -5,11 +5,15 @@ import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 import { soundManager } from "../../game/soundManager.js";
 /**
- * Rocket tower class
- *
- * @constructor (x, y, row)
- * Author:    Anarox, Randomfevva, Quetzalcoatl
- * Created:   27.03.2025
+ * Rocket Tower class implementing explosive projectile functionality.
+ * 
+ * @class RocketTower
+ * @extends Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva
  **/
 export class RocketTower extends Tower {
     constructor(x, y, type, laneIndex) {

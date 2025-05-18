@@ -5,6 +5,18 @@ import { soundManager } from "../../game/soundManager.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 
+/**
+ * Mine tower class implementing explosive trap functionality.
+ * 
+ * @class Mine
+ * @extends Tower
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Tower type
+ * @param {number} laneIndex - Lane position
+ * @author Randomfevva
+ **/
+
 export class Mine extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);

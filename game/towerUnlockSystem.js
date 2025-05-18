@@ -1,6 +1,13 @@
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "./toast-message.js";
 import { money, updateMoney } from "./game.js";
 
+/**
+ * Tower Unlock System module implementing tower progression functionality.
+ * 
+ * @module towerUnlockSystem
+ * @author Randomfevva
+ **/
+
 // Tower unlock prices and initial states
 export const TOWER_DATA = {
     basic: {

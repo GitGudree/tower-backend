@@ -1,15 +1,15 @@
 import { cellSize } from "../../game/grid.js";
 /**
- * Laser projectile class implementing laser-specific behavior.
+ * Laser Bullet class implementing continuous beam damage functionality.
  * 
  * @class LaserBullet
+ * @extends Bullet
  * @param {number} x - X coordinate
  * @param {number} y - Y coordinate
- * @param {number} targetX - Target X coordinate
- * @param {number} targetY - Target Y coordinate
- * @param {Object} source - Source tower instance
- * @author Randomfevva, Quetzalcoatl
- * @date 2025-03-27
+ * @param {string} type - Bullet type
+ * @param {number} laneIndex - Lane position
+ * @author Quetzalcoatl
+ * @contributor Randomfevva
  **/
 
 export class LaserBullet {

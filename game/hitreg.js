@@ -1,3 +1,14 @@
+import { projectiles } from "./projectiles.js";
+
+/**
+ * Hit Registration module implementing collision detection functionality.
+ * 
+ * @module hitreg
+ * @author Anarox
+ * @contributor Quetzalcoatl
+ * @date 2025-01-25
+ **/
+
 /**
  * Defines collision, generic variable names as it will handle all collision types, uses centre point hit detection and a simpler method for tower-enemy collision
  *               

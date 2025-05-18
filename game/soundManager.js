@@ -1,3 +1,11 @@
+/**
+ * Sound Manager module implementing audio system functionality.
+ * 
+ * @module soundManager
+ * @author Randomfevva
+ * @date 2025-01-25
+ **/
+
 export class SoundManager {
     constructor() {
         this.sounds = new Map();

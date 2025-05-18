@@ -1,3 +1,6 @@
+import { cellSize } from "../../game/grid.js";
+import { resources } from "../../game/game.js";
+
 /**
  * Base Bullet class implementing core projectile functionality.
  * 
@@ -6,13 +9,10 @@
  * @param {number} y - Y coordinate
  * @param {string} type - Bullet type
  * @param {number} laneIndex - Lane position
- * @author Anarox, Quetzalcoatl
+ * @author Anarox
+ * @contributor Quetzalcoatl
  * @date 2025-01-25
  **/
-
-
-import { cellSize } from "../../game/grid.js";
-import { resources } from "../../game/game.js";
 
 export class Bullet {
     constructor(x, y, type, laneIndex) {

@@ -30,7 +30,7 @@ export let isUpgradeBtnActive = false;
  * 
  * @function drawGame
  * @author Anarox
- * @date 2025-01-25
+ * @contributor Randomfevva, Quetzalcoatl
  */
 export function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

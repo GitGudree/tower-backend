@@ -1,4 +1,15 @@
 import { Cell } from "./cell.js";
+
+/**
+ * Grid module implementing game board functionality.
+ * 
+ * @module grid
+ * @author Anarox
+ * @contributor Randomfevva, Quetzalcoatl
+ * @date 2025-01-25
+ **/
+
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
