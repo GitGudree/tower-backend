@@ -116,11 +116,19 @@
                     <div class="cards grid grid-full-width">
                         <div class="display-card">
                             <img id="tower-image" src="public/sprites/emptyicon.png" alt="">
-                            <p class="tower-title"><span class="tower-title-display"></span>, Lvl <span class="tower-lvl"></span></p>
-                            <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
-                            <p class="range-title">Range: <span class="range-title-display"></span> 🏹</p>
-                            <p class="firerate-title">Fire rate: <span class="firerate-title-display"></span> 💥</p>
-                            <p class="price-title">Price: <span class="tower-upgrade-price green-text"></span> 💶</p>
+                            <h1 id="tower-title">Select a tower!</h1>
+                            <p id="tower-description">Choose a tower to view its stats.</p>
+                            <div id="tower-stats" class="tower-stats hidden">
+                                <p class="hp-title">HP: <span class="hp-title-display"></span> ❤️</p>
+                                <p class="damage-title">Damage: <span class="damage-title-display"></span> ⚔️</p>
+                                <p class="range-title">Range: <span class="range-title-display"></span> 🎯</p>
+                                <p class="firerate-title">Attack Speed: <span class="firerate-title-display"></span> ⚡</p>
+                            </div>
+                            <div class="tower-action-buttons">
+                                <button class="tower-upgrade-btn hidden" onclick="upgradeTower()">UPGRADE (150 💶)</button>
+                                <button class="tower-repair-btn hidden" onclick="repairTower()">REPAIR (0 🔧)</button>
+                                <button class="tower-scrap-btn hidden" onclick="scrapTower()">SCRAP</button>
+                            </div>
                         </div>
                     </div>
                 </div>
