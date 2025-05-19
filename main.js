@@ -1,11 +1,22 @@
 import { gameGrid, createGrid, handleGameGrid } from "./game/grid.js";
-import { drawGame, projectileHandler, updateGameState } from "./game/game.js";
+import { drawGame, projectileHandler, updateGameState, initGame } from "./game/game.js";
 import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventhandler.js";
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
-import { setChosenTower } from "./entities/towers/towerState.js"
+import { soundManager } from "./game/soundManager.js";
+
+/**
+ * Main game loop and initialization              
+ * @author:    Anarox
+ * @contributor: Randomfevva, Quetzalcoatl
+ * Created:   11.02.2025
+**/
+
+initGame().then(() => {
+    gameLoop();
+});
 
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", mouseMove);
@@ -30,13 +41,13 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 
     const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
-    const deltaTime = ( currentTime - lastRenderTime); // for animations - quetz
+    const deltaTime = ( currentTime - lastRenderTime);
     if (secondsSinceLastRender < 1 / GAME_SPEED) return;
 
     lastRenderTime = currentTime;
 
     const preUpdateGameStateTime = performance.now();
-    updateGameState(deltaTime); // passes deltaTime to towers - quetz
+    updateGameState(deltaTime);
     performanceTimers.updateGameStateTime = performance.now() - preUpdateGameStateTime;
 
     const preProjectileHandlerTime = performance.now();
@@ -47,17 +58,6 @@ function gameLoop(currentTime) {
     // console.log('updateGameState:', updateGameStateTime);
     // console.log('projectileHandler:', projectileHandlerTime);
 }
-
-gameLoop();
-
- //passes data along to setChosenTower
-document.querySelectorAll('[tower-type]').forEach(button => {
-    button.addEventListener('click', () => {
-        const towerType = button.getAttribute('tower-type');
-        setChosenTower(towerType)
-    });
-});
-
 
 window.printCounters = e => {
     console.clear();

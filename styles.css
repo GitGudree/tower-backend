@@ -4,14 +4,19 @@
 }
 
 :root {
-    --background-color: #ffa500;
-    --border-color: #a37800;
+    --background-color: #1a1a1a;
+    --border-color: #2d2d2d;
+    --ui-background: #2d2d2d;
+    --ui-secondary: #3d3d3d;
+    --text-color: #e0e0e0;
+    --highlight-color: #4a4a4a;
+    --accent-color: #505050;
     --transparent: rgba(0,0,0,0);
 }
 
 html, body {
-    height: 100%; /* VIKTIG: sørger for at body alltid er 100% høyde */
-    margin: 0;    /* Fjern default margin */
+    height: 100%;
+    margin: 0;
     padding: 0;
 }
 
@@ -20,12 +25,13 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: fixed; /* NYTT: holder bakgrunnen i ro selv om du scroller */
+    background-attachment: fixed;
     background-color: #1a1a1a;
     
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: var(--text-color);
 }
 
 
@@ -38,12 +44,13 @@ canvas {
     /* border: 2px solid black; */
     display: block;
     margin: 1rem auto auto;
-    background-color: #f0f0f0;
+    background-color: #333333; 
 }
 
 .menu {
     text-align: center;
-    background-color: #ffa500;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
 }
 
 .tabs {
@@ -51,6 +58,8 @@ canvas {
     grid-template-columns: repeat(4, 1fr);
     text-align: center;
     padding-top: .5rem;
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tabs>span {
@@ -58,13 +67,15 @@ canvas {
     padding: 0.5rem 1rem;
     border: 1px solid var(--transparent);
     border-bottom-color: var(--border-color);
+    color: var(--text-color);
 }
 
 .tabs>span:not(.selected):hover {
-    background-color: var(--border-color);
+    background-color: var(--highlight-color);
 }
 
 .tabs>span.selected {
+    background-color: var(--ui-secondary);
     border-color: var(--border-color);
     border-bottom-color: var(--transparent);
 }
@@ -80,13 +91,86 @@ canvas {
     display: none;
     padding: 0.5rem 1rem;
     text-align: left;
+    background-color: var(--ui-background);
 }
 
 .tab.open {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: min-content;
     gap: 1rem;
+    width: 900px;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.tab.game-tab {
+    padding: 1rem;
+}
+
+.game-tab-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 150px;
+}
+
+.game-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 0.5rem;
+}
+
+.auto-wave-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+.start-wave-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+    width: 100%;
+}
+
+.settings-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+    width: 100%;
+}
+
+.start-wave-btn:hover,
+.settings-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+#towerDamageTotal {
+    color: var(--text-color);
+    font-weight: bold;
 }
 
 .tab.grid-split, 
@@ -104,51 +188,202 @@ canvas {
     grid-column: 1/-1;
 }
 
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+}
+
 .cards > .card {
-    background-color: #b67a20;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
-    gap: .5rem;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     user-select: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+    width: 150px;
+    margin: 0 auto;
+    gap: 0.3rem;
+}
+
+.cards > .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    border-color: #4a4a4a;
+}
+
+.cards > .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        transparent 40%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 60%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.cards > .card:hover::before {
+    transform: translateX(100%);
 }
 
 .cards > .card img {
-    height: 48px;
+    height: 40px;
     aspect-ratio: 1/1;
     margin: 1px;
     user-select: none;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.cards > .card:hover img {
+    transform: scale(1.2);
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4)) brightness(1.2);
+}
+
+.cards > .card p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 1em;
+    white-space: nowrap;
+    margin: 0.2rem 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cards > .card:hover p {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+.card.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2em;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255,255,255,0.6);
+    }
+}
+
+.tower-unlock-price-title,
+.item-price {
+    color: var(--text-color);
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    margin-top: 0.5rem;
+}
+
+.tower-unlock-price-title,
+.item-price {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
 }
 
 .tab-title {
     text-align: center;
     user-select: none;
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .display-card {
-    justify-self: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Sentrer innhold horisontalt */
-    justify-content: center; /* Sentrer innhold vertikalt */
-    gap: .5em;
-    user-select: none;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    width: 280px;
+    min-height: 280px;
+    margin: 0 auto;
 }
 
-.tower-title {
-    font-weight: bold;
-    color: white;
-    text-shadow: black 1px 1px;
-    user-select: none;
+.display-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .display-card img {
-    height: 50px;
-    aspect-ratio: 1/1;
-    box-shadow: black 5px 3px 10px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
 }
 
-.price-placeholder {
-    margin-top: 0.5rem;
+.display-card img[src="public/sprites/emptyicon.png"] {
+    display: none;
+}
+
+.display-card h1 {
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    font-size: 1.5em;
+    margin: 0.5rem 0;
+}
+
+.display-card p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.1em;
+    margin: 0.3rem 0;
+}
+
+.tower-stats {
+    margin: 1rem 0;
+    padding: 0.8rem;
+    background: linear-gradient(145deg, rgba(45,45,45,0.1), rgba(26,26,26,0.1));
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.tower-stats p {
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
 }
 
 .tower-upgrade-btn,
@@ -178,13 +413,13 @@ canvas {
 
 
 .upgrade {
-    background: linear-gradient(90deg, #6afe4c, #ffac33, #00ea69, #6afe4c);
+    background: linear-gradient(90deg, #2d8a2d, #1a661a, #339933, #2d8a2d);
     background-size: 350% 350%;
     cursor: pointer;
-    box-shadow: 0 0 15px #c5eb1f, 0 0 10px #d39103;
-
-    /* transition-timing-function: ease-in; */
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.2), 0 0 10px rgba(40, 167, 69, 0.1);
     animation: smooth-gradient 2s infinite alternate ease-in-out;
+    border: 1px solid #28a745;
+    color: var(--text-color);
 }
 
 @keyframes smooth-gradient {
@@ -193,19 +428,8 @@ canvas {
     }
     100% {
         background-position: -50% 50%;
-        color: white;
-        border: 3px solid rgb(4, 59, 4);
+        color: var(--text-color);
     }
-  }
-
-.hover-upgrade:hover {
-    background-image: linear-gradient(#6afe4c, #00ea69);
-    border: 3px solid rgba(0, 0, 0, 0.623);
-    box-shadow: 0 0 15px #00ea69, 0 0 30px #6afe4c;
-    color: white;
-    text-shadow: black 1px 1px;
-    transition: all 0.5s ease-in-out;
-
 }
 
 .unlock-btn {
@@ -250,15 +474,10 @@ canvas {
     color: red;
 }
 
-.green-text {
-    color: green;
-}
-
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-/* Adjusting the settings layout */
 .settings-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -268,7 +487,6 @@ canvas {
     text-align: left;
 }
 
-/* Sliders and labels in the correct position */
 .setting {
     display: grid;
     grid-template-columns: 1fr;
@@ -282,208 +500,434 @@ canvas {
 }
 
 .setting input[type="range"] {
-    width: 80%; /* Avoid full width */
+    width: 80%;
     justify-self: center;
 }
 
-/* Adjustment of cards */
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
-    max-width: 400px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .popup {
-    /* IKKE sett display her – det styres av JS og .hidden-klassen */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh; /* dekker hele høyden av skjermen */
-    background: rgba(0, 0, 0, 0.5); /* semi-transparent sort */
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 5vh;
-    z-index: 9999;
-  }
-
-  /* Vis popup når .popup IKKE har .hidden */
-.popup:not(.hidden) {
-    display: flex;
-  }
-
-.popup-content {
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 300px;
+    padding-top: 100px;
+    z-index: 1000;
 }
 
+.popup.hidden {
+    display: none;
+}
 
-/* Bredde og plassering av sliderne */
+.popup-content {
+    background: var(--ui-background);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    width: 300px;
+    transform: translateY(0);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.popup-content h2 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.popup-content label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    color: var(--text-color);
+}
+
 .popup-content input[type="range"] {
-    width: 80%;  /* Gjør sliderne litt mindre enn hele bredden på containeren */
-    margin: 10px 0;  /* Plasserer avstand mellom sliderne */
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#closeSettings {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+#closeSettings:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+.popup-content input[type="range"] {
+    width: 80%;
+    margin: 10px 0;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Legger til plass til etikettene */
 .popup-content label {
     display: block;
     margin-bottom: 5px;
 }
 
-/* --- Generell styling --- */
 
 
-/* Holder items i en ryddig liste */
-.shop-items {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    justify-items: center;
-}
 
-/* Hver enkelt vare i butikken */
+
 .shop-item {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-align: center;
-    width: 100px;
-}
-
-.shop-item img {
-    width: 40px;
-    height: 40px;
-    border-radius: 5px;
-}
-
-.shop-item p {
-    color: white;
-    margin: 5px 0;
-}
-
-
-
-.itemdesc {
-    background-color: rgba(30, 30, 30, 0.85); /* Mørk semi-transparens */
-    border-radius: 20px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.itemdesc .desc {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: white;
-    text-align: center;
-    gap: 10px;
-}
-
-.itemdesc .desc img {
-    width: 200px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Ny knappestil for kjøpsknappen */
-.buybtn {
-    font-weight: bold;
-    background-color: #fbbf24; /* gul */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    margin-top: 10px;
-    font-size: 16px;
+    gap: .8rem;
+    user-select: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    width: 150px;
+    margin: 0 auto;
     cursor: pointer;
-    transition: transform 0.1s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.buybtn:hover {
-    background-color: #fbbf24;
-    transform: scale(1.05);
+.shop-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: var(--highlight-color);
 }
 
-
-/*--- Inventory Slots ---*/
-.slots {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
-    gap: 10px;
-    padding: 5px;
-    background-color: #b67a20;
+.shop-item.select {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    background: linear-gradient(145deg, #2d2d2d, #1f1f1f);
+    transform: translateY(-2px);
+    position: relative;
 }
 
-.slot {
-    border: 1px solid#ccc;
+.shop-item.select::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.shop-item.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+.shop-item img {
+    height: 48px;
+    width: 48px;
     border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    background-color: #f9f9f9;
+    margin-bottom: 5px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
 }
 
-.slots > .slot img {
-    height: 60px;
-    width: 60px;
-    aspect-ratio: 1/1;
+.shop-item:hover img {
+    transform: scale(1.1);
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
 }
 
-/*--- Inventory Item-selection ---*/
-.itemdesc {
+.shop-item p {
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 4px 0;
+}
+
+.shop-item .item-price {
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.shop-items {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    justify-items: center;
+}
+
+.itemdesc {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    width: 280px;
+    min-height: 280px;
+    margin: 0 auto;
+}
+
+.itemdesc::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .desc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.1rem;
+    color: var(--text-color);
     text-align: center;
-    background-color: #b67a20;
-    gap: .5rem;
+    background: var(--ui-background);
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+    border-radius: 10px;
+}
+
+.desc img {
+    width: 100px;
+    height: 60px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    margin-bottom: 0.1rem;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
+    border-radius: 15px;
+    background: transparent;
+    padding: 0;
+}
+
+.desc img[src=""],
+.desc img[src="images/item.png"] {
+    display: none;
+}
+
+.desc img:hover {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3));
+    transform: scale(1.02);
+}
+
+.desc h1 {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.5em;
+    margin: 0.1rem 0;
+}
+
+.desc p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.1em;
+    margin: 0.05rem 0;
+    max-width: 250px;
+}
+
+.buybtn,
+.usebtn,
+.deletebtn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.usebtn:hover,
+.deletebtn:hover,
+.buybtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+}
+
+.deletebtn {
+    background: linear-gradient(145deg, #ff6b6b, #ff4040);
+    color: white;
+}
+
+.deletebtn:hover {
+    background: linear-gradient(145deg, #ff8080, #ff5555);
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 12px;
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
+}
+
+.slot {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
     user-select: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: visible;
+    border: 2px solid var(--border-color);
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.slot.select {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    background: linear-gradient(145deg, #454545, #353535);
+    transform: translateY(-2px);
+    position: relative;
+    z-index: 1;
+}
+
+.slot.select::after {
+    content: '✓';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+    z-index: 2;
+}
+
+.slot.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+    border-color: #5CDF60;
+}
+
+.slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: var(--highlight-color);
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+}
+
+.slots > .slot img {
+    height: 40px;
+    width: 40px;
+    border-radius: 6px;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+    transition: all 0.3s ease;
+}
+
+.slot p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    font-weight: 600;
+    font-size: 0.9em;
+    margin: 2px 0;
+    text-align: center;
+}
+
+.itemdesc {
+    display: grid;
+    grid-template-columns: 1fr;
 }
 
 .itemdesc > .desc img {
     height: 195px;
     aspect-ratio: 1/1;
+    border-radius: 15px;
+    background: transparent;
+    padding: 0;
 }
 
 .purchase-message {
     position: fixed;
-    inset: 0; /* dekker hele viewporten */
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
   
-    /* Overlay stil */
-    background-color: rgba(0, 0, 0, 0.4); /* gir litt bakgrunn, kan endres om ønsket */
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 9999;
   }
   
 .purchase-message .message-box {
-    background-color: #4caf50;
-    color: white;
-    padding: 1.25rem 2.5rem; /* tilsvarer 20px 40px */
-    border-radius: 0.625rem; /* 10px */
+    background-color: var(--ui-secondary);
+    color: var(--text-color);
+    padding: 1.25rem 2.5rem;
+    border-radius: 0.625rem;
     font-size: 1.5rem;
     font-weight: bold;
-    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
   }
   
-  /* Inventory Use & Delete Buttons */
 .usebtn,
 .deletebtn {
     font-weight: bold;
@@ -498,9 +942,8 @@ canvas {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Use button style */
 .usebtn {
-    background-color: #28a745; /* grønn */
+    background-color: #28a745;
     color: white;
 }
 
@@ -509,9 +952,8 @@ canvas {
     transform: scale(1.05);
 }
 
-/* Delete button style */
 .deletebtn {
-    background-color: #dc3545; /* rød */
+    background-color: #dc3545;
     color: white;
 }
 
@@ -520,4 +962,354 @@ canvas {
     transform: scale(1.05);
 }
 
-  
+#price-display:not(.hidden) {
+    margin-top: 1rem;
+}
+
+#gameCanvas {
+    background-color: #424242;
+}
+
+body > main > div:first-child,
+#gameCanvas + div,
+div[style*="background-color: rgb(255, 165, 0)"],
+div[style*="background-color: #ffa500"],
+div[style*="background: orange"],
+.menu > div:first-child,
+[style*="background-color: orange"] {
+    background-color: var(--ui-background) !important;
+    background: var(--ui-background) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+[class*="header"],
+[class*="top-bar"],
+[class*="status"],
+.menu > *:first-child {
+    background-color: var(--ui-background) !important;
+    background: var(--ui-background) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.menu {
+    background-color: var(--ui-background);
+    border: 1px solid var(--border-color);
+}
+
+.tabs {
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    background-color: var(--ui-background);
+}
+
+.tower-unlock-price-title,
+.item-price {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+}
+
+.start-wave-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.start-wave-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+.settings-btn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.settings-btn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+.buybtn, .usebtn {
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.buybtn:hover, .usebtn:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+}
+
+.tower-unlock-price-title, .item-price {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.auto-wave-control {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+#towerDamageTotal {
+    color: var(--text-color);
+}
+
+.status-bar {
+    background-color: var(--ui-background);
+    color: var(--text-color);
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h1, h2, h3 {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.card p, .desc p, .itemdesc p {
+    color: var(--text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+#gameCanvas {
+    background-color: #333333;
+}
+
+.tabs {
+    background-color: var(--ui-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    background-color: var(--ui-background);
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 250px;
+    max-width: 400px;
+    background: var(--ui-background);
+    color: var(--text-color);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.toast-message {
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    transition: width linear;
+}
+
+.toast-container.success {
+    border-left: 4px solid #4CAF50;
+}
+.toast-container.success .toast-progress {
+    background-color: #4CAF50;
+}
+
+.toast-container.error {
+    border-left: 4px solid #f44336;
+}
+.toast-container.error .toast-progress {
+    background-color: #f44336;
+}
+
+.toast-container.warning {
+    border-left: 4px solid #ff9800;
+}
+.toast-container.warning .toast-progress {
+    background-color: #ff9800;
+}
+
+.toast-container.info {
+    border-left: 4px solid #2196F3;
+}
+.toast-container.info .toast-progress {
+    background-color: #2196F3;
+}
+
+/* Toast animation */
+@keyframes toast-progress {
+    from { width: 100%; }
+    to { width: 0; }
+}
+
+.toast-progress {
+    animation: toast-progress linear forwards;
+}
+
+.card.locked {
+    opacity: 0.7;
+    filter: grayscale(70%);
+    position: relative;
+}
+
+.card.locked::before {
+    content: '🔒';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+.card.locked:hover {
+    opacity: 0.8;
+    filter: grayscale(50%);
+}
+
+.card.locked img {
+    filter: brightness(0.7);
+}
+
+.unlock-btn {
+    background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.unlock-btn:hover {
+    background: linear-gradient(145deg, #5a5a5a, #4d4d4d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.card.select {
+    border: 2px solid #4CAF50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    position: relative;
+}
+
+.card.select::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.card.select:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+.display-card .tower-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.display-card .tower-action-buttons button {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    height: 32px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.display-card .tower-action-buttons .tower-upgrade-btn {
+    grid-column: 1 / span 2;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.display-card .tower-action-buttons .tower-repair-btn {
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.display-card .tower-action-buttons .tower-scrap-btn {
+    background: linear-gradient(90deg, #ff9800, #f57c00);
+}
+
+.display-card .tower-action-buttons button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.display-card .tower-action-buttons button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: linear-gradient(90deg, #666666, #555555);
+}
+
+.display-card .tower-action-buttons .tower-upgrade-btn:not(.upgrade) {
+    background: linear-gradient(90deg, #dc3545, #b02a37);
+    cursor: not-allowed;
+}

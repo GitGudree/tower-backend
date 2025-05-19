@@ -1,21 +1,33 @@
-import { items } from "./items.js"; // Importer items fra en separat modul
-import { addInventoryItem } from "./inventory.js"; // Importerer inventory-funksjonen
-import { updateMoney, money } from "../game/game.js"; // Importer money og updateMoney
+import { items } from "./items.js";
+import { addInventoryItem, inventory } from "./inventory.js";
+import { updateMoney, money } from "../game/game.js";
+import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../game/toast-message.js";
+
+/**
+ * Shop module implementing item purchase functionality.
+ * 
+ * @module shop
+ * @author Randomfevva
+ **/
 
 console.log("Shop.js loaded");
 console.log("Items:", items);
 
-// Generer butikkens innhold når DOM er klar
+/**
+ * Initialize shop content when DOM is ready.
+ * 
+ * @listens DOMContentLoaded
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const shopItemsContainer = document.querySelector(".shop-items");
-    shopItemsContainer.innerHTML = ""; // Tøm eksisterende innhold
+    shopItemsContainer.innerHTML = "";
 
-    // Generer butikkens item-elementer
     for (let itemKey in items) {
         const item = items[itemKey];
 
         const itemElement = document.createElement("div");
         itemElement.classList.add("shop-item");
+        itemElement.setAttribute("data-item-key", itemKey);
         itemElement.innerHTML = `
             <img src="${item.image}" alt="${item.name}">
             <p>${item.name}</p>
@@ -26,45 +38,56 @@ document.addEventListener("DOMContentLoaded", () => {
         shopItemsContainer.appendChild(itemElement);
     }
 
-    // Kjøpsknapp-logikk
     const buyButton = document.getElementById("buy-button");
-    const purchaseMessage = document.getElementById("purchase-message");
 
     buyButton.addEventListener("click", () => {
         if (window.selectedItem) {
+            
+            if (inventory.length >= 9) {
+                toastWarning("Inventory full!");
+                return;
+            }
+
             const price = window.selectedItem.price;
 
             if (money >= price) {
-                // Trekk penger
                 updateMoney("decrease", price);
 
-                // Legg til item i inventory
                 addInventoryItem(window.selectedItem);
 
-                // Vis kjøpsmelding
-                purchaseMessage.textContent = "Item purchased!";
-                purchaseMessage.classList.remove("hidden");
-
-                setTimeout(() => {
-                    purchaseMessage.classList.add("hidden");
-                }, 2000);
+                toastSuccess(TOAST_MESSAGES.SHOP.PURCHASE_SUCCESS);
             } else {
-                alert("Not enough money!");
+                toastError(TOAST_MESSAGES.SHOP.PURCHASE_ERROR);
             }
         } else {
-            alert("Select an item first!");
+            toastError("Please select an item first");
         }
     });
 });
 
-// Når du klikker på et item, oppdater visningen
+/**
+ * Update display when clicking an item.
+ * 
+ * @function selectItem
+ * @param {string} itemKey - Key of the selected item
+ */
 function selectItem(itemKey) {
     const item = items[itemKey];
     if (item) {
+        document.querySelectorAll('.shop-item').forEach(item => {
+            item.classList.remove('select');
+        });
+
+        const selectedItemElement = document.querySelector(`[data-item-key="${itemKey}"]`);
+        if (selectedItemElement) {
+            selectedItemElement.classList.add('select');
+        }
+
         document.getElementById("item-image").src = item.image;
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;
-        document.getElementById("item-price").textContent = item.price;
+        document.getElementById("item-price").textContent = `${item.price} 💶`;
+        document.getElementById("price-display").classList.remove("hidden");
 
         window.selectedItem = item;
     }

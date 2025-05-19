@@ -5,6 +5,7 @@ import { collision } from "../../game/hitreg.js";
 import { updateResources } from "../../game/game.js";
 import { money, updateMoney } from "../../game/game.js";
 import { Tower} from "./tower.js";
+import { soundManager } from "../../game/soundManager.js";
 
 
 /**
@@ -18,11 +19,17 @@ export class GatlingTower extends Tower {
     constructor(x, y, type, laneIndex) {
         super(x, y, type, laneIndex);
         this.name = "Gatling";
-        this.health = 60;
-        this.range = 300;
-        this.damage = 1;
+        this.description = "A rapid-fire tower that excels at sustained damage.";
+        this.baseHealth = 80;
+        this.baseRange = 400;
+        this.baseDamage = 3;
+        this.baseFireRate = 10;
+        this.maxHealth = this.baseHealth;
+        this.health = this.maxHealth;
+        this.range = this.baseRange;
+        this.damage = this.baseDamage;
+        this.fireRate = this.baseFireRate;
         this.projectiles = [];
-        this.fireRate = 10;
         this.bulletType = type;
         this.laneIndex = laneIndex;
         this.background = "green";
@@ -32,70 +39,30 @@ export class GatlingTower extends Tower {
         this.deathTimer = this.deathDuration;
         this.isDead;
         
+        this.isLoopingSound = false;
+        this.wasFiringLastTick = false;
         
-
-        this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); 
         this.animatorDead = new SpriteAnimator (sprites.gatling, 50, 50, 50, 2, 200);
     }
     
 
     upgrade() {
-        if (money < this.upgradeCost || this.upgradeCost === -1) return;
-
-        // DO NOT REMOVE THIS CODE!!!
-        // const towerUpgrades = towerTypes['Shooter'].upgradePath;
-
-        // for (let upgradeKey in towerUpgrades[this.upgrades]) {
-        //     const upgrade = towerUpgrades[upgradeKey];
-        //     this[upgradeKey] = upgrade[upgradeKey];
-        // }
-
-        const cost = this.upgradeCost;
-        switch (this.upgrades) {
-            case 0:
-                this.range += 20;
-                this.fireRate = 9;
-
-                // Next upgrade cost
-                this.upgradeCost = 300;
-                break;
-            case 1:
-                this.range += 40;
-                this.fireRate = 8;
-                this.damage = 2;
-
-                // Next upgrade cost
-                this.upgradeCost = 1_000;
-                break;
-            case 2:
-                this.range += 60;
-                this.fireRate = 7;
-
-
-                // Next upgrade cost
-                this.upgradeCost = 5_000;
-                break;
-            case 3:
-                this.range += 100;
-                this.fireRate = 6;
-                this.damage = 3;
-
-                // Next upgrade cost - 1e3=1.000, 1e6=1.000.000
-                this.upgradeCost = 1e9;
-                break;
-            default:
-                return;
-        }
-
-        updateMoney('decrease', cost);
-
-        this.health += 50;
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
+        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
+        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        
+        this.baseHealth += 30;  
+        this.maxHealth += 30;
+        this.health += 30;
+        this.baseDamage += 2;   
+        this.damage += 2;
+        this.baseRange += 20;   
+        this.range += 20;
+        this.baseFireRate = Math.max(5, this.baseFireRate - 2); 
+        this.fireRate = this.baseFireRate;
+        
         this.upgrades++;
-        
-        
-        //towerDamageElement.textContent = this.damage;
-        //towerUpgradePriceElement.textContent = this.upgradeCost;
-
     }
     
     /**
@@ -109,7 +76,6 @@ export class GatlingTower extends Tower {
     * Created:   09.03.2025
     **/
     getUpgradeStats() {
-
         const oldStats = {
             health: this.health,
             range: this.range,
@@ -118,55 +84,68 @@ export class GatlingTower extends Tower {
             upgradeCost: this.upgradeCost
         };
 
-        let newRange = this.range;
-        let newFireRate = this.fireRate;
-        let newDamage = this.damage;
-        let newUpgradeCost = this.upgradeCost;
-
-        switch (this.upgrades) {
-            case 0:
-                newRange += 20;
-                newFireRate = 9;
-
-                newUpgradeCost = 300;
-                break;
-            case 1:
-                newRange += 40;
-                newFireRate = 8;
-                newDamage = 2;
-
-                newUpgradeCost = 1_000;
-                break;
-            case 2:
-                newRange += 60;
-                newFireRate = 7;
-
-                newUpgradeCost = 5_000;
-                break;
-            case 3:
-                newRange += 100;
-                newFireRate = 6; // lower = better
-                newDamage = 3;
-
-                newUpgradeCost = 1e9;
-                break;
-            default:
-                return {
-                    oldStats,
-                    newStats: oldStats
-                };
-        }
-
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
         const newStats = {
-            health: oldStats.health + 50,
-            range: newRange,
-            fireRate: newFireRate,
-            damage: newDamage,
-            upgradeCost: newUpgradeCost
+            health: oldStats.health + 30,
+            range: oldStats.range + 20,
+            fireRate: Math.max(5, oldStats.fireRate - 2),
+            damage: oldStats.damage + 2,
+            upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
         };
 
         return { oldStats, newStats };
     }
 
+    attack(enemies, bullets) {
+        if (this.timer <= 0 && !this.isDead) {
+            let foundTarget = false;
+            
+            enemies.forEach(enemy => {
+                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    this.animationExtend = this.animationExtend;
+                    const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
+                    bullet.bulletDamage = this.damage;
+                    bullets.push(bullet);
+                    foundTarget = true;
+                }           
+            });
+
+            if (foundTarget && !this.wasFiringLastTick) {
+                soundManager.playLoop('gatling_fire');
+                this.fireAnimation = this.fireAnimationTime;
+                this.isLoopingSound = true;
+            } else if (!foundTarget && this.wasFiringLastTick) {
+                soundManager.stopLoop('gatling_fire');
+                this.isLoopingSound = false;
+                this.animatorLive.reset();
+            }
+
+            this.isFiring = foundTarget;
+            this.wasFiringLastTick = foundTarget;
+            this.timer = this.fireRate;
+        } else {
+            this.timer--;
+            if (this.timer <= 0 && this.isLoopingSound) {
+                soundManager.stopLoop('gatling_fire');
+                this.isLoopingSound = false;
+                this.wasFiringLastTick = false;
+            }
+        }
+    }
+
+    update(deltaTime) {
+        if (this.isDead) {
+            this.animatorDead.update(deltaTime);
+            if (this.deathTimer >= 0) {
+                this.deathDuration -= deltaTime;
+            }
+        } else {
+            if (this.isFiring) {
+                this.animatorLive.update(deltaTime);
+            } else if (!this.isFiring && this.animatorLive.currentFrame !== 0) {
+                this.animatorLive.reset();
+            }
+        }
+    }
 }
 
