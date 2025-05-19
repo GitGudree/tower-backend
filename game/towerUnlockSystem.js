@@ -1,9 +1,5 @@
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "./toast-message.js";
-<<<<<<< Updated upstream
-import { money, resources, updateResources } from "./game.js";
-=======
-import { money, resources, updateMoney, updateResources } from "./game.js";
->>>>>>> Stashed changes
+import { resources, updateResources } from "./game.js";
 
 /**
  * Tower Unlock System module implementing tower progression functionality.
