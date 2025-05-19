@@ -1,15 +1,35 @@
-// settings.js - Håndtering av spillinnstillinger
+/**
+ * Settings module implementing game configuration functionality.
+ * 
+ * @module settings
+ * @author Randomfevva
+ * @contributor Anarox
+ * @description Handles game settings and their persistence
+ */
+
+import { soundManager } from './soundManager.js';
 
 const Settings = {
-    speedMultiplier: 1, // Juster spillhastighet (1 = normal)
-    volume: 1, // Lydvolum (0 = mute, 1 = maks)
+    speedMultiplier: 1,
+    volume: 1,
 
+    /**
+     * Initializes settings module.
+     * 
+     * @method init
+     */
     init() {
         this.loadSettings();
         this.setupUI();
-        this.setupPopupControls(); // Legger til popup-funksjonalitet
+        this.setupPopupControls();
     },
 
+    /**
+     * Loads settings from local storage.
+     * 
+     * @method loadSettings
+     * @private
+     */
     loadSettings() {
         const savedSpeed = localStorage.getItem('gameSpeed');
         const savedVolume = localStorage.getItem('gameVolume');
@@ -18,11 +38,23 @@ const Settings = {
         if (savedVolume) this.volume = parseFloat(savedVolume);
     },
 
+    /**
+     * Saves settings to local storage.
+     * 
+     * @method saveSettings
+     * @private
+     */
     saveSettings() {
         localStorage.setItem('gameSpeed', this.speedMultiplier);
         localStorage.setItem('gameVolume', this.volume);
     },
 
+    /**
+     * Sets up UI controls for settings.
+     * 
+     * @method setupUI
+     * @private
+     */
     setupUI() {
         const speedSlider = document.getElementById('speedSlider');
         const volumeSlider = document.getElementById('volumeSlider');
@@ -39,12 +71,18 @@ const Settings = {
             volumeSlider.value = this.volume;
             volumeSlider.addEventListener('input', (e) => {
                 this.volume = parseFloat(e.target.value);
+                soundManager.setVolume(this.volume);
                 this.saveSettings();
             });
         }
     },
 
-    // Funksjonalitet for pop-up menyen
+    /**
+     * Sets up popup menu functionality.
+     * 
+     * @method setupPopupControls
+     * @private
+     */
     setupPopupControls() {
         const settingsPopup = document.getElementById("settingsPopup");
         const settingsButton = document.querySelector(".settings-btn");
@@ -57,21 +95,25 @@ const Settings = {
         if (settingsButton && settingsPopup) {
             settingsButton.addEventListener("click", () => {
                 console.log("Settings button clicked!");
-                settingsPopup.style.display = "flex";
+                settingsPopup.classList.remove('hidden');
             });
         }
 
         if (closeButton) {
             closeButton.addEventListener("click", () => {
                 console.log("Close button clicked!");
-                settingsPopup.style.display = "none";
+                settingsPopup.classList.add('hidden');
             });
         }
+
+        settingsPopup.addEventListener("click", (e) => {
+            if (e.target === settingsPopup) {
+                settingsPopup.classList.add('hidden');
+            }
+        });
     }
 };
 
-// Initialiser innstillinger ved oppstart
 Settings.init();
 
-// Eksport for bruk i andre moduler
 export default Settings;

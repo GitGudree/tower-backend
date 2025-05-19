@@ -1,8 +1,10 @@
 /**
- * sprite animator class
- *
- * @author:    Quetzalcoatl
- * Created:   27.04.2025
+ * Sprite Animator module implementing sprite animation functionality.
+ * 
+ * @module spriteAnimator
+ * @author Quetzalcoatl
+ * @contributor Randomfevva
+ * @date 2025-01-25
  **/
 
 export class SpriteAnimator {

@@ -1,9 +1,15 @@
 import { cellSize } from "../../game/grid.js";
 /**
- * laser bullet class
- *
- * @author:    Randomfevva, Quetzalcoatl
- * Created:   27.03.2025
+ * Laser Bullet class implementing continuous beam damage functionality.
+ * 
+ * @class LaserBullet
+ * @extends Bullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Bullet type
+ * @param {number} laneIndex - Lane position
+ * @author Quetzalcoatl
+ * @contributor Randomfevva
  **/
 
 export class LaserBullet {
@@ -15,23 +21,26 @@ export class LaserBullet {
         this.height = 2;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.bulletDamage = 4; // Laser gjør mer skade
-        this.pierceAmount = 1;
-        this.localIframes = 0; // how often laser damages enemies
-        this.lifetime = 1;
+        this.bulletDamage = 0.5;
         this.bulletSource = source;
-        this.name = "laser";
+        this.localIframes = 0;
+        this.lifetime = 30;
+        this.pierceAmount = source?.synergyBonus?.piercing ? Infinity : 1;
+        this.hitEnemies = new Set();
     }
 
     move() {
-        // Laser trenger ikke å bevege seg, den treffer umiddelbart
-    }
-
-    isAlive() {
-        return this.lifetime > 0 && this.bulletSource?.health > 0;
+        if (this.lifetime > 0) {
+            this.lifetime--;
+        }
+        if (this.localIframes > 0) {
+            this.localIframes--;
+        }
     }
 
     draw(ctx) {
+        if (this.bulletSource?.isDead || this.lifetime <= 0) return;
+        
         ctx.strokeStyle = "cyan";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -41,28 +50,42 @@ export class LaserBullet {
     }
 
     dealDamage(enemy) {
-        console.log(this.lifetime)
-        enemy.health -= this.bulletDamage;
-        this.localIframes = 30;
+        if (!this.bulletSource?.isDead && !this.hitEnemies.has(enemy)) {
+            if (typeof enemy.takeDamage === 'function') {
+                enemy.takeDamage(this.bulletDamage);
+            } else {
+                enemy.health -= this.bulletDamage;
+            }
+            this.localIframes = this.bulletSource?.synergyBonus?.piercing ? 15 : 30; 
+            if (!this.bulletSource?.synergyBonus?.piercing) {
+                this.hitEnemies.add(enemy);
+            }
+        }
     }
 
     doesLaserHit(enemy) {
+        if (this.bulletSource?.isDead || (!this.bulletSource?.synergyBonus?.piercing && this.hitEnemies.has(enemy))) return false;
+        
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
-        const lengthSqr = dx * dx + dy * dy;
-    
-        const t = ((enemy.x - this.x) * dx + (enemy.y - this.y) * dy) / lengthSqr;
-
-        const clampedT = Math.max(0, Math.min(1, t));
-    
-        const closestX = this.x + clampedT * dx;
-        const closestY = this.y + clampedT * dy;
-    
-        const distX = enemy.x - closestX;
-        const distY = enemy.y - closestY;
-        const distanceSqr = distX * distX + distY * distY;
-    
-        return distanceSqr < 400;
+        
+        const enemyDx = enemy.x - this.x;
+        const enemyDy = enemy.y - this.y;
+        
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length === 0) return false;
+        
+        const dot = (enemyDx * dx + enemyDy * dy) / length;
+        const projX = this.x + (dot * dx) / length;
+        const projY = this.y + (dot * dy) / length;
+        
+        const isOnLine = dot >= 0 && dot <= length;
+        
+        const distX = enemy.x - projX;
+        const distY = enemy.y - projY;
+        const distance = Math.sqrt(distX * distX + distY * distY);
+        
+        return isOnLine && distance < 30;
     }
 }
 

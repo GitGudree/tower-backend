@@ -1,14 +1,19 @@
 import { canvas} from "../../game/game.js";
 import { cellSize } from "../../game/grid.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
+import { soundManager } from "../../game/soundManager.js";
 
 
 /**
- * Enemy class (DEFAULT)
- *
- * @constructor row, wave, type
- * @author:    Anarox
- * @contributor: Randomfevva 
- * Created:   25.01.2025
+ * Base Enemy class implementing core enemy functionality.
+ * 
+ * @class Enemy
+ * @param {number} row - Row position
+ * @param {number} wave - Current wave number
+ * @author Anarox
+ * @contributor Randomfevva
+ * @date 2025-01-25
  **/
 export class Enemy {
     constructor(row, wave) {
@@ -26,11 +31,25 @@ export class Enemy {
         
         this.damage = 2;
         this.attackspeed  = 15;
+        this.lastHitSoundTime = 0;
+
+        this.setAnimations();
     }
 
-    move() {
+    setAnimations(){
+        this.animatorMove = new SpriteAnimator (sprites.enemy, 0, 50, 50, 4); 
+        this.animatorShoot = new SpriteAnimator (sprites.enemy, 50, 50, 50, 2);
+        this.animatorDead = new SpriteAnimator (sprites.enemy, 100, 50, 50, 1, 300);
+    }
+
+    move(deltaTime) {
         if (!this.isStopped) {
             this.x -= this.speed;
+            this.animatorMove.update(deltaTime);
+        } else if (this.isStopped) {
+            this.animatorShoot.update(deltaTime);
+        } else if (this.health <= 0) {
+            this.animatorDead.update(deltaTime);
         }
     }
 
@@ -44,16 +63,39 @@ export class Enemy {
     }
 
     draw(ctx) {
+        /*
         ctx.fillStyle = this.background;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = "black";
         ctx.font = '20px Impact';
         ctx.textAlign = 'center';
         ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
+        */
+       this.drawSprite(ctx);
+    }
+
+    drawSprite(ctx){
+        if (!this.health <= 0 && !this.isStopped){
+            this.animatorMove.draw(ctx, this.x, this.y);
+        } else if (!this.health <= 0 && this.isStopped){
+            this.animatorShoot.draw(ctx, this.x, this.y);
+        }else {
+            this.animatorDead.draw(ctx, this.x, this.y);
+        }
+
     }
     
     attack(tower) {
         tower.health -= this.damage;
+    }
+
+    takeDamage(amount) {
+        this.health -= amount;
+        const now = Date.now();
+        if (!this.lastHitSoundTime || now - this.lastHitSoundTime > 1000) { // 1000ms = 1 second
+            soundManager.play('enemy_hit');
+            this.lastHitSoundTime = now;
+        }
     }
 }
 

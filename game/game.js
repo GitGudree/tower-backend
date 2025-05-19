@@ -5,6 +5,9 @@ import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
+import { GatlingTower } from "../entities/towers/GatlingTower.js";
+import { getTowerPrice } from "./towerUnlockSystem.js";
+import { soundManager } from './soundManager.js';
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -18,27 +21,25 @@ export const towerUpgradeElement = document.querySelector('.tower-upgrade-btn');
 window.startWaveButton = startWaveButton;
 
 export let money = 1000;
-export let price = 50;
 export let resources = 100;
 export let gameOver;
 export let isUpgradeBtnActive = false;
 
 /**
- * Draw function that updates the grid and UI.
- *               
-
- *
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Renders the game state by updating the grid and UI elements.
+ * 
+ * @function drawGame
+ * @author Anarox
+ * @contributor Randomfevva, Quetzalcoatl
+ */
 export function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Topbar
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffa500';
+    ctx.fillStyle = '#2d2d2d';
     ctx.fillRect(0, 0, topBar.width, topBar.height);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = '#e0e0e0';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     ctx.fillText("💶 " + money, 20, topBar.height / 2);
@@ -57,6 +58,9 @@ export function drawGame() {
         return;
     }
 
+    ctx.fillStyle = '#666666';
+    ctx.fillRect(0, topBar.height, canvas.width, canvas.height - topBar.height);
+
     createGrid();
     handleGameGrid();
 
@@ -74,25 +78,38 @@ export function drawGame() {
 }
 
 /**
- * Update function that updates in-game interactions, movement and stats.
- *               
-
- *
- * @author:    Anarox
- * editor:     Quetzalocatl
- * Created:   28.01.2025
- **/
+ * Updates in-game interactions, movement, and statistics.
+ * 
+ * @function updateGameState
+ * @param {number} deltaTime - Time elapsed since last frame
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-01-28
+ */
 export function updateGameState(deltaTime) {
     
     let selectedTower = towers.find(tower => tower.selected);
 
     const enemiesArray = [];
     for (let enemy of enemies) {
-        enemy.move();
+        enemy.move(deltaTime);
 
         if (enemy.health <= 0) {
+            // Resource rewards based on enemy type
+            switch(enemy.type) {
+                case "fast":
+                    updateResources('increase', 3);
+                    break;
+                case "tank":
+                    updateResources('increase', 8);
+                    break;
+                case "boss":
+                    updateResources('increase', 10);
+                    break;
+                default: // normal enemy
+                    updateResources('increase', 5);
+                    break;
+            }
             updateMoney('increase', 20);
-            updateResources('increase', 1);
             continue;
         }
 
@@ -106,18 +123,26 @@ export function updateGameState(deltaTime) {
     setEnemies(enemiesArray);
     tryEndWave();
 
-    //towers.forEach((tower, towerIndex) => {
-    for (let i = towers.length - 1; i >= 0; i--) { // byttet fra for each for å unngå edge cases -quetz
+    towers.forEach(tower => {
+        tower.checkSynergies(towers);
+    });
+
+    for (let i = towers.length - 1; i >= 0; i--) {
         const tower = towers[i];
         tower.update(deltaTime);
-        tower.stopEnemyMovement(enemies)
-        tower.updateTowerCollision(enemies, i)
-        tower.attack(enemies, projectiles);
-
-        if (tower.isDead && tower.deathTimer <= 0){
-            towers.splice(i, 1)
+        tower.stopEnemyMovement(enemies);
+        tower.updateTowerCollision(enemies, i);
+        
+        if (!tower.isDead) {
+            tower.attack(enemies, projectiles);
         }
-    };
+
+        if (tower.isDead && tower.deathTimer <= 0) {
+            towers.splice(i, 1);
+        }
+    }
+    
+    projectileHandler();
     
     if (resources <= 0) {
         gameOver = true;
@@ -127,13 +152,14 @@ export function updateGameState(deltaTime) {
 }    
 
 /**
- * Updates money with ("increase"/decrease)
- *               
-
- * @param: action, amount
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Updates the player's money balance.
+ * 
+ * @function updateMoney
+ * @param {string} action - Type of update ("increase" or "decrease")
+ * @param {number} amount - Amount to modify
+ * @author Anarox
+ * @date 2025-01-25
+ */
 export function updateMoney(action, amount) {
     if (typeof amount !== "number" || isNaN(amount)) {
         console.error("Invalid amount:", amount);
@@ -156,13 +182,14 @@ export function updateMoney(action, amount) {
 
 
 /**
- * Updates resources with ("increase"/decrease)
- *               
-
- * @param: action, amount
- * @author:    Anarox
- * Created:   25.01.2025
- **/
+ * Updates the player's resource count.
+ * 
+ * @function updateResources
+ * @param {string} action - Type of update ("increase" or "decrease")
+ * @param {number} amount - Amount to modify
+ * @author Anarox
+ * @date 2025-01-25
+ */
 export function updateResources(action, amount) {
     if (typeof amount !== "number" || isNaN(amount)) {
         console.error("Invalid amount:", amount);
@@ -184,13 +211,14 @@ export function updateResources(action, amount) {
 }
 
 /**
- * Updates the tower level with stars instead of a number.
- *               
-
- * @param: tower (Takes in selectedTower)
- * @author:    Anarox
- * Created:   09.03.2025
-**/
+ * Converts tower level to star representation.
+ * 
+ * @function updateTowerLevel
+ * @param {Object} tower - Selected tower instance
+ * @returns {string} Star representation of tower level
+ * @author Anarox
+ * @date 2025-03-09
+ */
 export function updateTowerLevel(tower) {
     let stars = "";
 
@@ -201,47 +229,139 @@ export function updateTowerLevel(tower) {
 }
 
 /**
- * Updates the stat-display in Tower-section to show the selected tower and upgrade stats.
- *               
-
- * @param: tower (Takes in selectedTower)
- * @author:    Anarox
- * Created:   09.03.2025
-**/
+ * Updates the tower statistics display in the UI.
+ * 
+ * @function updateTowerStats
+ * @param {Object} tower - Selected tower instance
+ * @author Anarox
+ * @date 2025-03-09
+ */
 export function updateTowerStats(tower) {
-    if (!tower) return;
-    const canUpgrade = tower && money >= tower.upgradeCost;
-    const stats = tower.getUpgradeStats();
+    const towerImage = document.getElementById('tower-image');
+    const towerTitle = document.getElementById('tower-title');
+    const towerDescription = document.getElementById('tower-description');
+    const towerStats = document.getElementById('tower-stats');
+    const upgradeBtn = document.querySelector('.tower-upgrade-btn');
+    const repairBtn = document.querySelector('.tower-repair-btn');
+    const scrapBtn = document.querySelector('.tower-scrap-btn');
 
-    document.querySelector(".tower-title-display").textContent = tower.name;
-    document.querySelector(".tower-lvl").textContent = updateTowerLevel(tower);
-
-    if (canUpgrade) {
-        document.querySelector(".hp-title-display").innerHTML = `${stats.oldStats.health} → ${stats.newStats.health}`;
-        document.querySelector(".range-title-display").innerHTML = `${stats.oldStats.range} → ${stats.newStats.range}`;
-        document.querySelector(".firerate-title-display").innerHTML = `${stats.oldStats.fireRate} → ${stats.newStats.fireRate}`;
-        document.querySelector(".tower-upgrade-price").textContent = tower.upgradeCost;
-        towerUpgradeElement.classList.add('upgrade', 'hover-upgrade', 'active');
-        towerUpgradeElement.innerText = "UPGRADE ˋ°•*⁀➷";
-    } else {
-        document.querySelector(".hp-title-display").textContent = stats.oldStats.health;
-        document.querySelector(".range-title-display").textContent = stats.oldStats.range;
-        document.querySelector(".firerate-title-display").textContent = stats.oldStats.fireRate;
-        document.querySelector(".tower-upgrade-price").textContent = stats.oldStats.upgradeCost;
-        towerUpgradeElement.classList.remove('upgrade', 'hover-upgrade', 'active');
-        towerUpgradeElement.innerText = "Insufficient balance";
+    if (!tower) {
+        towerImage.src = 'public/sprites/emptyicon.png';
+        towerTitle.textContent = 'Select a tower!';
+        towerDescription.textContent = 'Choose a tower to view its stats.';
+        towerStats.classList.add('hidden');
+        upgradeBtn.classList.add('hidden');
+        repairBtn.classList.add('hidden');
+        scrapBtn.classList.add('hidden');
+        return;
     }
+
+    const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
+
+    towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
+    towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
+    
+    let upgradeCost = UPGRADE_COSTS[tower.upgrades] || -1;
+    tower.upgradeCost = upgradeCost;
+
+    let upgradeStats = null;
+    if (typeof tower.getUpgradeStats === 'function') {
+        const { oldStats, newStats } = tower.getUpgradeStats();
+        upgradeStats = { oldStats, newStats };
+    }
+
+    const healthText = `${tower.health}/${tower.maxHealth}`;
+    const synergyHealthText = tower.synergyBonus?.health > 0 ? ` (+${tower.synergyBonus.health} 🔮)` : '';
+    let upgradeHealthText = '';
+    if (upgradeStats && upgradeStats.newStats.health > upgradeStats.oldStats.health && money >= tower.upgradeCost) {
+        upgradeHealthText = ` (+${upgradeStats.newStats.health - upgradeStats.oldStats.health})`;
+    }
+    document.querySelector('.hp-title-display').textContent = 
+        healthText + synergyHealthText + upgradeHealthText;
+    
+    const rangeText = `${tower.range}`;
+    const synergyRangeText = tower.synergyBonus?.range > 0 ? ` (+${tower.synergyBonus.range} 🔮)` : '';
+    let upgradeRangeText = '';
+    if (upgradeStats && upgradeStats.newStats.range > upgradeStats.oldStats.range && money >= tower.upgradeCost) {
+        upgradeRangeText = ` (+${upgradeStats.newStats.range - upgradeStats.oldStats.range})`;
+    }
+    document.querySelector('.range-title-display').textContent = 
+        rangeText + synergyRangeText + upgradeRangeText;
+    
+    const shotsPerSecond = (60 / tower.fireRate).toFixed(1);
+    const fireRateText = `${shotsPerSecond} shots/sec`;
+    const synergyFireRateText = tower.synergyBonus?.fireRate > 0 ? ` (+${(60 / (tower.fireRate - tower.synergyBonus.fireRate) - 60 / tower.fireRate).toFixed(1)} 🔮)` : '';
+    let upgradeFireRateText = '';
+    if (upgradeStats && upgradeStats.newStats.fireRate < upgradeStats.oldStats.fireRate && money >= tower.upgradeCost) {
+        const newShotsPerSecond = 60 / upgradeStats.newStats.fireRate;
+        const oldShotsPerSecond = 60 / upgradeStats.oldStats.fireRate;
+        upgradeFireRateText = ` (+${(newShotsPerSecond - oldShotsPerSecond).toFixed(1)})`;
+    }
+    document.querySelector('.firerate-title-display').textContent = 
+        fireRateText + synergyFireRateText + upgradeFireRateText;
+
+    const damageText = `${tower.name.toLowerCase() === 'laser' ? tower.damage.toFixed(1) : tower.damage}`;
+    const synergyDamageText = tower.synergyBonus?.damage > 0 ? ` (+${tower.synergyBonus.damage} 🔮)` : '';
+    let upgradeDamageText = '';
+    if (upgradeStats && upgradeStats.newStats.damage > upgradeStats.oldStats.damage && money >= tower.upgradeCost) {
+        const damageIncrease = upgradeStats.newStats.damage - upgradeStats.oldStats.damage;
+        upgradeDamageText = ` (+${tower.name.toLowerCase() === 'laser' ? damageIncrease.toFixed(1) : damageIncrease})`;
+    }
+    document.querySelector('.damage-title-display').textContent = 
+        damageText + synergyDamageText + upgradeDamageText;
+
+    let description = 'A powerful defensive tower.';
+    if (tower.synergizedWith.size > 0) {
+        description += '\n🔮 Synergy Active!';
+        const towerName = tower.name.toLowerCase();
+        if (towerName === 'laser' && tower.synergyBonus?.piercing) {
+            description += '\n⚡ Laser pierces through enemies';
+        } else if (towerName === 'slowtrap' && tower.synergyBonus?.slowEffect) {
+            description += '\n❄️ Double slow effect';
+        } else if (towerName === 'rocket' && tower.synergyBonus?.range) {
+            description += '\n🎯 Increased range and damage';
+        } else if (towerName === 'mine' && tower.synergyBonus?.damage) {
+            description += '\n💥 Large damage boost';
+        }
+    }
+    towerDescription.textContent = description;
+    
+    towerStats.classList.remove('hidden');
+    upgradeBtn.classList.remove('hidden');
+    repairBtn.classList.remove('hidden');
+    scrapBtn.classList.remove('hidden');
+
+    if (upgradeCost === -1 || tower.upgrades >= 5) {
+        upgradeBtn.disabled = true;
+        upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = 'MAX LEVEL';
+    } else if (money >= upgradeCost) {
+        upgradeBtn.disabled = false;
+        upgradeBtn.classList.add('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = `UPGRADE (${upgradeCost}💶)`;
+    } else {
+        upgradeBtn.disabled = true;
+        upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
+        upgradeBtn.textContent = `UPGRADE (${upgradeCost}💶)`;
+    }
+
+    const missingHealth = tower.maxHealth - tower.health;
+    const repairCost = Math.ceil(missingHealth * 0.5);
+    repairBtn.disabled = missingHealth <= 0;
+    repairBtn.textContent = repairBtn.disabled ? 'REPAIR (MAX)' : `REPAIR (${repairCost}🔧)`;
+
+    const scrapValue = Math.ceil(getTowerPrice(tower.bulletType) * 0.7);
+    scrapBtn.textContent = `SCRAP (+${scrapValue}💶)`;
 }
 
 
 /**
- * Rewritten Projectile handler
- *               
-
- * @param: action, amount
- * @author:    Anarox, Quetzalcoatl
- * Created:   09.03.2025
-**/
+ * Handles projectile movement and collision detection.
+ * 
+ * @function projectileHandler
+ * @author Anarox, Quetzalcoatl
+ * @date 2025-03-09
+ */
 export function projectileHandler(){
     const activeProjectiles = [];
 
@@ -263,14 +383,14 @@ export function projectileHandler(){
         } else{
 
             for (let enemy of enemies) {
-                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
+                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) {
 
                     if (projectile.name == "rocket"){
                         projectile.dealDamage(enemy, enemies);
                     } else{
                         projectile.dealDamage(enemy);
                     }
-                    if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
+                    if (projectile.pierceAmount <= 0){
                         finalHit = true;
                     }
                     break;
@@ -287,4 +407,47 @@ export function projectileHandler(){
 
     projectiles.length = 0;
     projectiles.push(...activeProjectiles);
+}
+
+export function initGame() {
+    console.log("Initializing game and loading sounds...");
+    
+    const soundMessage = document.createElement('div');
+    soundMessage.style.position = 'fixed';
+    soundMessage.style.top = '10px';
+    soundMessage.style.left = '50%';
+    soundMessage.style.transform = 'translateX(-50%)';
+    soundMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    soundMessage.style.color = 'white';
+    soundMessage.style.padding = '10px 20px';
+    soundMessage.style.borderRadius = '5px';
+    soundMessage.style.zIndex = '1000';
+    soundMessage.textContent = 'Click anywhere to enable sound';
+    document.body.appendChild(soundMessage);
+
+    const removeMessage = () => {
+        soundMessage.remove();
+        document.removeEventListener('click', removeMessage);
+    };
+    document.addEventListener('click', removeMessage);
+
+    const soundPromises = [
+        soundManager.loadSound('tower_shoot', '/assets/sounds/tower_shoot.mp3'),
+        soundManager.loadSound('tower_destroy', '/assets/sounds/tower_destroy.mp3'),
+        soundManager.loadSound('enemy_hit', '/assets/sounds/enemy_hit.mp3'),
+        soundManager.loadSound('laser', '/assets/sounds/laser.mp3'),
+        soundManager.loadSound('rocket', '/assets/sounds/rocket.mp3'),
+        soundManager.loadSound('mine_trigger', '/assets/sounds/mine_trigger.mp3'),
+        soundManager.loadSound('slow_trap', '/assets/sounds/slow_trap.mp3'),
+        soundManager.loadSound('artillery_fire', '/assets/sounds/artillery_fire.mp3'),
+        soundManager.loadSound('gatling_fire', '/assets/sounds/gatling_fire.mp3'),
+        soundManager.loadSound('sniper_fire', '/assets/sounds/sniper_fire.mp3'),
+        soundManager.loadSound('background_music', '/assets/sounds/Backround.mp3'),
+        soundManager.loadSound('gameplay_music', '/assets/sounds/Gameplay.mp3')
+    ];
+    
+    return Promise.all(soundPromises).then(() => {
+        console.log("All sounds loaded");
+        soundManager.playMusic('background');
+    });
 }

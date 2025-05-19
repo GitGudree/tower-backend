@@ -1,4 +1,6 @@
 import { Enemy } from "./enemy.js";
+import { sprites } from "../spriteLoader.js";
+import { SpriteAnimator } from "../spriteAnimator.js";
 
 /**
  * Tank Enemy class
@@ -13,6 +15,13 @@ export class TankEnemy extends Enemy {
         this.health = 200 + (wave - 1) * 20;
         this.speed = 0.5;
         this.background = "darkgreen";
-        this.laneIndex = row;
+        this.laneIndex = row; 
+
+        this.setAnimations();
+    }
+    setAnimations(){
+        this.animatorMove = new SpriteAnimator (sprites.tankEnemy, 0, 50, 50, 4); 
+        this.animatorShoot = new SpriteAnimator (sprites.tankEnemy, 50, 50, 50, 2);
+        this.animatorDead = new SpriteAnimator (sprites.tankEnemy, 100, 50, 50, 1, 300);
     }
 }

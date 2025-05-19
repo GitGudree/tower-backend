@@ -1,13 +1,18 @@
-/**
- * normal Bullet class
- *               
- * @author:    Anarox, Quetzalcoatl
- * Created:   25.01.2025
- **/
-
-
 import { cellSize } from "../../game/grid.js";
 import { resources } from "../../game/game.js";
+
+/**
+ * Base Bullet class implementing core projectile functionality.
+ * 
+ * @class Bullet
+ * @param {number} x - X coordinate
+ * @param {number} y - Y coordinate
+ * @param {string} type - Bullet type
+ * @param {number} laneIndex - Lane position
+ * @author Anarox
+ * @contributor Quetzalcoatl
+ * @date 2025-01-25
+ **/
 
 export class Bullet {
     constructor(x, y, type, laneIndex) {
@@ -37,7 +42,7 @@ export class Bullet {
         }
     }
 
-    doesLaserHit() { // this is more preformant than doing a check in projectileHandler
+    doesLaserHit() { 
         return false;
     }
 
@@ -51,9 +56,13 @@ export class Bullet {
     }
 
     dealDamage(enemy) {
+        if (typeof enemy.takeDamage === 'function') {
+            enemy.takeDamage(this.bulletDamage);
+        } else {
             enemy.health -= this.bulletDamage;
-            this.pierceAmount --
-            this.hitEnemies.add(enemy)
+        }
+        this.pierceAmount --
+        this.hitEnemies.add(enemy)
     }
 }
 
