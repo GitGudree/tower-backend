@@ -1,5 +1,5 @@
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "./toast-message.js";
-import { money, updateMoney } from "./game.js";
+import { money, resources, updateResources } from "./game.js";
 
 /**
  * Tower Unlock System module implementing tower progression functionality.
@@ -10,22 +10,22 @@ import { money, updateMoney } from "./game.js";
 
 export const TOWER_DATA = {
     basic: {
-        price: 100,
+        price: 70,
         unlocked: true,
         unlockPrice: 0
     },
     sniper: {
-        price: 70,
+        price: 130,
         unlocked: false,
         unlockPrice: 150
     },
     gatling: {
-        price: 80,
+        price: 100,
         unlocked: false,
         unlockPrice: 200
     },
     rocket: {
-        price: 100,
+        price: 180,
         unlocked: false,
         unlockPrice: 250
     },
@@ -77,8 +77,8 @@ export function unlockTower(towerType) {
         return false;
     }
 
-    if (money >= tower.unlockPrice) {
-        updateMoney("decrease", tower.unlockPrice);
+    if (resources >= tower.unlockPrice + 1) {
+        updateResources("decrease", tower.unlockPrice);
         tower.unlocked = true;
         toastSuccess(TOAST_MESSAGES.TOWER.UNLOCK_SUCCESS);
         updateTowerCardStates();
