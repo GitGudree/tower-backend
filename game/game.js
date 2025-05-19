@@ -246,7 +246,7 @@ export function updateTowerStats(tower) {
     const scrapBtn = document.querySelector('.tower-scrap-btn');
 
     if (!tower) {
-        towerImage.src = 'public/sprites/emptyicon.png';
+        towerImage.src = '/sprites/emptyicon.png';
         towerTitle.textContent = 'Select a tower!';
         towerDescription.textContent = 'Choose a tower to view its stats.';
         towerStats.classList.add('hidden');
@@ -258,7 +258,7 @@ export function updateTowerStats(tower) {
 
     const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
 
-    towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
+    towerImage.src = tower.sprite || '/sprites/emptyicon.png';
     towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
     
     let upgradeCost = UPGRADE_COSTS[tower.upgrades] || -1;
