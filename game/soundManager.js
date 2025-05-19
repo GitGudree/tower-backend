@@ -9,21 +9,20 @@
 export class SoundManager {
     constructor() {
         this.sounds = new Map();
-        this.soundVolumes = new Map(); // Store custom volumes
+        this.soundVolumes = new Map();
         this.muted = false;
-        this.volume = 1.0; // Default to max volume
-        this.loops = new Map(); // Track looping sounds
-        this.loopStopTimeouts = new Map(); // Track debounce timeouts
+        this.volume = 1.0;
+        this.loops = new Map();
+        this.loopStopTimeouts = new Map();
         this.music = {
             current: null,
             tracks: {},
-            volume: 1.0, // Default music volume is also max
-            pendingPlay: null // Store pending music to play after user interaction
+            volume: 1.0,
+            pendingPlay: null
         };
         this.hasUserInteracted = false;
         console.log("SoundManager initialized");
 
-        // Add user interaction listener
         document.addEventListener('click', () => {
             if (!this.hasUserInteracted) {
                 this.hasUserInteracted = true;
@@ -40,9 +39,8 @@ export class SoundManager {
         return new Promise((resolve, reject) => {
             const audio = new Audio(path);
             audio.volume = this.volume;
-            // Set custom volume for specific sounds
             if (name === 'rocket' || name === 'artillery_fire') {
-                this.soundVolumes.set(name, 0.12); // Lower volume for rocket and artillery sounds
+                this.soundVolumes.set(name, 0.12);
             } else if (name === 'background_music' || name === 'gameplay_music') {
                 audio.loop = true;
                 audio.volume = this.music.volume;
@@ -52,13 +50,11 @@ export class SoundManager {
             }
             this.sounds.set(name, audio);
             
-            // Handle loading success
             audio.addEventListener('canplaythrough', () => {
                 console.log(`Sound ${name} loaded successfully`);
                 resolve();
             }, { once: true });
             
-            // Handle loading error
             audio.addEventListener('error', (error) => {
                 console.error(`Error loading sound ${name}:`, error);
                 reject(error);
@@ -72,27 +68,23 @@ export class SoundManager {
         if (type === 'gameplay') trackName = 'gameplay_music';
         if (!trackName) return;
 
-        // If user hasn't interacted yet, store the music type and show a message
         if (!this.hasUserInteracted) {
             this.music.pendingPlay = type;
             console.log('Music will start after user interaction');
             return;
         }
         
-        // Stop current music if playing
         if (this.music.current && this.music.current !== this.music.tracks[trackName]) {
             this.music.current.pause();
             this.music.current.currentTime = 0;
         }
         
-        // Play new music if not already playing
         const track = this.music.tracks[trackName];
         if (track && this.music.current !== track) {
             track.currentTime = 0;
             track.volume = this.music.volume;
             track.play().catch(error => {
                 console.error(`Error playing music ${trackName}:`, error);
-                // Try playing again after a short delay
                 setTimeout(() => {
                     track.play().catch(err => console.error(`Failed to play music ${trackName} after retry:`, err));
                 }, 1000);
@@ -121,9 +113,7 @@ export class SoundManager {
             console.log(`Playing sound: ${name}`);
             const soundClone = sound.cloneNode();
             
-            // Get the base custom volume (0.12 for rocket/artillery, 1.0 for others)
             const baseVolume = name === 'rocket' || name === 'artillery_fire' ? 0.12 : 1.0;
-            // Apply both the custom volume and master volume
             soundClone.volume = baseVolume * this.volume;
             
             soundClone.play().catch(error => {
@@ -136,8 +126,7 @@ export class SoundManager {
 
     playLoop(name) {
         if (this.muted) return;
-        if (this.loops.has(name)) return; // Already playing
-        // Cancel any pending stop for this sound
+        if (this.loops.has(name)) return;
         if (this.loopStopTimeouts.has(name)) {
             clearTimeout(this.loopStopTimeouts.get(name));
             this.loopStopTimeouts.delete(name);
@@ -156,7 +145,6 @@ export class SoundManager {
     }
 
     stopLoop(name) {
-        // Debounce: wait 100ms before actually stopping
         if (this.loopStopTimeouts.has(name)) {
             clearTimeout(this.loopStopTimeouts.get(name));
         }
@@ -175,32 +163,26 @@ export class SoundManager {
     setVolume(volume) {
         this.volume = Math.max(0, Math.min(1, volume));
         
-        // Update all sound effects
         this.sounds.forEach(sound => {
-            // Don't modify music tracks here as they have their own volume control
             if (sound !== this.music.tracks['background_music'] && 
                 sound !== this.music.tracks['gameplay_music']) {
                 sound.volume = this.volume;
             }
         });
         
-        // Update all looped sounds
         this.loops.forEach(loopAudio => {
             loopAudio.volume = this.volume;
         });
         
-        // Update music volume
         this.music.volume = this.volume;
         if (this.music.current) {
             this.music.current.volume = this.volume;
         }
         
-        // Update custom volumes while maintaining their relative levels
+        
         this.soundVolumes.forEach((customVolume, name) => {
             if (name !== 'background_music' && name !== 'gameplay_music') {
-                // Store the base custom volume (0.12 for rocket/artillery)
                 const baseVolume = name === 'rocket' || name === 'artillery_fire' ? 0.12 : 1.0;
-                // Apply both the custom volume and master volume
                 this.soundVolumes.set(name, baseVolume * this.volume);
             }
         });
@@ -242,5 +224,4 @@ export class SoundManager {
     }
 }
 
-// Create and export a singleton instance
 export const soundManager = new SoundManager(); 

@@ -10,7 +10,6 @@ import { setChosenTower } from "../entities/towers/towerState.js";
  * @author Randomfevva
  **/
 
-// Tower type display names
 const TOWER_NAMES = {
     'basic': 'Normal Tower',
     'sniper': 'Sniper Tower',
@@ -18,34 +17,28 @@ const TOWER_NAMES = {
     'laser': 'Laser Tower',
     'rocket': 'Rocket Tower',
     'artillery': 'Artillery Tower',
-    // Add inventory items
     'barricade': 'Barricade',
     'mine': 'Mine',
     'slowtrap': 'Slow Trap'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Handle tower selection
     const towerCards = document.querySelectorAll('.card[tower-type]');
     towerCards.forEach(card => {
         card.addEventListener('click', () => {
             const towerType = card.getAttribute('tower-type');
             if (!towerType) return;
 
-            // Check if tower is locked
             if (!isTowerUnlocked(towerType)) {
                 unlockTower(towerType);
                 return;
             }
 
-            // If tower is unlocked, handle selection
             document.querySelectorAll('.card').forEach(c => {
                 c.classList.remove('select');
-                // Remove any previous selection styling
                 setChosenTower(null);
             });
 
-            // Add selection styling and set as chosen tower
             card.classList.add('select');
             setChosenTower(towerType);
             
@@ -54,14 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
             toastInfo(`${towerName} selected`);
         });
 
-        // Add initial locked state check
         const towerType = card.getAttribute('tower-type');
         if (towerType && !isTowerUnlocked(towerType)) {
             card.classList.add('locked');
         }
     });
 
-    // Listen for tower unlock events to update UI
     document.addEventListener('towerUnlocked', (event) => {
         const towerType = event.detail?.towerType;
         if (towerType) {
@@ -72,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle tower upgrade
     const upgradeButton = document.querySelector('.tower-upgrade-btn');
     if (upgradeButton) {
         upgradeButton.addEventListener('click', () => {
@@ -93,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Listen for tower placement events
     document.addEventListener('towerPlaced', (event) => {
         const towerType = event.detail?.towerType;
         if (towerType) {
@@ -104,13 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateTowerInfo(towerType) {
-    // Update tower info display based on tower type
     const towerImage = document.getElementById('tower-image');
     const towerTitle = document.getElementById('tower-title');
     const towerDescription = document.getElementById('tower-description');
     const towerStats = document.getElementById('tower-stats');
 
-    // Set tower info based on type
     switch(towerType) {
         case 'basic':
             towerTitle.textContent = TOWER_NAMES.basic;
@@ -134,21 +121,17 @@ function updateTowerInfo(towerType) {
             break;
     }
 
-    // Show tower stats
     if (towerStats) {
         towerStats.classList.remove('hidden');
     }
 }
 
 function calculateUpgradeCost(tower) {
-    // Add your upgrade cost calculation logic here
-    return 100; // Example cost
+    return 100;
 }
 
 function upgradeTower(tower) {
-    // Add your tower upgrade logic here
-    // This should update the tower's stats and visual appearance
+    tower.upgrade();
 }
 
-// Export functions that might be needed elsewhere
 export { updateTowerInfo, upgradeTower }; 

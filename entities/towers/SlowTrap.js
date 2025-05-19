@@ -24,9 +24,9 @@ export class SlowTrap extends Tower {
         this.name = "SlowTrap";
         this.x = x;
         this.y = y;
-        this.slowFactor = 0.5; // Reduces enemy speed by 50%
-        this.slowDuration = 3000; // 3 seconds in milliseconds
-        this.background = '#4682B4'; // Steel blue color
+        this.slowFactor = 0.5; 
+        this.slowDuration = 3000; 
+        this.background = '#4682B4'; 
         this.textColor = 'white';
         this.selected = false;
         this.laneIndex = laneIndex;
@@ -39,18 +39,15 @@ export class SlowTrap extends Tower {
         this.range = this.baseRange;
         this.damage = this.baseDamage;
         this.fireRate = this.baseFireRate;
-        this.affectedEnemies = new Map(); // Track affected enemies and their timers
+        this.affectedEnemies = new Map(); 
         
-        // Completely disable collision handling
         this.stopEnemy = 0;
         this.isColliding = false;
 
-        // here live is used for inactive and dead for activated
-        this.animatorLive= new SpriteAnimator (sprites.slowTower, 0, 50, 50, 1, 50000); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive= new SpriteAnimator (sprites.slowTower, 0, 50, 50, 1, 50000); 
     }
 
     update(deltaTime) {
-        // Update slow effect timers and remove expired effects
         for (const [enemy, data] of this.affectedEnemies.entries()) {
             if (enemy.isDead) {
                 this.affectedEnemies.delete(enemy);
@@ -66,24 +63,21 @@ export class SlowTrap extends Tower {
         }
 
         if (this.health <= 0) {
-            // Remove all slow effects before destroying the trap
             for (const [enemy, data] of this.affectedEnemies.entries()) {
                 if (!enemy.isDead) {
                     enemy.speed = data.originalSpeed;
                     enemy.isSlowed = false;
                 }
             }
-            return true; // Remove the trap if it's broken
+            return true; 
         }
         return false;
     }
 
-    // Override the attack method to check for enemy collision instead of shooting
     attack(enemies) {
         if (this.isActive && this.health > 0) {
             for (let enemy of enemies) {
                 if (collision(this, enemy) && !enemy.isSlowed && !this.affectedEnemies.has(enemy)) {
-                    // Store original speed and start tracking the enemy
                     const originalSpeed = enemy.speed;
                     enemy.speed *= this.slowFactor;
                     enemy.isSlowed = true;
@@ -93,7 +87,7 @@ export class SlowTrap extends Tower {
                         timer: 0
                     });
 
-                    this.health -= 25; // Reduce trap health each time it's triggered
+                    this.health -= 25;  
                     soundManager.play('slow_trap');
                     console.log("Slow trap activated!");
                 }
@@ -113,7 +107,6 @@ export class SlowTrap extends Tower {
             }*/
 
 
-            // Draw slow effect radius if active
             if (this.affectedEnemies.size > 0) {
                 ctx.strokeStyle = 'rgba(70, 130, 180, 1)';
                 ctx.beginPath();
@@ -122,17 +115,14 @@ export class SlowTrap extends Tower {
             }
                 
 
-            // Draw synergy effects
             this.drawSynergyEffects(ctx);
             this.drawSprite(ctx);
         }
     }
 
     drawSprite(ctx) {
-        // Draw the tower sprite
         this.animatorLive.draw(ctx, this.x, this.y);
 
-        // Draw selection outline if selected
         if (this.selected) {
             ctx.save();
             ctx.strokeStyle = 'yellow';
@@ -141,7 +131,7 @@ export class SlowTrap extends Tower {
             ctx.restore();
         }
     }
-    // Override all collision-related methods to do nothing
+    
     stopEnemyMovement() {
         return;
     }
@@ -150,9 +140,8 @@ export class SlowTrap extends Tower {
         return;
     }
 
-    // Basic upgrade functionality
     upgrade() {
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         this.maxHealth += 50;
@@ -169,7 +158,7 @@ export class SlowTrap extends Tower {
             upgradeCost: this.upgradeCost
         };
 
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         const newStats = {
             health: oldStats.health + 50,
             range: oldStats.range,

@@ -14,7 +14,7 @@ import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTowe
 
 let inventory = [];
 let selectedItem = null;
-let refundRate = 0.5; // 50% refund on deletion
+let refundRate = 0.5; 
 
 /**
  * Updates the inventory display in the UI.
@@ -28,13 +28,11 @@ function updateInventory() {
     for (let item of inventory) {
         const itemSlot = document.createElement('div');
         itemSlot.classList.add('slot');
-        // Add data attribute for easier selection matching
         itemSlot.setAttribute('data-item-name', item.name);
         itemSlot.innerHTML = `
             <img src="${item.image}" alt="${item.name}"/>
             <h3>${item.name}</h3>
         `;
-        // Add selected class if this is the currently selected item
         if (selectedItem && selectedItem.name === item.name) {
             itemSlot.classList.add('select');
         }
@@ -47,12 +45,10 @@ function updateInventory() {
 }
 
 function selectItem(item) {
-    // Remove selection from all slots
     document.querySelectorAll('.slot').forEach(slot => {
         slot.classList.remove('select');
     });
 
-    // Find and select the slot containing this item
     const slot = document.querySelector(`.slot[data-item-name="${item.name}"]`);
     if (slot) {
         slot.classList.add('select');
@@ -87,7 +83,6 @@ function useItem(gameState) {
         return;
     }
 
-    // Map item names to tower types
     const itemToTowerType = {
         'Barricade': 'barricade',
         'Mine': 'mine',
@@ -100,7 +95,6 @@ function useItem(gameState) {
         console.log("Ready to place:", towerType);
     } else if (typeof selectedItem.effect === "function") {
         selectedItem.effect(gameState);
-        // For instant-use items, remove them immediately
         const index = inventory.indexOf(selectedItem);
         if (index !== -1 && !selectedItem.reusable) {
             inventory.splice(index, 1);
@@ -112,7 +106,6 @@ function useItem(gameState) {
     }
 }
 
-// Add new function to handle successful placement
 function removeSelectedItem() {
     if (!selectedItem) return;
     
@@ -148,17 +141,14 @@ function clearSelectedDisplay() {
     document.getElementById("selected-item-image").src = "";
     document.getElementById("selected-item-name").textContent = "No item chosen!";
     document.getElementById("selected-item-description").textContent = "Choose an item.";
-    // Clear any selected slots
     document.querySelectorAll('.slot').forEach(slot => {
         slot.classList.remove('select');
     });
 }
 
-// Export functions
 export { addInventoryItem, useItem, deleteButton, inventory, removeSelectedItem };
 
 window.useItem = useItem;
 window.deleteButton = deleteButton;
 
-// Initialize inventory display when DOM is loaded
 document.addEventListener('DOMContentLoaded', updateInventory);

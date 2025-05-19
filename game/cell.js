@@ -20,27 +20,23 @@ export class Cell {
     }
 
     draw() {
-        // Check if there's a tower in this cell
         const tower = towers.find(t => t.x === this.x && t.y === this.y);
         const enemyWithinRect = enemies.filter(enemy => gridRectColission(this, enemy)).length > 0;
 
-        // Draw hover effect
         if (mouse.x && mouse.y && gridRectColission(this, mouse)) {
             ctx.strokeStyle = enemyWithinRect ? '#ff4444' : '#e0e0e0';
             ctx.lineWidth = 1;
             ctx.strokeRect(this.x, this.y, this.width, this.height);
         }
 
-        // Draw synergy effect if tower has active synergies
         if (tower && tower.hasActiveSynergies && tower.synergyGlowColor) {
             ctx.save();
             
-            // Draw glowing cell border
+            
             ctx.strokeStyle = tower.synergyGlowColor;
             ctx.lineWidth = 3;
             ctx.globalAlpha = 0.8;
             
-            // Add glow effect
             ctx.shadowColor = tower.synergyGlowColor;
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 0;
@@ -48,12 +44,11 @@ export class Cell {
             
             ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-            // Draw connection lines if tower is selected
             if (tower.selected && tower.synergizedWith) {
                 ctx.setLineDash([5, 5]);
                 ctx.lineWidth = 2;
                 ctx.globalAlpha = 0.6;
-                ctx.shadowBlur = 0; // Remove shadow for lines
+                ctx.shadowBlur = 0;
 
                 for (const synergizedTower of tower.synergizedWith) {
                     ctx.beginPath();
@@ -64,7 +59,7 @@ export class Cell {
                     );
                     ctx.stroke();
                 }
-                ctx.setLineDash([]); // Reset dash pattern
+                ctx.setLineDash([]);
             }
 
             ctx.restore();

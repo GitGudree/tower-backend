@@ -25,7 +25,6 @@ class Item {
         this.image = image;
     }
 
-    // Standard attack method (can be overridden by subclasses)
     attack(target) {
         console.log(`${this.name} attacks ${target}!`);
     }
@@ -61,12 +60,10 @@ class BarricadeInfo extends Item {
     }
 }
 
-// Create items using the appropriate classes
 const items = {
     barricade: new BarricadeInfo(),
     mine: new MineInfo(),
     slowTrap: new SlowTrapInfo()
 };
 
-// Export items for use in shop.js
 export { items };

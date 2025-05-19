@@ -58,7 +58,6 @@ export function drawGame() {
         return;
     }
 
-    // Set background color for game grid
     ctx.fillStyle = '#666666';
     ctx.fillRect(0, topBar.height, canvas.width, canvas.height - topBar.height);
 
@@ -124,19 +123,16 @@ export function updateGameState(deltaTime) {
     setEnemies(enemiesArray);
     tryEndWave();
 
-    // Check synergies for all towers
     towers.forEach(tower => {
         tower.checkSynergies(towers);
     });
 
-    // Update towers and handle projectiles
     for (let i = towers.length - 1; i >= 0; i--) {
         const tower = towers[i];
         tower.update(deltaTime);
         tower.stopEnemyMovement(enemies);
         tower.updateTowerCollision(enemies, i);
         
-        // Make sure tower is not dead before attacking
         if (!tower.isDead) {
             tower.attack(enemies, projectiles);
         }
@@ -146,7 +142,6 @@ export function updateGameState(deltaTime) {
         }
     }
     
-    // Handle projectile movement and collisions
     projectileHandler();
     
     if (resources <= 0) {
@@ -251,7 +246,6 @@ export function updateTowerStats(tower) {
     const scrapBtn = document.querySelector('.tower-scrap-btn');
 
     if (!tower) {
-        // Default state when no tower is selected
         towerImage.src = 'public/sprites/emptyicon.png';
         towerTitle.textContent = 'Select a tower!';
         towerDescription.textContent = 'Choose a tower to view its stats.';
@@ -262,25 +256,20 @@ export function updateTowerStats(tower) {
         return;
     }
 
-    // Standard upgrade costs for all towers
     const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
 
-    // Show tower information when selected
     towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
     towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
     
-    // Determine upgrade cost for this level
     let upgradeCost = UPGRADE_COSTS[tower.upgrades] || -1;
     tower.upgradeCost = upgradeCost;
 
-    // Use getUpgradeStats to get actual stat improvements
     let upgradeStats = null;
     if (typeof tower.getUpgradeStats === 'function') {
         const { oldStats, newStats } = tower.getUpgradeStats();
         upgradeStats = { oldStats, newStats };
     }
 
-    // Health
     const healthText = `${tower.health}/${tower.maxHealth}`;
     const synergyHealthText = tower.synergyBonus?.health > 0 ? ` (+${tower.synergyBonus.health} 🔮)` : '';
     let upgradeHealthText = '';
@@ -290,7 +279,6 @@ export function updateTowerStats(tower) {
     document.querySelector('.hp-title-display').textContent = 
         healthText + synergyHealthText + upgradeHealthText;
     
-    // Range
     const rangeText = `${tower.range}`;
     const synergyRangeText = tower.synergyBonus?.range > 0 ? ` (+${tower.synergyBonus.range} 🔮)` : '';
     let upgradeRangeText = '';
@@ -300,8 +288,7 @@ export function updateTowerStats(tower) {
     document.querySelector('.range-title-display').textContent = 
         rangeText + synergyRangeText + upgradeRangeText;
     
-    // Fire rate (convert to shots per second and show improvement if it increases)
-    const shotsPerSecond = (60 / tower.fireRate).toFixed(1);  // Convert frames to shots/sec
+    const shotsPerSecond = (60 / tower.fireRate).toFixed(1);
     const fireRateText = `${shotsPerSecond} shots/sec`;
     const synergyFireRateText = tower.synergyBonus?.fireRate > 0 ? ` (+${(60 / (tower.fireRate - tower.synergyBonus.fireRate) - 60 / tower.fireRate).toFixed(1)} 🔮)` : '';
     let upgradeFireRateText = '';
@@ -313,7 +300,6 @@ export function updateTowerStats(tower) {
     document.querySelector('.firerate-title-display').textContent = 
         fireRateText + synergyFireRateText + upgradeFireRateText;
 
-    // Damage
     const damageText = `${tower.name.toLowerCase() === 'laser' ? tower.damage.toFixed(1) : tower.damage}`;
     const synergyDamageText = tower.synergyBonus?.damage > 0 ? ` (+${tower.synergyBonus.damage} 🔮)` : '';
     let upgradeDamageText = '';
@@ -324,12 +310,9 @@ export function updateTowerStats(tower) {
     document.querySelector('.damage-title-display').textContent = 
         damageText + synergyDamageText + upgradeDamageText;
 
-    // Update description to include special synergy effects
     let description = 'A powerful defensive tower.';
     if (tower.synergizedWith.size > 0) {
         description += '\n🔮 Synergy Active!';
-        
-        // Add special effect descriptions
         const towerName = tower.name.toLowerCase();
         if (towerName === 'laser' && tower.synergyBonus?.piercing) {
             description += '\n⚡ Laser pierces through enemies';
@@ -348,7 +331,6 @@ export function updateTowerStats(tower) {
     repairBtn.classList.remove('hidden');
     scrapBtn.classList.remove('hidden');
 
-    // Update upgrade button based on affordability and max level
     if (upgradeCost === -1 || tower.upgrades >= 5) {
         upgradeBtn.disabled = true;
         upgradeBtn.classList.remove('upgrade', 'hover-upgrade');
@@ -363,13 +345,11 @@ export function updateTowerStats(tower) {
         upgradeBtn.textContent = `UPGRADE (${upgradeCost}💶)`;
     }
 
-    // Update repair button
     const missingHealth = tower.maxHealth - tower.health;
     const repairCost = Math.ceil(missingHealth * 0.5);
     repairBtn.disabled = missingHealth <= 0;
     repairBtn.textContent = repairBtn.disabled ? 'REPAIR (MAX)' : `REPAIR (${repairCost}🔧)`;
 
-    // Update scrap button
     const scrapValue = Math.ceil(getTowerPrice(tower.bulletType) * 0.7);
     scrapBtn.textContent = `SCRAP (+${scrapValue}💶)`;
 }
@@ -403,14 +383,14 @@ export function projectileHandler(){
         } else{
 
             for (let enemy of enemies) {
-                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) { // bruker bounding box hot detection for bullets
+                if (collision(enemy, projectile, "boundingBox") && projectile.pierceAmount > 0 && !projectile.hitEnemies.has(enemy)) {
 
                     if (projectile.name == "rocket"){
                         projectile.dealDamage(enemy, enemies);
                     } else{
                         projectile.dealDamage(enemy);
                     }
-                    if (projectile.pierceAmount <= 0){    // om du mener dette burde være en switch ta det opp med ask så fikser jeg det
+                    if (projectile.pierceAmount <= 0){
                         finalHit = true;
                     }
                     break;
@@ -432,7 +412,6 @@ export function projectileHandler(){
 export function initGame() {
     console.log("Initializing game and loading sounds...");
     
-    // Create and show sound initialization message
     const soundMessage = document.createElement('div');
     soundMessage.style.position = 'fixed';
     soundMessage.style.top = '10px';
@@ -446,14 +425,12 @@ export function initGame() {
     soundMessage.textContent = 'Click anywhere to enable sound';
     document.body.appendChild(soundMessage);
 
-    // Remove message after user interaction
     const removeMessage = () => {
         soundMessage.remove();
         document.removeEventListener('click', removeMessage);
     };
     document.addEventListener('click', removeMessage);
 
-    // Initialize sound effects
     const soundPromises = [
         soundManager.loadSound('tower_shoot', '/assets/sounds/tower_shoot.mp3'),
         soundManager.loadSound('tower_destroy', '/assets/sounds/tower_destroy.mp3'),

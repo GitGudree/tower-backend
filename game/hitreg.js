@@ -19,7 +19,7 @@ export function collision(value1, value2, type) {
                 );
             }
     default:
-        return ( value2.x >= value1.x && value2.x <= value1.x + 50 && value1.y === value2.y) // bounding box causes issues in tower-enemy collision so this is used instead
+        return ( value2.x >= value1.x && value2.x <= value1.x + 50 && value1.y === value2.y)
                
            
     }

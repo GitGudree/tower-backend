@@ -49,7 +49,6 @@ export class Tower {
         this.isColliding = false;
         this.laneIndex = row;
 
-        // Synergy related properties
         this.synergyRange = 2;
         this.synergyBonus = {
             damage: 0,
@@ -65,7 +64,6 @@ export class Tower {
         this.lastSynergyCheck = 0;
         this.appliedSynergyBonuses = new Set();
 
-        // Tower style
         this.background = 'blue';
         this.textColor = 'lightgray';
 
@@ -79,11 +77,11 @@ export class Tower {
         this.frameInterval = 100;
         
 
-        this.animatorLive = new SpriteAnimator (sprites.default, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.default, 0, 50, 50, 3); 
         this.animatorDead = new SpriteAnimator (sprites.default, 50, 50, 50, 2, 200);
     }
     
-    stopEnemyMovement(enemies) { // used to prevent rubberbanding
+    stopEnemyMovement(enemies) { 
         if (this.stopEnemy <= 0){
             for (let enemy of enemies){
                 if (collision(this, enemy)) {
@@ -144,14 +142,12 @@ export class Tower {
     }
 
     drawSprite(ctx) {
-        // Draw the tower sprite
         if (!this.isDead) {
             this.animatorLive.draw(ctx, this.x, this.y);
         } else {
             this.animatorDead.draw(ctx, this.x, this.y);
         }
 
-        // Draw selection outline if selected
         if (this.selected) {
             ctx.save();
             ctx.strokeStyle = 'yellow';
@@ -162,17 +158,14 @@ export class Tower {
     }
 
     drawSynergyEffects(ctx) {
-        // Draw synergy effects
         if (this.hasActiveSynergies) {
             ctx.save();
             
-            // Draw subtle border glow
             ctx.strokeStyle = this.synergyGlowColor;
             ctx.lineWidth = 2;
             ctx.globalAlpha = 0.4;
             ctx.strokeRect(this.x, this.y, cellSize, cellSize);
 
-            // Draw connection lines
             ctx.setLineDash([3, 3]);
             ctx.lineWidth = 1;
             ctx.globalAlpha = 0.3;
@@ -184,30 +177,28 @@ export class Tower {
             }
             ctx.setLineDash([]);
 
-            // Draw single synergy icon based on effect
             ctx.font = '14px Arial';
             ctx.textAlign = 'center';
             ctx.fillStyle = this.synergyGlowColor;
             ctx.globalAlpha = 1;
             
-            // Choose single most relevant icon based on tower type and synergy
             let synergyIcon = '';
             const towerName = this.name.toLowerCase();
             
             if (towerName === 'laser' && this.synergyBonus.piercing) {
-                synergyIcon = '⚡'; // Piercing effect
+                synergyIcon = '⚡'; 
             } else if (towerName === 'gatling' && (this.synergyBonus.damage > 0 || this.synergyBonus.fireRate > 0)) {
-                synergyIcon = this.synergyBonus.damage > 0 ? '⚔️' : '⚡'; // Damage or fire rate boost
+                synergyIcon = this.synergyBonus.damage > 0 ? '⚔️' : '⚡'; 
             } else if (towerName === 'sniper' && this.synergyBonus.range > 0) {
-                synergyIcon = '🎯'; // Range boost
+                synergyIcon = '🎯'; 
             } else if (towerName === 'barricade' && this.synergyBonus.health > 0) {
-                synergyIcon = '❤️'; // Health boost
+                synergyIcon = '❤️'; 
             } else if (towerName === 'rocket' && (this.synergyBonus.range > 0 || this.synergyBonus.damage > 0)) {
-                synergyIcon = '🎯'; // Range boost (includes damage)
+                synergyIcon = '🎯'; 
             } else if (towerName === 'mine' && this.synergyBonus.damage > 0) {
-                synergyIcon = '⚔️'; // Large damage boost
+                synergyIcon = '⚔️'; 
             } else if (towerName === 'slowtrap' && this.synergyBonus.slowEffect > 0) {
-                synergyIcon = '❄️'; // Double slow effect
+                synergyIcon = '❄️'; 
             }
 
             if (synergyIcon) {
@@ -217,7 +208,6 @@ export class Tower {
             ctx.restore();
         }
 
-        // Draw selection outline if selected
         if (this.selected) {
             ctx.save();
             ctx.strokeStyle = 'yellow';
@@ -248,7 +238,6 @@ export class Tower {
                     this.animatorLive.reset();
                     soundManager.play('tower_shoot');
                 } else if (!foundTarget) {
-                    // Reset animation when no target is found
                     this.fireAnimation = 0;
                     this.animatorLive.reset();
                     
@@ -265,30 +254,25 @@ export class Tower {
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         
-        // Increase health
         this.baseHealth += 50;
         this.maxHealth += 50;
         this.health += 50;
         
-        // Increase other stats based on upgrade level
         const nextLevel = this.upgrades + 1;
         
-        // Update base stats according to upgrade path
         if (nextLevel >= 2) {
-            this.baseRange = Math.floor(this.baseRange * (1 + 0.1)); // 10% increase
-            this.baseFireRate = Math.floor(this.baseFireRate * (1 - 0.05)); // 5% faster
+            this.baseRange = Math.floor(this.baseRange * (1 + 0.1)); 
+            this.baseFireRate = Math.floor(this.baseFireRate * (1 - 0.05)); 
             
-            // Damage increases from level 3 onwards
             if (nextLevel >= 3) {
-                this.baseDamage += nextLevel; // Increase damage by level number
+                this.baseDamage += nextLevel; 
             }
         }
         
-        // Update current stats with level multiplier
-        const statMultiplier = 1 + (nextLevel * 0.1); // 10% increase per level
+        const statMultiplier = 1 + (nextLevel * 0.1); 
         this.range = Math.floor(this.baseRange * statMultiplier);
         this.damage = Math.floor(this.baseDamage * statMultiplier);
-        this.fireRate = Math.floor(this.baseFireRate * (1 - (nextLevel * 0.05))); // 5% faster per level
+        this.fireRate = Math.floor(this.baseFireRate * (1 - (nextLevel * 0.05))); 
         
         this.upgrades++;
     }
@@ -311,9 +295,9 @@ export class Tower {
             upgradeCost: this.upgradeCost
         };
 
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         const nextLevel = this.upgrades + 1;
-        const statMultiplier = 1 + (nextLevel * 0.1); // 10% increase per level
+        const statMultiplier = 1 + (nextLevel * 0.1); 
         
         const newStats = {
             health: oldStats.health + 50,
@@ -338,14 +322,11 @@ export class Tower {
         }
         this.lastSynergyCheck = currentTime;
 
-        // Store old synergies to detect changes
         const oldSynergies = new Set(this.synergizedWith);
         
-        // Reset synergy tracking but NOT the bonuses
         this.synergizedWith.clear();
         this.synergyGlowColor = null;
 
-        // Check for synergies
         for (const otherTower of towers) {
             if (otherTower === this) continue;
 
@@ -354,17 +335,14 @@ export class Tower {
             const otherGridX = Math.floor(otherTower.x / cellSize);
             const otherGridY = Math.floor(otherTower.y / cellSize);
 
-            // Check if towers are in the same row
             if (thisGridY !== otherGridY) continue;
 
-            // Check horizontal distance (max 2 cells)
             const gridDistance = Math.abs(thisGridX - otherGridX);
             if (gridDistance <= this.synergyRange) {
                 this.applySynergyEffects(otherTower);
             }
         }
 
-        // Check if synergy state changed
         const synergyStateChanged = 
             this.synergizedWith.size !== oldSynergies.size ||
             ![...this.synergizedWith].every(tower => oldSynergies.has(tower));
@@ -372,14 +350,12 @@ export class Tower {
         if (synergyStateChanged) {
             this.hasActiveSynergies = this.synergizedWith.size > 0;
             
-            // Remove bonuses from broken synergies
             for (const oldSynergyTower of oldSynergies) {
                 if (!this.synergizedWith.has(oldSynergyTower)) {
                     this.removeSynergyBonuses(oldSynergyTower);
                 }
             }
 
-            // Apply bonuses for new synergies
             for (const newSynergyTower of this.synergizedWith) {
                 if (!oldSynergies.has(newSynergyTower)) {
                     this.applySynergyBonuses(newSynergyTower);
@@ -396,12 +372,10 @@ export class Tower {
     }
 
     applySynergyBonuses(otherTower) {
-        // Only apply bonuses if we haven't already for this tower
         if (!this.appliedSynergyBonuses.has(otherTower)) {
             const thisName = this.name.toLowerCase();
             const otherName = otherTower.name.toLowerCase();
 
-            // Apply bonuses based on the synergy type
             if (thisName === "laser" && otherName === "gatling") {
                 this.piercing = true;
                 this.synergyBonus.piercing = 1;
@@ -438,7 +412,6 @@ export class Tower {
         const thisName = this.name.toLowerCase();
         const otherName = otherTower.name.toLowerCase();
 
-        // Remove bonuses based on the synergy type
         if (thisName === "laser" && otherName === "gatling") {
             this.piercing = false;
             this.synergyBonus.piercing = 0;
@@ -493,22 +466,21 @@ export class Tower {
         const thisName = this.name.toLowerCase();
         const otherName = otherTower.name.toLowerCase();
 
-        // Just set up the visual effects and track the synergy, don't apply bonuses here
         if ((thisName === "laser" && otherName === "gatling") ||
             (thisName === "gatling" && otherName === "laser")) {
-            this.synergyGlowColor = '#ff00ff'; // Purple glow
+            this.synergyGlowColor = '#ff00ff'; 
             this.synergizedWith.add(otherTower);
         } else if ((thisName === "sniper" && otherName === "barricade") ||
             (thisName === "barricade" && otherName === "sniper")) {
-            this.synergyGlowColor = '#00ff00'; // Green glow
+            this.synergyGlowColor = '#00ff00'; 
             this.synergizedWith.add(otherTower);
         } else if ((thisName === "rocket" && otherName === "mine") ||
             (thisName === "mine" && otherName === "rocket")) {
-            this.synergyGlowColor = '#ff0000'; // Red glow
+            this.synergyGlowColor = '#ff0000'; 
             this.synergizedWith.add(otherTower);
         } else if ((thisName === "slowtrap" && otherName === "gatling") ||
             (thisName === "gatling" && otherName === "slowtrap")) {
-            this.synergyGlowColor = '#00ffff'; // Cyan glow
+            this.synergyGlowColor = '#00ffff'; 
             this.synergizedWith.add(otherTower);
         }
     }
@@ -524,7 +496,7 @@ export class Tower {
         }
 
         const missingHealth = this.maxHealth - this.health;
-        const repairCost = Math.ceil(missingHealth * 0.5); // 0.5 resources per missing HP
+        const repairCost = Math.ceil(missingHealth * 0.5); 
 
         if (resources >= repairCost) {
             updateResources("decrease", repairCost);
@@ -542,10 +514,9 @@ export class Tower {
      * @returns {boolean} Whether the scrap was successful
      */
     scrap() {
-        const refundAmount = Math.ceil(getTowerPrice(this.bulletType) * 0.7); // 70% refund
+        const refundAmount = Math.ceil(getTowerPrice(this.bulletType) * 0.7); 
         updateMoney("increase", refundAmount);
         
-        // Remove tower from the game
         const towerIndex = towers.findIndex(t => t === this);
         if (towerIndex !== -1) {
             towers.splice(towerIndex, 1);
@@ -619,22 +590,18 @@ export const towerTypes = {
         upgradePath: [{
             damage: 25,
             fireRate: 80,
-            // background: 'green',
             upgradeCost: 1_000,
         }, {
             damage: 30,
             fireRate: 60,
-            // background: 'green',
             upgradeCost: 5_000,
         }, {
             damage: 50,
             fireRate: 50,
-            // background: 'green',
             upgradeCost: 20_000,
         }, {
             damage: 100,
             fireRate: 50,
-            // background: 'green',
             upgradeCost: 100_000,
         }]
     }

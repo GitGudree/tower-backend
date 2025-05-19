@@ -1,7 +1,7 @@
 import { items } from "./items.js";
-import { addInventoryItem } from "./inventory.js";
+import { addInventoryItem, inventory } from "./inventory.js";
 import { updateMoney, money } from "../game/game.js";
-import { toastSuccess, toastError, TOAST_MESSAGES } from "../game/toast-message.js";
+import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../game/toast-message.js";
 
 /**
  * Shop module implementing item purchase functionality.
@@ -20,9 +20,8 @@ console.log("Items:", items);
  */
 document.addEventListener("DOMContentLoaded", () => {
     const shopItemsContainer = document.querySelector(".shop-items");
-    shopItemsContainer.innerHTML = ""; // Clear existing content
+    shopItemsContainer.innerHTML = "";
 
-    // Generate shop item elements
     for (let itemKey in items) {
         const item = items[itemKey];
 
@@ -39,28 +38,29 @@ document.addEventListener("DOMContentLoaded", () => {
         shopItemsContainer.appendChild(itemElement);
     }
 
-    // Purchase button logic
     const buyButton = document.getElementById("buy-button");
 
     buyButton.addEventListener("click", () => {
         if (window.selectedItem) {
+            
+            if (inventory.length >= 9) {
+                toastWarning("Inventory full!");
+                return;
+            }
+
             const price = window.selectedItem.price;
 
             if (money >= price) {
-                // Deduct money
                 updateMoney("decrease", price);
 
-                // Add item to inventory
                 addInventoryItem(window.selectedItem);
 
-                // Show success message
                 toastSuccess(TOAST_MESSAGES.SHOP.PURCHASE_SUCCESS);
             } else {
-                // Show error message
                 toastError(TOAST_MESSAGES.SHOP.PURCHASE_ERROR);
             }
         } else {
-            toastWarning("Please select an item first");
+            toastError("Please select an item first");
         }
     });
 });
@@ -74,18 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
 function selectItem(itemKey) {
     const item = items[itemKey];
     if (item) {
-        // Remove select class from all items
         document.querySelectorAll('.shop-item').forEach(item => {
             item.classList.remove('select');
         });
 
-        // Add select class to clicked item
         const selectedItemElement = document.querySelector(`[data-item-key="${itemKey}"]`);
         if (selectedItemElement) {
             selectedItemElement.classList.add('select');
         }
 
-        // Update item details display
         document.getElementById("item-image").src = item.image;
         document.getElementById("item-name").textContent = item.name;
         document.getElementById("item-description").textContent = item.description;

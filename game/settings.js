@@ -10,8 +10,8 @@
 import { soundManager } from './soundManager.js';
 
 const Settings = {
-    speedMultiplier: 1, // Game speed multiplier (1 = normal)
-    volume: 1, // Sound volume (0 = mute, 1 = max)
+    speedMultiplier: 1,
+    volume: 1,
 
     /**
      * Initializes settings module.
@@ -21,7 +21,7 @@ const Settings = {
     init() {
         this.loadSettings();
         this.setupUI();
-        this.setupPopupControls(); // Add popup functionality
+        this.setupPopupControls();
     },
 
     /**
@@ -71,7 +71,7 @@ const Settings = {
             volumeSlider.value = this.volume;
             volumeSlider.addEventListener('input', (e) => {
                 this.volume = parseFloat(e.target.value);
-                soundManager.setVolume(this.volume); // Set master volume
+                soundManager.setVolume(this.volume);
                 this.saveSettings();
             });
         }
@@ -106,7 +106,6 @@ const Settings = {
             });
         }
 
-        // Close popup when clicking outside
         settingsPopup.addEventListener("click", (e) => {
             if (e.target === settingsPopup) {
                 settingsPopup.classList.add('hidden');
@@ -115,8 +114,6 @@ const Settings = {
     }
 };
 
-// Initialize settings on startup
 Settings.init();
 
-// Export for use in other modules
 export default Settings;

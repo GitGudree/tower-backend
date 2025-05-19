@@ -15,8 +15,8 @@
 }
 
 html, body {
-    height: 100%; /* IMPORTANT: ensures body is always 100% height */
-    margin: 0;    /* Remove default margin */
+    height: 100%;
+    margin: 0;
     padding: 0;
 }
 
@@ -25,7 +25,7 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: fixed; /* NEW: keeps background fixed while scrolling */
+    background-attachment: fixed;
     background-color: #1a1a1a;
     
     display: flex;
@@ -44,7 +44,7 @@ canvas {
     /* border: 2px solid black; */
     display: block;
     margin: 1rem auto auto;
-    background-color: #333333; /* Darker game board background */
+    background-color: #333333; 
 }
 
 .menu {
@@ -104,7 +104,6 @@ canvas {
     box-sizing: border-box;
 }
 
-/* Game tab specific layout */
 .tab.game-tab {
     padding: 1rem;
 }
@@ -277,7 +276,6 @@ canvas {
     text-shadow: 0 0 8px rgba(255,255,255,0.4);
 }
 
-/* Add glow effect for locked cards */
 .card.locked::after {
     content: '🔒';
     position: absolute;
@@ -305,7 +303,6 @@ canvas {
     margin-top: 0.5rem;
 }
 
-/* Remove the gradient that was making the text transparent */
 .tower-unlock-price-title,
 .item-price {
     background: none;
@@ -481,7 +478,6 @@ canvas {
     display: none !important;
 }
 
-/* Adjusting the settings layout */
 .settings-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -491,7 +487,6 @@ canvas {
     text-align: left;
 }
 
-/* Sliders and labels in the correct position */
 .setting {
     display: grid;
     grid-template-columns: 1fr;
@@ -505,11 +500,10 @@ canvas {
 }
 
 .setting input[type="range"] {
-    width: 80%; /* Avoid full width */
+    width: 80%;
     justify-self: center;
 }
 
-/* Adjustment of cards */
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -518,7 +512,6 @@ canvas {
     margin: 0 auto;
 }
 
-/* Settings popup styling */
 .popup {
     position: fixed;
     top: 0;
@@ -594,25 +587,23 @@ canvas {
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Width and placement of sliders */
 .popup-content input[type="range"] {
-    width: 80%;  /* Make sliders a bit smaller than the container */
-    margin: 10px 0;  /* Place space between sliders */
+    width: 80%;
+    margin: 10px 0;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Adding space to the labels */
 .popup-content label {
     display: block;
     margin-bottom: 5px;
 }
 
-/* --- General styling --- */
 
 
-/* Each individual shop item */
+
+
 .shop-item {
     background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     display: flex;
@@ -638,7 +629,6 @@ canvas {
     border-color: var(--highlight-color);
 }
 
-/* Selected shop item styling */
 .shop-item.select {
     border: 2px solid #4CAF50;
     box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
@@ -698,7 +688,6 @@ canvas {
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Update shop items grid layout */
 .shop-items {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -707,7 +696,6 @@ canvas {
     justify-items: center;
 }
 
-/*--- Item Description Styling ---*/
 .itemdesc {
     background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
     border-radius: 15px;
@@ -815,7 +803,6 @@ canvas {
     background: linear-gradient(145deg, #ff8080, #ff5555);
 }
 
-/*--- Inventory Slots ---*/
 .slots {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -848,7 +835,6 @@ canvas {
     cursor: pointer;
 }
 
-/* Add selection styling for inventory slots */
 .slot.select {
     border: 2px solid #4CAF50;
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
@@ -907,7 +893,6 @@ canvas {
     text-align: center;
 }
 
-/*--- Inventory Item-selection ---*/
 .itemdesc {
     display: grid;
     grid-template-columns: 1fr;
@@ -923,28 +908,26 @@ canvas {
 
 .purchase-message {
     position: fixed;
-    inset: 0; /* covers the entire viewport */
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
   
-    /* Overlay stil */
-    background-color: rgba(0, 0, 0, 0.4); /* gives a bit of background, can be changed if desired */
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 9999;
   }
   
 .purchase-message .message-box {
     background-color: var(--ui-secondary);
     color: var(--text-color);
-    padding: 1.25rem 2.5rem; /* equals 20px 40px */
-    border-radius: 0.625rem; /* 10px */
+    padding: 1.25rem 2.5rem;
+    border-radius: 0.625rem;
     font-size: 1.5rem;
     font-weight: bold;
-    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3); /* 10px */
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-color);
   }
   
-  /* Inventory Use & Delete Buttons */
 .usebtn,
 .deletebtn {
     font-weight: bold;
@@ -959,9 +942,8 @@ canvas {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Use button style */
 .usebtn {
-    background-color: #28a745; /* green */
+    background-color: #28a745;
     color: white;
 }
 
@@ -970,9 +952,8 @@ canvas {
     transform: scale(1.05);
 }
 
-/* Delete button style */
 .deletebtn {
-    background-color: #dc3545; /* red */
+    background-color: #dc3545;
     color: white;
 }
 
@@ -985,12 +966,10 @@ canvas {
     margin-top: 1rem;
 }
 
-/* Game board and canvas */
 #gameCanvas {
-    background-color: #424242; /* Lighter gray for the game board */
+    background-color: #424242;
 }
 
-/* Most specific header targeting possible */
 body > main > div:first-child,
 #gameCanvas + div,
 div[style*="background-color: rgb(255, 165, 0)"],
@@ -1004,7 +983,6 @@ div[style*="background: orange"],
     color: var(--text-color) !important;
 }
 
-/* Override any potential inline styles */
 [class*="header"],
 [class*="top-bar"],
 [class*="status"],
@@ -1014,13 +992,11 @@ div[style*="background: orange"],
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Ensure menu background is dark */
 .menu {
     background-color: var(--ui-background);
     border: 1px solid var(--border-color);
 }
 
-/* Tab styling reinforcement */
 .tabs {
     background-color: var(--ui-background);
     border-bottom: 1px solid var(--border-color);
@@ -1030,7 +1006,6 @@ div[style*="background: orange"],
     background-color: var(--ui-background);
 }
 
-/* Make sure no gradients are using orange */
 .tower-unlock-price-title,
 .item-price {
     background: none;
@@ -1038,7 +1013,6 @@ div[style*="background: orange"],
     background-clip: unset;
 }
 
-/* Start Wave button styling */
 .start-wave-btn {
     background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
     color: var(--text-color);
@@ -1057,7 +1031,6 @@ div[style*="background: orange"],
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Settings button styling */
 .settings-btn {
     background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
     color: var(--text-color);
@@ -1075,7 +1048,6 @@ div[style*="background: orange"],
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Buy and Use buttons */
 .buybtn, .usebtn {
     background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
     color: var(--text-color);
@@ -1093,24 +1065,20 @@ div[style*="background: orange"],
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Price displays */
 .tower-unlock-price-title, .item-price {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Auto wave checkbox area */
 .auto-wave-control {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Tower damage display */
 #towerDamageTotal {
     color: var(--text-color);
 }
 
-/* Top status bar (money, resources, wave) */
 .status-bar {
     background-color: var(--ui-background);
     color: var(--text-color);
@@ -1118,24 +1086,20 @@ div[style*="background: orange"],
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Make sure all headings are visible */
 h1, h2, h3 {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Ensure all text in cards and info sections is readable */
 .card p, .desc p, .itemdesc p {
     color: var(--text-color);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Update the background of the game canvas area */
 #gameCanvas {
     background-color: #333333;
 }
 
-/* Make sure tab headers are properly styled */
 .tabs {
     background-color: var(--ui-background);
     border-bottom: 1px solid var(--border-color);
@@ -1145,7 +1109,6 @@ h1, h2, h3 {
     background-color: var(--ui-background);
 }
 
-/* Toast Message Styling */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -1177,7 +1140,6 @@ h1, h2, h3 {
     transition: width linear;
 }
 
-/* Toast types */
 .toast-container.success {
     border-left: 4px solid #4CAF50;
 }
@@ -1216,7 +1178,6 @@ h1, h2, h3 {
     animation: toast-progress linear forwards;
 }
 
-/* Locked tower styling */
 .card.locked {
     opacity: 0.7;
     filter: grayscale(70%);
@@ -1254,7 +1215,6 @@ h1, h2, h3 {
     filter: brightness(0.7);
 }
 
-/* Unlock button styling */
 .unlock-btn {
     background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
     color: var(--text-color);
@@ -1302,7 +1262,6 @@ h1, h2, h3 {
     box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
 }
 
-/* Single source of truth for tower action buttons */
 .display-card .tower-action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;

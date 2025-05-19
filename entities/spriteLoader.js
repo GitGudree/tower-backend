@@ -25,7 +25,7 @@ const imagePaths = {
   
 };
 
-for (const [key, src] of Object.entries(imagePaths)) { // should load images before they are used
+for (const [key, src] of Object.entries(imagePaths)) { 
   const img = new Image();
   img.src = src;
   sprites[key] = img;

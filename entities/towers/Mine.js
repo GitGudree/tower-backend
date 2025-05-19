@@ -32,18 +32,16 @@ export class Mine extends Tower {
         this.isActive = true;
         this.hitEnemies = new Set();
         
-        // Completely disable tower behaviors
         this.range = 0;
         this.fireRate = 0;
         this.stopEnemy = 0;
         this.isColliding = false;
         
-        // Set death-related properties
         this.deathTimer = 0;
         this.deathDuration = 0;
         this.isDead = false;
 
-        this.animatorLive = new SpriteAnimator (sprites.mineTower, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.mineTower, 0, 50, 50, 1); 
         this.animatorDead = new SpriteAnimator (sprites.mineTower, 50, 50, 50, 1, 500);
     }
 
@@ -51,29 +49,24 @@ export class Mine extends Tower {
         if (this.exploded) {
             this.explosionTimer += deltaTime;
             if (this.explosionTimer >= this.explosionLifetime) {
-                // Remove all references to hit enemies before destroying
                 this.hitEnemies.clear();
                 this.isDead = true;
-                return true; // Remove the mine
+                return true; 
             }
         }
         return false;
     }
 
-    // Override the attack method to handle explosion instead of shooting
     attack(enemies) {
         if (this.isActive && !this.exploded) {
             for (let enemy of enemies) {
-                // Check if enemy is in the same lane and colliding
                 if (enemy.laneIndex === this.laneIndex && collision(this, enemy)) {
                     console.log("Mine triggered!");
                     soundManager.play('mine_trigger');
                     
-                    // Deal damage to triggering enemy
                     enemy.health -= this.damage;
                     this.hitEnemies.add(enemy);
 
-                    // Deal AOE damage to nearby enemies in the same lane
                     enemies.forEach(nearbyEnemy => {
                         if (!this.hitEnemies.has(nearbyEnemy) && 
                             nearbyEnemy.laneIndex === this.laneIndex) {
@@ -124,11 +117,9 @@ export class Mine extends Tower {
             ctx.stroke();
             */
 
-            // Draw synergy effects without the sprite
             this.drawSynergyEffects(ctx);
             this.drawSprite(ctx);
         } else if (this.explosionTimer < this.explosionLifetime) {
-            // Draw explosion effect
             const alpha = 1 - (this.explosionTimer / this.explosionLifetime);
             ctx.fillStyle = `rgba(255, 165, 0, ${alpha})`;
             ctx.beginPath();
@@ -138,7 +129,6 @@ export class Mine extends Tower {
     }
 
     drawSprite(ctx) {
-        // Draw the tower sprite
         if(!this.exploded){
             this.animatorLive.draw(ctx, this.x, this.y);
         } else{
@@ -146,7 +136,6 @@ export class Mine extends Tower {
         }
         
 
-        // Draw selection outline if selected
         if (this.selected) {
             ctx.save();
             ctx.strokeStyle = 'yellow';
@@ -156,7 +145,6 @@ export class Mine extends Tower {
         }
     }
 
-    // Override all collision-related methods to do nothing
     stopEnemyMovement() {
         return;
     }

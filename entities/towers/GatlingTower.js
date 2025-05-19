@@ -42,7 +42,7 @@ export class GatlingTower extends Tower {
         this.isLoopingSound = false;
         this.wasFiringLastTick = false;
         
-        this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.gatling, 0, 50, 50, 3); 
         this.animatorDead = new SpriteAnimator (sprites.gatling, 50, 50, 50, 2, 200);
     }
     
@@ -52,15 +52,14 @@ export class GatlingTower extends Tower {
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         
-        // Gatling-specific upgrades
-        this.baseHealth += 30;  // Update base health
+        this.baseHealth += 30;  
         this.maxHealth += 30;
         this.health += 30;
-        this.baseDamage += 2;   // Update base damage
+        this.baseDamage += 2;   
         this.damage += 2;
-        this.baseRange += 20;   // Update base range
+        this.baseRange += 20;   
         this.range += 20;
-        this.baseFireRate = Math.max(5, this.baseFireRate - 2); // Update base fire rate
+        this.baseFireRate = Math.max(5, this.baseFireRate - 2); 
         this.fireRate = this.baseFireRate;
         
         this.upgrades++;
@@ -111,7 +110,6 @@ export class GatlingTower extends Tower {
                 }           
             });
 
-            // Only start/stop the loop if the firing state changed
             if (foundTarget && !this.wasFiringLastTick) {
                 soundManager.playLoop('gatling_fire');
                 this.fireAnimation = this.fireAnimationTime;
@@ -127,7 +125,6 @@ export class GatlingTower extends Tower {
             this.timer = this.fireRate;
         } else {
             this.timer--;
-            // If not firing, ensure the loop is stopped
             if (this.timer <= 0 && this.isLoopingSound) {
                 soundManager.stopLoop('gatling_fire');
                 this.isLoopingSound = false;

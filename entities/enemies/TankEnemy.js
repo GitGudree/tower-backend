@@ -20,7 +20,7 @@ export class TankEnemy extends Enemy {
         this.setAnimations();
     }
     setAnimations(){
-        this.animatorMove = new SpriteAnimator (sprites.tankEnemy, 0, 50, 50, 4); // image, startY, width, height, amount of frames, frame interval
+        this.animatorMove = new SpriteAnimator (sprites.tankEnemy, 0, 50, 50, 4); 
         this.animatorShoot = new SpriteAnimator (sprites.tankEnemy, 50, 50, 50, 2);
         this.animatorDead = new SpriteAnimator (sprites.tankEnemy, 100, 50, 50, 1, 300);
     }

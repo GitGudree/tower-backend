@@ -42,7 +42,7 @@ export class Bullet {
         }
     }
 
-    doesLaserHit() { // Method for performance optimization in projectileHandler
+    doesLaserHit() { 
         return false;
     }
 

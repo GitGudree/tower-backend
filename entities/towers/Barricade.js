@@ -89,7 +89,7 @@ export class Barricade extends Tower {
         
     }
     upgrade() {
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         this.maxHealth += 50;
@@ -116,7 +116,7 @@ export class Barricade extends Tower {
             upgradeCost: this.upgradeCost
         };
 
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         const newStats = {
             health: oldStats.health + 50,
             range: oldStats.range,

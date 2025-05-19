@@ -28,30 +28,25 @@ export const mouse = {
  * @date 2025-01-23
  */
 export function handleCanvasClick() {
-    // The closest grid cellvalue to where the mouse is.
+    
     const gridMousePosX = mouse.x - (mouse.x % cellSize);
     const gridMousePosY = mouse.y - (mouse.y % cellSize);
 
-    // Stops user from being able to place turrets on topBar.
     if (gridMousePosY < cellSize) {
         return;
     }
 
-    // Deselect previously selected tower
     if (towers) {
         const selectedTower = towers.find(tower => tower.selected);
         if (selectedTower) {
             selectedTower.selected = false;
-            // Force a synergy check when deselecting
             selectedTower.checkSynergies(towers, true);
         }
     }
 
-    // Check for tower selection first
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
-            // Force a synergy check when selecting
             tower.checkSynergies(towers, true);
             updateTowerStats(tower);
             return;
@@ -62,11 +57,9 @@ export function handleCanvasClick() {
     if (type) {
         const isInventoryItem = ['barricade', 'mine', 'slowtrap'].includes(type.toLowerCase());
         
-        // Check if the spot is available
         if (!towers.some(tower => tower.x === gridMousePosX && tower.y === gridMousePosY)) {
             const towerPrice = getTowerPrice(type);
             
-            // Artillery row restriction
             if (type.toLowerCase() === 'artillery') {
                 const row = gridMousePosY / cellSize;
                 if (towers.some(tower => tower.towerType === 'artillery' && Math.floor(tower.y / cellSize) === row)) {
@@ -74,7 +67,6 @@ export function handleCanvasClick() {
                     return;
                 }
             }
-            // Different logic for inventory items vs regular towers
             if (isInventoryItem || (isTowerUnlocked(type) && money >= towerPrice)) {
                 var laneIndex = gridMousePosY / 50;
                 const tower = createTower(gridMousePosX, gridMousePosY, type, laneIndex);
@@ -87,10 +79,8 @@ export function handleCanvasClick() {
                     updateMoney("decrease", towerPrice);
                 }
                 
-                // Force synergy check for all towers when placing a new one
                 towers.forEach(t => t.checkSynergies(towers, true));
                 
-                // Dispatch towerPlaced event
                 document.dispatchEvent(new CustomEvent('towerPlaced', {
                     detail: { towerType: type }
                 }));
@@ -145,18 +135,15 @@ export function gridRectColission(first, second) {
 }
 
 function openTab(btn) {
-    // Remove 'selected' from all buttons
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
     });
     btn.classList.add('selected');
 
-    // Close all tabs before opening new one
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('open');
     });
 
-    // Open selected tab
     const tabName = btn.getAttribute('data-tab');
     document.querySelector(`.tab.${tabName}`).classList.add('open');
 }
@@ -187,13 +174,11 @@ window.scrapTower = () => {
     const tower = towers.find(tower => tower.selected);
     if (tower) {
         if (tower.scrap()) {
-            // Clear the tower info display since the tower is gone
             updateTowerStats(null);
         }
     }
 }
 
-//passes data along to setChosenTower
 document.querySelectorAll('[tower-type]').forEach(button => {
     button.addEventListener('click', () => {
         const towerType = button.getAttribute('tower-type');

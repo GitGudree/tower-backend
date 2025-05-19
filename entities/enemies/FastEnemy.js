@@ -21,7 +21,7 @@ export class FastEnemy extends Enemy {
     }
 
     setAnimations(){
-        this.animatorMove = new SpriteAnimator (sprites.fastEnemy, 0, 50, 50, 6); // image, startY, width, height, amount of frames, frame interval
+        this.animatorMove = new SpriteAnimator (sprites.fastEnemy, 0, 50, 50, 6); 
         this.animatorShoot = new SpriteAnimator (sprites.fastEnemy, 50, 50, 50, 2);
         this.animatorDead = new SpriteAnimator (sprites.fastEnemy, 100, 50, 50, 1, 300);
     }

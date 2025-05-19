@@ -18,24 +18,22 @@ export class ArtilleryShell extends Bullet {
     constructor(x, y, target, laneIndex) {
         super(x, y, "basic", laneIndex);
         this.target = target;
-        this.speed = 0.05; // Slower speed for dramatic effect
-        this.size = 15; // Larger size for visual impact
-        this.color = '#8B4513'; // Brown color for artillery shell
-        this.trailColor = 'rgba(139, 69, 19, 0.3)'; // Semi-transparent brown for trail
-        this.trailLength = 20; // Longer trail for dramatic effect
-        this.explosionRadius = 50; // Area of effect for the explosion
+        this.speed = 0.05; 
+        this.size = 15; 
+        this.color = '#8B4513'; 
+        this.trailColor = 'rgba(139, 69, 19, 0.3)'; 
+        this.trailLength = 20; 
+        this.explosionRadius = 50; 
         this.hit = false;
-        this.bulletDamage = 1000; // Set the damage to 1000
-        this.explosionLifetime = 100; // How long the explosion effect lasts
+        this.bulletDamage = 1000; 
+        this.explosionLifetime = 100; 
     }
 
     move() {
         if (!this.hit && this.target) {
-            // Move towards target
             this.x += (this.target.x - this.x) * this.speed;
             this.y += (this.target.y - this.y) * this.speed;
 
-            // Collision check: if close enough to target, deal damage
             const dx = (this.target.x - this.x);
             const dy = (this.target.y - this.y);
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -46,7 +44,6 @@ export class ArtilleryShell extends Bullet {
     }
 
     draw(ctx) {
-        // Draw trail
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         for (let i = 0; i < this.trailLength; i++) {
@@ -58,7 +55,6 @@ export class ArtilleryShell extends Bullet {
         ctx.lineWidth = this.size * 0.5;
         ctx.stroke();
 
-        // Draw shell
         ctx.beginPath();
         ctx.arc(this.x + cellSize/2, this.y + cellSize/2, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -67,9 +63,7 @@ export class ArtilleryShell extends Bullet {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Draw explosion effect when hitting
         if (this.hit) {
-            // Draw multiple explosion circles for more dramatic effect
             for (let i = 0; i < 3; i++) {
                 const radius = this.explosionRadius * (1 - i * 0.2);
                 ctx.beginPath();
@@ -81,7 +75,6 @@ export class ArtilleryShell extends Bullet {
                 ctx.stroke();
             }
 
-            // Remove the projectile after explosion animation
             setTimeout(() => {
                 const index = projectiles.indexOf(this);
                 if (index > -1) {

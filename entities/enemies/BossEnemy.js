@@ -21,7 +21,7 @@ export class BossEnemy extends Enemy {
     }
 
     setAnimations(){
-        this.animatorMove = new SpriteAnimator (sprites.bossEnemy, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorMove = new SpriteAnimator (sprites.bossEnemy, 0, 50, 50, 3); 
         this.animatorShoot = new SpriteAnimator (sprites.bossEnemy, 50, 50, 50, 2);
         this.animatorDead = new SpriteAnimator (sprites.bossEnemy, 100, 50, 50, 2, 300);
     }

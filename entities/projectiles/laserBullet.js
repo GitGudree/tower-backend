@@ -56,7 +56,7 @@ export class LaserBullet {
             } else {
                 enemy.health -= this.bulletDamage;
             }
-            this.localIframes = this.bulletSource?.synergyBonus?.piercing ? 15 : 30; // Faster hit rate when piercing
+            this.localIframes = this.bulletSource?.synergyBonus?.piercing ? 15 : 30; 
             if (!this.bulletSource?.synergyBonus?.piercing) {
                 this.hitEnemies.add(enemy);
             }
@@ -66,15 +66,12 @@ export class LaserBullet {
     doesLaserHit(enemy) {
         if (this.bulletSource?.isDead || (!this.bulletSource?.synergyBonus?.piercing && this.hitEnemies.has(enemy))) return false;
         
-        // Sjekk om fienden er nær nok laserens linje
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
         
-        // Beregn avstanden fra fienden til laserlinjen
         const enemyDx = enemy.x - this.x;
         const enemyDy = enemy.y - this.y;
         
-        // Projiser fienden på laserlinjen
         const length = Math.sqrt(dx * dx + dy * dy);
         if (length === 0) return false;
         
@@ -82,10 +79,8 @@ export class LaserBullet {
         const projX = this.x + (dot * dx) / length;
         const projY = this.y + (dot * dy) / length;
         
-        // Sjekk om projeksjonen er på laserlinjen
         const isOnLine = dot >= 0 && dot <= length;
         
-        // Beregn avstand fra fienden til projeksjonen
         const distX = enemy.x - projX;
         const distY = enemy.y - projY;
         const distance = Math.sqrt(distX * distX + distY * distY);

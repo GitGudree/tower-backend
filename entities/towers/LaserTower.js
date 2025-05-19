@@ -43,7 +43,7 @@ export class LaserTower extends Tower {
         this.deathTimer = this.deathDuration;
         this.isDead = false;
 
-        this.animatorLive = new SpriteAnimator (sprites.laser, 0, 50, 50, 10, 200); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.laser, 0, 50, 50, 10, 200); 
         this.animatorDead = new SpriteAnimator (sprites.laser, 50, 50, 50, 2, 200);
 
         this.isLoopingSound = false;
@@ -70,7 +70,6 @@ export class LaserTower extends Tower {
             Math.abs(enemy.x - this.x) < this.range
         );
 
-        // Only start/stop the loop if the firing state changed
         if (target && !this.wasFiringLastTick) {
             soundManager.playLoop('laser');
             this.isLoopingSound = true;
@@ -95,15 +94,14 @@ export class LaserTower extends Tower {
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         
-        // Laser-specific upgrades
-        this.baseHealth += 20;  // Update base health
+        this.baseHealth += 20;  
         this.maxHealth += 20;
         this.health += 20;
-        this.baseDamage += 0.2; // Update base damage
+        this.baseDamage += 0.2; 
         this.damage += 0.2;
-        this.baseRange += 100;  // Update base range
+        this.baseRange += 100;  
         this.range += 100;
-        this.baseFireRate = Math.max(3, this.baseFireRate - 0.5); // Update base fire rate
+        this.baseFireRate = Math.max(3, this.baseFireRate - 0.5); 
         this.fireRate = this.baseFireRate;
         
         this.upgrades++;
@@ -123,7 +121,7 @@ export class LaserTower extends Tower {
             health: oldStats.health + 20,
             range: oldStats.range + 100,
             fireRate: Math.max(3, oldStats.fireRate - 0.5),
-            damage: +(oldStats.damage + 0.2).toFixed(1), // Keep one decimal place
+            damage: +(oldStats.damage + 0.2).toFixed(1), 
             upgradeCost: this.upgrades < 5 ? UPGRADE_COSTS[this.upgrades] : -1
         };
 

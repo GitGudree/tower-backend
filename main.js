@@ -14,9 +14,7 @@ import { soundManager } from "./game/soundManager.js";
  * Created:   11.02.2025
 **/
 
-// Initialize game systems (including sound)
 initGame().then(() => {
-    // Start game loop after initialization is complete
     gameLoop();
 });
 
@@ -43,13 +41,13 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 
     const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
-    const deltaTime = ( currentTime - lastRenderTime); // Time elapsed since last frame for animation calculations
+    const deltaTime = ( currentTime - lastRenderTime);
     if (secondsSinceLastRender < 1 / GAME_SPEED) return;
 
     lastRenderTime = currentTime;
 
     const preUpdateGameStateTime = performance.now();
-    updateGameState(deltaTime); // Pass deltaTime to tower animations
+    updateGameState(deltaTime);
     performanceTimers.updateGameStateTime = performance.now() - preUpdateGameStateTime;
 
     const preProjectileHandlerTime = performance.now();

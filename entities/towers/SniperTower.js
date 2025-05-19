@@ -42,7 +42,7 @@ export class SniperTower extends Tower {
         this.fireAnimation = 0;
         this.frameInterval = 100;
         
-        this.animatorLive = new SpriteAnimator (sprites.sniper, 0, 50, 50, 5); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.sniper, 0, 50, 50, 5); 
         this.animatorDead = new SpriteAnimator (sprites.sniper, 50, 50, 50, 2, 200);
     }
  
@@ -51,15 +51,14 @@ export class SniperTower extends Tower {
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         
-        // Sniper-specific upgrades
-        this.baseHealth += 30;  // Update base health
+        this.baseHealth += 30;  
         this.maxHealth += 30;
         this.health += 30;
-        this.baseDamage += 15;  // Update base damage
+        this.baseDamage += 15;  
         this.damage += 15;
-        this.baseRange += 50;   // Update base range
+        this.baseRange += 50;   
         this.range += 50;
-        this.baseFireRate = Math.max(80, this.baseFireRate - 10); // Update base fire rate
+        this.baseFireRate = Math.max(80, this.baseFireRate - 10); 
         this.fireRate = this.baseFireRate;
         
         this.upgrades++;
@@ -107,7 +106,6 @@ export class SniperTower extends Tower {
                 this.animatorLive.reset();
                 soundManager.play('sniper_fire');
             } else if (!foundTarget) {
-                // Reset animation when no target is found
                 this.animatorLive.reset();
                 this.fireAnimation = 0;
             }

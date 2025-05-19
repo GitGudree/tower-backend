@@ -8,12 +8,11 @@ import { money, updateMoney } from "./game.js";
  * @author Randomfevva
  **/
 
-// Tower unlock prices and initial states
 export const TOWER_DATA = {
     basic: {
         price: 100,
-        unlocked: true,  // Basic tower starts unlocked
-        unlockPrice: 0   // No unlock price for basic tower
+        unlocked: true,
+        unlockPrice: 0
     },
     sniper: {
         price: 70,
@@ -42,21 +41,18 @@ export const TOWER_DATA = {
     }
 };
 
-// Function to check if a tower is unlocked
 export function isTowerUnlocked(towerType) {
     return TOWER_DATA[towerType]?.unlocked ?? false;
 }
 
-// Function to get tower price
 export function getTowerPrice(towerType) {
-    return TOWER_DATA[towerType]?.price ?? 50; // Default to 50 if not found
+    return TOWER_DATA[towerType]?.price ?? 50;
 }
 
-// Function to get tower unlock price
 export function getUnlockPrice(towerType) {
     switch(towerType) {
         case 'basic':
-            return 0; // Already unlocked
+            return 0;
         case 'sniper':
             return 50;
         case 'gatling':
@@ -68,11 +64,10 @@ export function getUnlockPrice(towerType) {
         case 'artillery':
             return 500;
         default:
-            return 999999; // High price for unknown towers
+            return 999999;
     }
 }
 
-// Function to unlock a tower
 export function unlockTower(towerType) {
     const tower = TOWER_DATA[towerType];
     if (!tower) return false;
@@ -86,7 +81,7 @@ export function unlockTower(towerType) {
         updateMoney("decrease", tower.unlockPrice);
         tower.unlocked = true;
         toastSuccess(TOAST_MESSAGES.TOWER.UNLOCK_SUCCESS);
-        updateTowerCardStates(); // Update visual states of tower cards
+        updateTowerCardStates();
         return true;
     } else {
         toastError(TOAST_MESSAGES.TOWER.UNLOCK_ERROR);
@@ -94,7 +89,6 @@ export function unlockTower(towerType) {
     }
 }
 
-// Function to update visual states of tower cards
 function updateTowerCardStates() {
     const towerCards = document.querySelectorAll('.card[tower-type]');
     towerCards.forEach(card => {
@@ -114,7 +108,6 @@ function updateTowerCardStates() {
     });
 }
 
-// Initialize tower states when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     updateTowerCardStates();
 }); 

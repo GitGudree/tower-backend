@@ -19,7 +19,7 @@ export class RocketBullet {
         this.target = enemy;
         this.name = "rocket"
         this.exploded = false;
-        this.bulletDamage = 3; // Medium damage for rocket type
+        this.bulletDamage = 3; 
         this.speed = 0.05;
         this.width = 5;
         this.height = 5;
@@ -33,7 +33,7 @@ export class RocketBullet {
 
     move() {
         if (!this.exploded) {
-            this.x += (this.target.x - this.x) * this.speed; // Adjust speed towards enemy
+            this.x += (this.target.x - this.x) * this.speed; 
             this.y += (this.target.y - this.y) * this.speed;
         }
     }
@@ -67,7 +67,6 @@ export class RocketBullet {
                 enemy.health -= this.bulletDamage;
             }
 
-            // Explosion effect - damages enemies within radius
             enemies.forEach(e => {
                 if (Math.abs(e.x - this.x) < this.aoe && Math.abs(e.y - this.y) < this.aoe) {
                     if (typeof e.takeDamage === 'function') {
@@ -81,7 +80,7 @@ export class RocketBullet {
             this.exploded = true;
         }
     }
-    doesLaserHit() { // Performance optimization for projectile handler
+    doesLaserHit() { 
         return false;
     }
 

@@ -43,7 +43,7 @@ export class RocketTower extends Tower {
         this.fireAnimationTime = 500;
         
 
-        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.rocket, 0, 50, 50, 3); 
         this.animatorDead = new SpriteAnimator (sprites.rocket, 50, 50, 50, 2, 200);
     }
     
@@ -68,7 +68,6 @@ export class RocketTower extends Tower {
                 this.fireAnimation = this.fireAnimationTime;
                 soundManager.play('rocket');
             } else if (!foundTarget) {
-                // Reset animation when no target is found
                 this.fireAnimation = 0;
                 this.animatorLive.reset();
                 
@@ -85,15 +84,14 @@ export class RocketTower extends Tower {
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
         updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
         
-        // Rocket-specific upgrades
-        this.baseHealth += 25;  // Update base health
+        this.baseHealth += 25;  
         this.maxHealth += 25;
         this.health += 25;
-        this.baseDamage += 8;   // Update base damage
+        this.baseDamage += 8;   
         this.damage += 8;
-        this.baseRange += 40;   // Update base range
+        this.baseRange += 40;  
         this.range += 40;
-        this.baseFireRate = Math.max(100, this.baseFireRate - 15); // Update base fire rate
+        this.baseFireRate = Math.max(100, this.baseFireRate - 15); 
         this.fireRate = this.baseFireRate;
         
         this.upgrades++;

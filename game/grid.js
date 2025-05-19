@@ -16,14 +16,12 @@ const ctx = canvas.getContext("2d");
 canvas.width = 900;
 canvas.height = 300;
 
-// Global variables for gameboard
 export const cellSize = 50;
 export const cellGap = 3;
 export const gameGrid = [];
 
 
 
-// Topbar-controls + shop
 export const topBar = {
     width: canvas.width,
     height: cellSize,
