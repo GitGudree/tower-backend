@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const upgradeCost = calculateUpgradeCost(selectedTower);
+            const upgradeCost = selectedTower.upgradeCost; 
             if (money >= upgradeCost) {
                 updateMoney("decrease", upgradeCost);
                 upgradeTower(selectedTower);
@@ -126,9 +126,6 @@ function updateTowerInfo(towerType) {
     }
 }
 
-function calculateUpgradeCost(tower) {
-    return 100;
-}
 
 function upgradeTower(tower) {
     tower.upgrade();

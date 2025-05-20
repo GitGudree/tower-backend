@@ -22,7 +22,7 @@ export class Barricade extends Tower {
         this.name = "Barricade";
         this.x = x;
         this.y = y;
-        this.baseHealth = 100;
+        this.baseHealth = 500;
         this.baseRange = 0;
         this.baseDamage = 0;
         this.baseFireRate = 0;
