@@ -251,9 +251,19 @@ export class Tower {
 
     upgrade() {
         const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
-        if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
-        updateMoney('decrease', UPGRADE_COSTS[this.upgrades]);
+        if (this.upgrades >= 5) {
+            return false;
+        }
         
+        const cost = UPGRADE_COSTS[this.upgrades];
+        if (money < cost) {
+            return false;
+        }
+        
+        // Deduct money first
+        updateMoney('decrease', cost);
+        
+        // Then apply upgrades
         this.baseHealth += 50;
         this.maxHealth += 50;
         this.health += 50;
@@ -275,6 +285,7 @@ export class Tower {
         this.fireRate = Math.floor(this.baseFireRate * (1 - (nextLevel * 0.05))); 
         
         this.upgrades++;
+        return true;
     }
     
     /**

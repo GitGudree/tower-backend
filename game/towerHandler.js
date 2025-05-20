@@ -2,6 +2,7 @@ import { toastSuccess, toastError, toastWarning, toastInfo, TOAST_MESSAGES } fro
 import { money, updateMoney } from "./game.js";
 import { isTowerUnlocked, unlockTower, TOWER_DATA } from "./towerUnlockSystem.js";
 import { setChosenTower } from "../entities/towers/towerState.js";
+import { towers } from "../entities/towers/tower.js";
 
 /**
  * Tower Handler module implementing tower management functionality.
@@ -66,19 +67,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const upgradeButton = document.querySelector('.tower-upgrade-btn');
     if (upgradeButton) {
         upgradeButton.addEventListener('click', () => {
-            const selectedTower = document.querySelector('.card.select');
+            const selectedTower = towers.find(tower => tower.selected);
             if (!selectedTower) {
                 toastWarning("Please select a tower first");
                 return;
             }
 
-            const upgradeCost = selectedTower.upgradeCost; 
-            if (money >= upgradeCost) {
-                updateMoney("decrease", upgradeCost);
-                upgradeTower(selectedTower);
-                toastSuccess(TOAST_MESSAGES.TOWER.UPGRADE_SUCCESS);
-            } else {
+            if (selectedTower.upgrades >= 5) {
+                toastWarning("Tower is already at maximum level");
+                return;
+            }
+
+            const upgradeCost = selectedTower.upgradeCost;
+            if (money < upgradeCost) {
                 toastError(TOAST_MESSAGES.TOWER.UPGRADE_ERROR);
+                return;
+            }
+
+            const success = selectedTower.upgrade();
+            if (success) {
+                toastSuccess(TOAST_MESSAGES.TOWER.UPGRADE_SUCCESS);
+                updateTowerStats(selectedTower);
             }
         });
     }
