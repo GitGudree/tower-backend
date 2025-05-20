@@ -22,7 +22,7 @@ export const TOWER_DATA = {
     gatling: {
         price: 100,
         unlocked: false,
-        unlockPrice: 200
+        unlockPrice: 100
     },
     rocket: {
         price: 180,
@@ -103,7 +103,7 @@ function updateTowerCardStates() {
             card.querySelector('.tower-unlock-price-title').innerHTML = `<span class="tower-unlock-price">${tower.price} 💶</span>`;
         } else {
             card.classList.add('locked');
-            card.querySelector('.tower-unlock-price-title').innerHTML = `<span class="tower-unlock-price">Unlock: ${tower.unlockPrice} 💶</span>`;
+            card.querySelector('.tower-unlock-price-title').innerHTML = `<span class="tower-unlock-price">Unlock: ${tower.unlockPrice} ⚒️</span>`;
         }
     });
 }
