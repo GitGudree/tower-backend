@@ -53,7 +53,7 @@ export const toastWarning = (message, duration) => showToast(message, duration, 
 export const TOAST_MESSAGES = {
     TOWER: {
         UPGRADE_SUCCESS: 'Tower successfully upgraded!',
-        UPGRADE_ERROR: 'Not enough money to upgrade tower',
+        UPGRADE_ERROR: 'Not enough money for upgrade',
         UNLOCK_SUCCESS: 'Tower unlocked! You can now build this tower type.',
         UNLOCK_ERROR: 'Not enough resources to unlock tower',
         LOCKED: 'This tower is locked. Click unlock to purchase access.',
