@@ -536,8 +536,8 @@ export class Tower {
         toastSuccess(TOAST_MESSAGES.TOWER.SOLD);
         return true;
     }
+    
 }
-
 export const towers = [];
 
 /**

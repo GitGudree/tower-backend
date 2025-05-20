@@ -162,6 +162,28 @@ window.upgradeTower = () => {
     }
 }
 
+window.repairTower = () => {
+    const tower = towers.find(tower => tower.selected);
+    if (tower) {
+        tower.repair();
+        updateTowerStats(tower);
+    }
+}
+
+window.scrapTower = () => {
+    const tower = towers.find(tower => tower.selected);
+    if (tower) {
+        if (tower.scrap()) {
+            updateTowerStats(null);
+        }
+    }
+}
+
+document.querySelectorAll('[tower-type]').forEach(button => {
+    button.addEventListener('click', () => {
+        const towerType = button.getAttribute('tower-type');
+        setChosenTower(towerType)
+    });
+});
+
 window.openTab = openTab;
-
-
