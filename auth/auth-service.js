@@ -23,22 +23,20 @@ const db = getFirestore();
 
 export const registerUser = async (email, username, password, nationality) => {
   try {
-    // First create the user with email and password in Authentication
+    // First check if username already exists
+    const usersRef = collection(db, "users");
+    const usernameQuery = query(usersRef, where("username", "==", username));
+    const usernameSnapshot = await getDocs(usernameQuery);
+    
+    if (!usernameSnapshot.empty) {
+      return { success: false, error: "Username already exists" };
+    }
+
+    // Create the user with email and password in Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     
     try {
-      // Now that we're authenticated, check if username already exists
-      const usersRef = collection(db, "users");
-      const usernameQuery = query(usersRef, where("username", "==", username));
-      const usernameSnapshot = await getDocs(usernameQuery);
-      
-      if (!usernameSnapshot.empty) {
-        // If username exists, delete the auth user and return error
-        await deleteUser(userCredential.user);
-        return { success: false, error: "Username already exists" };
-      }
-
-      // Prepare user data for Firestore (never store passwords in Firestore!)
+      // Prepare user data for Firestore
       const userData = {
         username: username,
         email: email,
@@ -61,7 +59,8 @@ export const registerUser = async (email, username, password, nationality) => {
       console.log(`User registered successfully! Email: ${email}, Username: ${username}, Nationality: ${nationality}`);
       return { success: true, user: userCredential.user };
     } catch (error) {
-      // If anything fails after auth creation, clean up by deleting the auth user
+      // If Firestore update fails, clean up by deleting the auth user
+      console.error("Error creating user document:", error);
       await deleteUser(userCredential.user);
       throw error;
     }

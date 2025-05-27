@@ -8,15 +8,15 @@
 </head>
 <body>
     <div class="auth-container">
-        <div class="auth-form-container">
-            <h2 class="auth-title">Login</h2>
-            <div class="auth-form-group">
-                <label class="auth-label" for="emailOrUsername">Email or Username</label>
-                <input type="text" id="emailOrUsername" class="auth-input" placeholder="Enter your email or username">
+        <h2 class="auth-title">Login</h2>
+        <form class="auth-form" onsubmit="return false;">
+            <div class="form-group">
+                <label for="emailOrUsername">Email or Username</label>
+                <input type="text" id="emailOrUsername" placeholder="Enter your email or username">
             </div>
-            <div class="auth-form-group">
-                <label class="auth-label" for="password">Password</label>
-                <input type="password" id="password" class="auth-input" placeholder="Enter your password">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password">
             </div>
             <button id="loginBtn" class="auth-button">Login</button>
             <div class="auth-link">
@@ -25,8 +25,8 @@
             <div class="auth-link">
                 <a href="#" id="forgotPasswordLink">Forgot your password?</a>
             </div>
-            <div id="authError" class="auth-error"></div>
-        </div>
+            <div id="authError" class="error-message"></div>
+        </form>
     </div>
 
     <!-- Password Reset Modal -->
@@ -35,11 +35,11 @@
             <span class="close-button" id="closeResetModal">&times;</span>
             <h2>Reset Password</h2>
             <p>Enter your email address and we'll send you a link to reset your password.</p>
-            <div class="auth-form-group">
-                <input type="email" id="resetEmail" class="auth-input" placeholder="Enter your email">
+            <div class="form-group">
+                <input type="email" id="resetEmail" placeholder="Enter your email">
             </div>
             <button id="resetPasswordBtn" class="auth-button">Send Reset Link</button>
-            <div id="resetMessage" class="auth-message"></div>
+            <div id="resetMessage" class="success-message"></div>
         </div>
     </div>
 
@@ -108,14 +108,16 @@
             
             if (!email) {
                 resetMessage.textContent = 'Please enter your email address';
-                resetMessage.className = 'auth-message error';
+                resetMessage.className = 'error-message';
+                resetMessage.style.display = 'block';
                 return;
             }
 
             try {
                 await sendPasswordResetEmail(auth, email);
                 resetMessage.textContent = 'Password reset email sent! Check your inbox.';
-                resetMessage.className = 'auth-message success';
+                resetMessage.className = 'success-message';
+                resetMessage.style.display = 'block';
                 resetEmail.value = '';
                 
                 // Close the modal after 3 seconds
@@ -124,7 +126,8 @@
                 }, 3000);
             } catch (error) {
                 resetMessage.textContent = error.message;
-                resetMessage.className = 'auth-message error';
+                resetMessage.className = 'error-message';
+                resetMessage.style.display = 'block';
             }
         });
 

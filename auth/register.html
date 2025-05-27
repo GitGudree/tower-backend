@@ -5,38 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - BOP3000 Tower Defense</title>
     <link rel="stylesheet" href="../styles.css">
+    <style>
+        .nationality-select {
+            position: relative;
+            width: 100%;
+        }
+        
+        select#nationality {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--ui-secondary);
+            color: var(--text-color);
+            appearance: none;
+            cursor: pointer;
+            padding-right: 2.5rem;
+        }
+
+        .nationality-select::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color);
+            pointer-events: none;
+        }
+
+        .flag-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flag-img {
+            width: 20px;
+            height: 15px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="auth-container">
-    <div class="auth-form-container">
-        <h1 class="auth-title">Register</h1>
-        <form id="registerForm">
-            <div class="auth-form-group">
-                <label class="auth-label" for="email">Email</label>
-                <input type="email" id="email" name="email" class="auth-input" placeholder="Enter your email" required>
+<body>
+    <div class="auth-container">
+        <h2 class="auth-title">Register</h2>
+        <form id="registerForm" class="auth-form" onsubmit="return false;">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
-            <div class="auth-form-group">
-                <label class="auth-label" for="username">Username</label>
-                <input type="text" id="username" name="username" class="auth-input" placeholder="Choose a username" required>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
             </div>
-            <div class="auth-form-group">
-                <label class="auth-label" for="nationality">Nationality</label>
-                <div class="nationality-select" id="nationalitySelect">
-                    <img src="https://flagcdn.com/w40/no.png" alt="Norway" class="selected-flag" id="selectedFlag">
-                    <span id="selectedNationality">Norway</span>
+            <div class="form-group">
+                <label for="nationality">Nationality</label>
+                <div class="nationality-select">
+                    <select id="nationality" name="nationality" required>
+                        <option value="" disabled selected>Select your nationality</option>
+                    </select>
                 </div>
-                <input type="hidden" id="nationality" name="nationality" value="Norway" required>
-                <div class="nationality-dropdown" id="nationalityDropdown"></div>
             </div>
-            <div class="auth-form-group">
-                <label class="auth-label" for="password">Password</label>
-                <input type="password" id="password" name="password" class="auth-input" placeholder="At least 8 characters, one uppercase, one lowercase, one number" required>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="At least 8 characters, one uppercase, one lowercase, one number" required>
             </div>
-            <div class="auth-form-group">
-                <label class="auth-label" for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="auth-input" placeholder="Confirm your password" required>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
             </div>
             <button type="submit" id="registerButton" class="auth-button">Register</button>
-            <div class="auth-error" id="errorMessage"></div>
+            <div id="errorMessage" class="error-message"></div>
         </form>
         <div class="auth-link">
             <a href="login.html">Already have an account? Login here</a>
@@ -48,6 +88,7 @@
 
         // Country data with flags in alphabetical order
         const countries = [
+            { code: 'no', name: 'Norway' }, // Put Norway first
             { code: 'af', name: 'Afghanistan' },
             { code: 'al', name: 'Albania' },
             { code: 'dz', name: 'Algeria' },
@@ -174,7 +215,6 @@
             { code: 'ni', name: 'Nicaragua' },
             { code: 'ne', name: 'Niger' },
             { code: 'ng', name: 'Nigeria' },
-            { code: 'no', name: 'Norway' },
             { code: 'om', name: 'Oman' },
             { code: 'pk', name: 'Pakistan' },
             { code: 'pw', name: 'Palau' },
@@ -243,42 +283,17 @@
         ];
 
         // Initialize nationality dropdown
-        const nationalitySelect = document.getElementById('nationalitySelect');
-        const nationalityDropdown = document.getElementById('nationalityDropdown');
-        const selectedFlag = document.getElementById('selectedFlag');
-        const selectedNationality = document.getElementById('selectedNationality');
-        const nationalityInput = document.getElementById('nationality');
-
-        // Populate dropdown
+        const nationalitySelect = document.getElementById('nationality');
+        
+        // Populate the dropdown with countries
         countries.forEach(country => {
-            const option = document.createElement('div');
-            option.className = 'nationality-option';
-            option.innerHTML = `
-                <img src="https://flagcdn.com/w40/${country.code}.png" alt="${country.name}" class="flag-icon">
-                <span>${country.name}</span>
-            `;
-            option.addEventListener('click', () => {
-                selectedFlag.src = `https://flagcdn.com/w40/${country.code}.png`;
-                selectedFlag.alt = country.name;
-                selectedNationality.textContent = country.name;
-                nationalityInput.value = country.code;
-                nationalityDropdown.style.display = 'none';
-            });
-            nationalityDropdown.appendChild(option);
+            const option = document.createElement('option');
+            option.value = country.code;
+            option.textContent = country.name;
+            nationalitySelect.appendChild(option);
         });
 
-        // Toggle dropdown
-        nationalitySelect.addEventListener('click', () => {
-            nationalityDropdown.style.display = nationalityDropdown.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!nationalitySelect.contains(event.target)) {
-                nationalityDropdown.style.display = 'none';
-            }
-        });
-
+        // Initialize the registration page
         initRegisterPage();
     </script>
 </body>
