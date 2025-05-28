@@ -2,32 +2,26 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow users to read and write their own data
     match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId 
-        && request.resource.data.uid == userId
-        && request.resource.data.email is string
-        && request.resource.data.username is string
-        && request.resource.data.nationality is string;
-      allow update: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    // Allow authenticated users to read leaderboard data
-    match /leaderboard/{document=**} {
+      // Allow username existence checks during registration
+      allow list: if true;
+      
+      // Allow creation of user document during registration
+      allow create: if request.auth != null && 
+                   request.auth.uid == userId && 
+                   request.resource.data.uid == userId;
+      
+      // Allow any authenticated user to read (for leaderboard)
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid != null;
+      
+      // Allow users to update their own data
+      allow update: if request.auth != null && 
+                   request.auth.uid == userId;
     }
     
-    // Allow authenticated users to write game stats
-    match /gameStats/{document} {
-      allow read: if request.auth != null;
-      allow create, update: if request.auth != null && request.auth.uid != null;
-    }
-    
-    // Default deny all other access
+    // Default deny all other collections
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if request.auth != null;
     }
   }
 }

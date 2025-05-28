@@ -14,6 +14,15 @@
     --transparent: rgba(0,0,0,0);
 }
 
+body.light-theme {
+    --background-color: #f5f5f5;
+    --border-color: #ddd;
+    --ui-background: #ffffff;
+    --ui-secondary: #f0f0f0;
+    --text-color: #333333;
+    --highlight-color: #e0e0e0;
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -1750,8 +1759,7 @@ h1, h2, h3 {
     text-align: center;
     margin-bottom: 2rem;
     font-size: 1.8em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5),
-                 0 0 8px rgba(255, 215, 0, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .rankings-list {
@@ -1782,28 +1790,38 @@ h1, h2, h3 {
 }
 
 .ranking-item {
-    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    background: #ffffff;
     padding: 1.2rem;
     border-radius: 10px;
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    cursor: pointer;
+    margin-bottom: 0.8rem;
     transition: all 0.3s ease;
-    border: 1px solid #3d3d3d;
 }
 
-.ranking-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    border-color: #ffd700;
-    background: linear-gradient(145deg, #333333, #222222);
+.ranking-item .rank {
+    font-weight: bold;
+    color: #333;
+    min-width: 40px;
+}
+
+.player-flag {
+    width: 20px;
+    height: 15px;
+    border-radius: 2px;
+    object-fit: cover;
+}
+
+.player-name {
+    font-weight: 500;
+    color: #333;
+    flex-grow: 1;
 }
 
 .player-stats {
-    margin-left: auto;
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
 }
 
@@ -1811,14 +1829,12 @@ h1, h2, h3 {
 .player-kills,
 .player-damage,
 .player-bosses {
-    color: #a0a0a0;
-    font-size: 0.9em;
     padding: 0.4rem 0.8rem;
-    background: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
-    min-width: 80px;
+    font-size: 0.9em;
+    background: rgba(0, 0, 0, 0.1);
+    min-width: 100px;
     text-align: center;
-    white-space: nowrap;
 }
 
 .player-wave { color: #4CAF50; }
@@ -1826,27 +1842,58 @@ h1, h2, h3 {
 .player-damage { color: #2196F3; }
 .player-bosses { color: #ffd700; }
 
+/* Light theme overrides */
+body.light-theme .rankings-section {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .rankings-title {
+    color: #333;
+    text-shadow: none;
+}
+
+body.light-theme .ranking-item {
+    background: #f5f5f5;
+    border: 1px solid #eee;
+}
+
+body.light-theme .ranking-item:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .player-wave,
+body.light-theme .player-kills,
+body.light-theme .player-damage,
+body.light-theme .player-bosses {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 /* Theme Switcher Enhancement */
 .theme-switcher {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    top: 20px;
+    right: 100px;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    background: rgba(45, 45, 45, 0.9);
-    padding: 0.8rem;
-    border-radius: 25px;
-    border: 2px solid #4a4a4a;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+    gap: 0.5rem;
+    background: var(--ui-background);
+    padding: 0.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    height: 32px;
 }
 
 .switch {
     position: relative;
     display: inline-block;
-    width: 54px;
-    height: 28px;
+    width: 44px;
+    height: 22px;
 }
 
 .switch input {
@@ -1862,71 +1909,113 @@ h1, h2, h3 {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #2d2d2d;
-    transition: .4s;
-    border-radius: 28px;
-    border: 2px solid #4a4a4a;
+    background-color: var(--ui-secondary);
+    transition: .3s;
+    border-radius: 22px;
+    border: 1px solid var(--border-color);
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 20px;
-    width: 20px;
+    height: 16px;
+    width: 16px;
     left: 2px;
     bottom: 2px;
     background-color: #ffd700;
-    transition: .4s;
+    transition: .3s;
     border-radius: 50%;
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 input:checked + .slider {
-    background-color: #4CAF50;
+    background-color: var(--ui-background);
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px);
-    background-color: #ffffff;
+    transform: translateX(22px);
+    background-color: #4CAF50;
 }
 
 .theme-label {
-    font-size: 1.4em;
-    color: #ffd700;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    font-size: 1.2em;
+    color: var(--text-color);
+    user-select: none;
 }
 
-/* Back Button Enhancement */
-.back-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    padding: 0.8rem 1.5rem;
-    background: rgba(45, 45, 45, 0.9);
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 25px;
-    border: 2px solid #4a4a4a;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+/* Leaderboard specific styles */
+.leaderboard-container {
+    background: var(--ui-background);
+    border-color: var(--border-color);
 }
 
-.back-button:hover {
-    transform: translateY(-2px);
-    border-color: #ffd700;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    color: #ffd700;
+.stat-item {
+    background: var(--ui-secondary);
+    border-color: var(--border-color);
 }
 
-/* Sorting Options */
+.stat-item .stat-label,
+.stat-item .stat-value,
+.stat-item .stat-holder {
+    color: var(--text-color);
+}
+
+.ranking-item {
+    background: var(--ui-secondary);
+    border-color: var(--border-color);
+}
+
+.ranking-item .player-name {
+    color: var(--text-color);
+}
+
+.sort-btn {
+    background: var(--ui-secondary);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.leaderboard-title {
+    color: var(--text-color);
+}
+
+.rankings-title {
+    color: var(--text-color);
+}
+
+/* Light theme specific overrides */
+body.light-theme .stat-item .stat-label,
+body.light-theme .stat-item .stat-value,
+body.light-theme .stat-item .stat-holder,
+body.light-theme .ranking-item .player-name,
+body.light-theme .leaderboard-title,
+body.light-theme .rankings-title,
+body.light-theme .theme-label {
+    color: #333333;
+}
+
+body.light-theme .sort-btn {
+    color: #333333;
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+body.light-theme .sort-btn:hover {
+    background: #f5f5f5;
+}
+
+body.light-theme .sort-btn.active {
+    background: #4CAF50;
+    color: white;
+}
+
+/* Top Players Section */
 .sorting-options {
     display: flex;
     justify-content: center;
     gap: 1rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
+    padding: 1rem;
 }
 
 .sort-btn {
@@ -1938,6 +2027,8 @@ input:checked + .slider:before {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
+    min-width: 120px;
+    text-align: center;
 }
 
 .sort-btn:hover {
@@ -1951,4 +2042,23 @@ input:checked + .slider:before {
     border-color: #4CAF50;
     color: white;
     font-weight: bold;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Light theme overrides for sort buttons */
+body.light-theme .sort-btn {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    color: #333333;
+    border: 1px solid #ddd;
+}
+
+body.light-theme .sort-btn:hover {
+    background: linear-gradient(145deg, #f5f5f5, #e5e5e5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .sort-btn.active {
+    background: linear-gradient(145deg, #4CAF50, #45a049);
+    color: white;
+    border-color: #4CAF50;
 }

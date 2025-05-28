@@ -2,7 +2,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  deleteUser
+  deleteUser,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
   getFirestore, 
@@ -22,50 +23,119 @@ import { auth } from "./firebase-config.js";
 const db = getFirestore();
 
 export const registerUser = async (email, username, password, nationality) => {
+  let userCredential = null;
+  
   try {
+    console.log("Starting registration process...");
+    
     // First check if username already exists
     const usersRef = collection(db, "users");
     const usernameQuery = query(usersRef, where("username", "==", username));
     const usernameSnapshot = await getDocs(usernameQuery);
     
     if (!usernameSnapshot.empty) {
+      console.log("Username already exists");
       return { success: false, error: "Username already exists" };
     }
 
+    console.log("Username is available, creating auth user...");
+
     // Create the user with email and password in Authentication
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    
-    try {
-      // Prepare user data for Firestore
-      const userData = {
-        username: username,
-        email: email,
-        uid: userCredential.user.uid,
-        nationality: nationality,
-        dateCreated: new Date(),
-        stats: {
-          totalTowerDamage: 0,
-          totalResourcesGathered: 0,
-          totalEnemiesKilled: 0,
-          totalMoneySpent: 0,
-          highestWaveReached: 0,
-          totalBossStagesReached: 0
+    userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("Auth user created successfully:", user.uid);
+
+    // Get the ID token
+    const idToken = await user.getIdToken();
+    console.log("Got ID token");
+
+    // Prepare user data for Firestore
+    const userData = {
+      username: username,
+      email: email,
+      uid: user.uid,
+      nationality: nationality,
+      dateCreated: new Date(),
+      stats: {
+        totalTowerDamage: 0,
+        totalResourcesGathered: 0,
+        totalEnemiesKilled: 0,
+        totalMoneySpent: 0,
+        highestWaveReached: 0,
+        totalBossStagesReached: 0
+      }
+    };
+
+    console.log("Attempting to create Firestore document...");
+
+    // Wait for auth state to be fully updated
+    await new Promise((resolve, reject) => {
+      const unsubscribe = onAuthStateChanged(auth, 
+        (user) => {
+          if (user) {
+            unsubscribe();
+            resolve(user);
+          }
+        },
+        (error) => {
+          unsubscribe();
+          reject(error);
         }
-      };
+      );
+    });
 
-      // Add user to Firestore using their auth UID as the document ID
-      await setDoc(doc(db, "users", userCredential.user.uid), userData);
+    // Try to create the user document with retries
+    let retries = 3;
+    let lastError = null;
 
-      console.log(`User registered successfully! Email: ${email}, Username: ${username}, Nationality: ${nationality}`);
-      return { success: true, user: userCredential.user };
-    } catch (error) {
-      // If Firestore update fails, clean up by deleting the auth user
-      console.error("Error creating user document:", error);
-      await deleteUser(userCredential.user);
-      throw error;
+    while (retries > 0) {
+      try {
+        // Force token refresh before attempting to write
+        await user.getIdToken(true);
+        
+        // Add user to Firestore using their auth UID as the document ID
+        await setDoc(doc(db, "users", user.uid), userData);
+        console.log("User document created successfully in Firestore");
+        return { success: true, user: user };
+      } catch (error) {
+        console.error(`Attempt ${4 - retries} failed:`, error);
+        lastError = error;
+        retries--;
+        if (retries > 0) {
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
     }
+
+    // If we get here, all retries failed
+    throw lastError;
+
   } catch (error) {
     console.error("Registration error:", error);
+    
+    // Clean up auth user if it was created but Firestore failed
+    if (userCredential && userCredential.user) {
+      try {
+        await deleteUser(userCredential.user);
+        console.log("Cleaned up auth user after failed registration");
+      } catch (cleanupError) {
+        console.error("Error cleaning up auth user:", cleanupError);
+      }
+    }
+
+    // Provide specific error messages
+    if (error.code === 'auth/email-already-in-use') {
+      return { success: false, error: "This email is already registered" };
+    } else if (error.code === 'auth/invalid-email') {
+      return { success: false, error: "Invalid email format" };
+    } else if (error.code === 'auth/operation-not-allowed') {
+      return { success: false, error: "Email/password registration is not enabled. Please contact support." };
+    } else if (error.code === 'auth/weak-password') {
+      return { success: false, error: "Password is too weak. Please use a stronger password." };
+    } else if (error.message.includes('permission-denied')) {
+      return { success: false, error: "Firebase security rules are preventing registration. Please check your database rules." };
+    }
     return { success: false, error: error.message };
   }
 };

@@ -86,14 +86,64 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         };
 
-        // Update stats display
+        // Keep track of current stats to compare with new ones
+        let currentStats = {
+            totalTowerDamage: 0,
+            totalResourcesGathered: 0,
+            totalEnemiesKilled: 0,
+            totalMoneySpent: 0,
+            highestWaveReached: 0,
+            totalBossStagesReached: 0
+        };
+
+        // Update stats display with animation if value increased
         function updateStatsDisplay(stats) {
-            document.getElementById('totalDamage').textContent = stats.totalTowerDamage;
-            document.getElementById('totalResources').textContent = stats.totalResourcesGathered;
-            document.getElementById('totalEnemies').textContent = stats.totalEnemiesKilled;
-            document.getElementById('totalMoney').textContent = stats.totalMoneySpent;
-            document.getElementById('highestWave').textContent = stats.highestWaveReached;
-            document.getElementById('totalBosses').textContent = stats.totalBossStagesReached;
+            const elements = {
+                'totalDamage': { current: currentStats.totalTowerDamage, new: stats.totalTowerDamage },
+                'totalResources': { current: currentStats.totalResourcesGathered, new: stats.totalResourcesGathered },
+                'totalEnemies': { current: currentStats.totalEnemiesKilled, new: stats.totalEnemiesKilled },
+                'totalMoney': { current: currentStats.totalMoneySpent, new: stats.totalMoneySpent },
+                'highestWave': { current: currentStats.highestWaveReached, new: stats.highestWaveReached },
+                'totalBosses': { current: currentStats.totalBossStagesReached, new: stats.totalBossStagesReached }
+            };
+
+            for (const [elementId, values] of Object.entries(elements)) {
+                const element = document.getElementById(elementId);
+                if (values.new > values.current) {
+                    // Animate the stat card when value increases
+                    const card = element.closest('.stat-card');
+                    card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
+                    card.style.backgroundColor = '#4CAF50';
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 8px 16px rgba(76, 175, 80, 0.3)';
+                    
+                    setTimeout(() => {
+                        card.style.backgroundColor = '';
+                        card.style.transform = '';
+                        card.style.boxShadow = '';
+                    }, 1000);
+                }
+                element.textContent = formatNumber(values.new);
+            }
+
+            // Update current stats
+            currentStats = { ...stats };
+        }
+
+        // Function to refresh user data
+        async function refreshUserData(uid) {
+            const result = await getUserData(uid);
+            if (result.success) {
+                const userData = result.data;
+                updateStatsDisplay(userData.stats || {
+                    totalTowerDamage: 0,
+                    totalResourcesGathered: 0,
+                    totalEnemiesKilled: 0,
+                    totalMoneySpent: 0,
+                    highestWaveReached: 0,
+                    totalBossStagesReached: 0
+                });
+            }
         }
 
         // Handle logout
@@ -105,6 +155,8 @@
                 console.error('Logout failed:', result.error);
             }
         });
+
+        let refreshInterval;
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -128,7 +180,7 @@
                     });
                     document.getElementById('profileDateCreated').textContent = formattedDate;
 
-                    // Update stats display
+                    // Initial stats update
                     updateStatsDisplay(userData.stats || {
                         totalTowerDamage: 0,
                         totalResourcesGathered: 0,
@@ -137,10 +189,20 @@
                         highestWaveReached: 0,
                         totalBossStagesReached: 0
                     });
+
+                    // Set up auto-refresh every 30 seconds
+                    clearInterval(refreshInterval); // Clear any existing interval
+                    refreshInterval = setInterval(() => refreshUserData(user.uid), 30000);
                 }
             } else {
+                clearInterval(refreshInterval); // Clear interval on logout
                 window.location.href = './login.html';
             }
+        });
+
+        // Clean up interval when page is unloaded
+        window.addEventListener('unload', () => {
+            clearInterval(refreshInterval);
         });
     </script>
 </body>

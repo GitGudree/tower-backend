@@ -92,42 +92,54 @@ export const initRegisterPage = () => {
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Disable form inputs and show loading state
+        const inputs = [emailInput, usernameInput, passwordInput, confirmPasswordInput, nationalityInput, registerButton];
+        inputs.forEach(input => input.disabled = true);
+        registerButton.textContent = 'Registering...';
+        errorMessage.style.display = 'none';
+
         const email = emailInput.value;
         const username = usernameInput.value;
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
         const nationality = nationalityInput.value;
 
-        if (!validateUsername(username)) {
-            errorMessage.textContent = 'Username must be 3-20 characters long and can only contain letters, numbers, and underscores';
-            errorMessage.style.display = 'block';
-            return;
-        }
+        try {
+            if (!validateUsername(username)) {
+                throw new Error('Username must be 3-20 characters long and can only contain letters, numbers, and underscores');
+            }
 
-        if (!validatePassword(password)) {
-            errorMessage.textContent = 'Password must be 8-20 characters long and contain at least one uppercase letter, one lowercase letter, and one number';
-            errorMessage.style.display = 'block';
-            return;
-        }
+            if (!validatePassword(password)) {
+                throw new Error('Password must be 8-20 characters long and contain at least one uppercase letter, one lowercase letter, and one number');
+            }
 
-        if (password !== confirmPassword) {
-            errorMessage.textContent = 'Passwords do not match';
-            errorMessage.style.display = 'block';
-            return;
-        }
+            if (password !== confirmPassword) {
+                throw new Error('Passwords do not match');
+            }
 
-        if (!nationality) {
-            errorMessage.textContent = 'Please select your nationality';
-            errorMessage.style.display = 'block';
-            return;
-        }
+            if (!nationality) {
+                throw new Error('Please select your nationality');
+            }
 
-        const result = await registerUser(email, username, password, nationality);
-        if (result.success) {
-            window.location.href = '/index.html';
-        } else {
-            errorMessage.textContent = result.error;
+            console.log('Attempting to register user:', { email, username, nationality });
+            const result = await registerUser(email, username, password, nationality);
+            
+            if (result.success) {
+                console.log('Registration successful, redirecting...');
+                // Use a relative path for redirection
+                window.location.href = '../index.html';
+            } else {
+                throw new Error(result.error || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            errorMessage.textContent = error.message;
             errorMessage.style.display = 'block';
+            
+            // Re-enable form inputs
+            inputs.forEach(input => input.disabled = false);
+            registerButton.textContent = 'Register';
         }
     });
 }; 
