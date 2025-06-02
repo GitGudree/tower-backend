@@ -68,25 +68,21 @@
         import { getUserData, logoutUser } from './auth-service.js';
         import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
-        // Country data mapping
         const countries = [
             { code: 'af', name: 'Afghanistan' },
             { code: 'al', name: 'Albania' },
-            // ... (add all countries)
+            
         ];
 
-        // Function to get country name from code
         const getCountryName = (code) => {
             const country = countries.find(c => c.code === code);
             return country ? country.name : code.toUpperCase();
         };
 
-        // Function to format numbers with commas
         const formatNumber = (num) => {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         };
 
-        // Keep track of current stats to compare with new ones
         let currentStats = {
             totalTowerDamage: 0,
             totalResourcesGathered: 0,
@@ -96,7 +92,6 @@
             totalBossStagesReached: 0
         };
 
-        // Update stats display with animation if value increased
         function updateStatsDisplay(stats) {
             const elements = {
                 'totalDamage': { current: currentStats.totalTowerDamage, new: stats.totalTowerDamage },
@@ -110,7 +105,6 @@
             for (const [elementId, values] of Object.entries(elements)) {
                 const element = document.getElementById(elementId);
                 if (values.new > values.current) {
-                    // Animate the stat card when value increases
                     const card = element.closest('.stat-card');
                     card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
                     card.style.backgroundColor = '#4CAF50';
@@ -126,11 +120,9 @@
                 element.textContent = formatNumber(values.new);
             }
 
-            // Update current stats
             currentStats = { ...stats };
         }
 
-        // Function to refresh user data
         async function refreshUserData(uid) {
             const result = await getUserData(uid);
             if (result.success) {
@@ -146,7 +138,6 @@
             }
         }
 
-        // Handle logout
         document.getElementById('logoutButton').addEventListener('click', async () => {
             const result = await logoutUser();
             if (result.success) {
@@ -166,12 +157,10 @@
                     document.getElementById('profileUsername').textContent = userData.username;
                     document.getElementById('profileEmail').textContent = userData.email;
                     
-                    // Display both country name and use code for flag
                     const countryCode = userData.nationality.toLowerCase();
                     document.getElementById('profileNationality').textContent = getCountryName(countryCode);
                     document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${countryCode}.png`;
                     
-                    // Format date
                     const date = new Date(userData.dateCreated.seconds * 1000);
                     const formattedDate = date.toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -180,7 +169,6 @@
                     });
                     document.getElementById('profileDateCreated').textContent = formattedDate;
 
-                    // Initial stats update
                     updateStatsDisplay(userData.stats || {
                         totalTowerDamage: 0,
                         totalResourcesGathered: 0,
@@ -190,17 +178,15 @@
                         totalBossStagesReached: 0
                     });
 
-                    // Set up auto-refresh every 30 seconds
-                    clearInterval(refreshInterval); // Clear any existing interval
+                    clearInterval(refreshInterval); 
                     refreshInterval = setInterval(() => refreshUserData(user.uid), 30000);
                 }
             } else {
-                clearInterval(refreshInterval); // Clear interval on logout
+                clearInterval(refreshInterval); 
                 window.location.href = './login.html';
             }
         });
 
-        // Clean up interval when page is unloaded
         window.addEventListener('unload', () => {
             clearInterval(refreshInterval);
         });

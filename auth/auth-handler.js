@@ -93,7 +93,7 @@ export const initRegisterPage = () => {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Disable form inputs and show loading state
+        
         const inputs = [emailInput, usernameInput, passwordInput, confirmPasswordInput, nationalityInput, registerButton];
         inputs.forEach(input => input.disabled = true);
         registerButton.textContent = 'Registering...';
@@ -127,7 +127,7 @@ export const initRegisterPage = () => {
             
             if (result.success) {
                 console.log('Registration successful, redirecting...');
-                // Use a relative path for redirection
+                
                 window.location.href = '../index.html';
             } else {
                 throw new Error(result.error || 'Registration failed');
@@ -137,7 +137,7 @@ export const initRegisterPage = () => {
             errorMessage.textContent = error.message;
             errorMessage.style.display = 'block';
             
-            // Re-enable form inputs
+            
             inputs.forEach(input => input.disabled = false);
             registerButton.textContent = 'Register';
         }

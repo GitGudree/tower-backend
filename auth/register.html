@@ -86,9 +86,8 @@
     <script type="module">
         import { initRegisterPage } from './auth-handler.js';
 
-        // Country data with flags in alphabetical order
         const countries = [
-            { code: 'no', name: 'Norway' }, // Put Norway first
+            { code: 'no', name: 'Norway' }, 
             { code: 'af', name: 'Afghanistan' },
             { code: 'al', name: 'Albania' },
             { code: 'dz', name: 'Algeria' },
@@ -282,10 +281,8 @@
             { code: 'zw', name: 'Zimbabwe' }
         ];
 
-        // Initialize nationality dropdown
         const nationalitySelect = document.getElementById('nationality');
         
-        // Populate the dropdown with countries
         countries.forEach(country => {
             const option = document.createElement('option');
             option.value = country.code;
@@ -293,7 +290,6 @@
             nationalitySelect.appendChild(option);
         });
 
-        // Initialize the registration page
         initRegisterPage();
     </script>
 </body>

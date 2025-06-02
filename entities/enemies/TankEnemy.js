@@ -12,8 +12,8 @@ export class TankEnemy extends Enemy {
     constructor(row, wave) {
         super(row, wave);
         this.type = "tank";
-        this.health = 200 + (wave - 1) * 20;
-        this.speed = 0.5;
+        this.health = 250 + (wave - 1) * 25;
+        this.speed = 0.6;
         this.background = "darkgreen";
         this.laneIndex = row; 
 

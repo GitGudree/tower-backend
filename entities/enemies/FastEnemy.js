@@ -12,8 +12,8 @@ export class FastEnemy extends Enemy {
     constructor(row, wave) {
         super(row, wave);
         this.type = "fast";
-        this.health = 50 + (wave - 1) * 10;
-        this.speed = 1.2;
+        this.health = 70 + (wave - 1) * 12;
+        this.speed = 1.4;
         this.background = "orange";
         this.laneIndex = row;
 

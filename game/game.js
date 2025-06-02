@@ -96,8 +96,7 @@ export function updateGameState(deltaTime) {
 
         if (enemy.health <= 0) {
             recordEnemyKilled();
-            // Resource rewards based on enemy type
-            let resourceAmount = 5; // default
+            let resourceAmount = 5; 
             switch(enemy.type) {
                 case "fast":
                     resourceAmount = 3;

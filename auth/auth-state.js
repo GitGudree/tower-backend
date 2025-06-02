@@ -23,11 +23,11 @@ const deleteCookie = (name) => {
     setCookie(name, '', -1);
 };
 
-// Auth state management
+
 export const initAuthState = () => {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // User is signed in
+            
             const result = await getUserData(user.uid);
             if (result.success) {
                 const userData = result.data;
@@ -38,12 +38,10 @@ export const initAuthState = () => {
                 updateUserInterface(userData);
             }
         } else {
-            // User is signed out
             deleteCookie('userLoggedIn');
             deleteCookie('userEmail');
             deleteCookie('username');
             deleteCookie('nationality');
-            // Redirect to login if not on login page
             if (!window.location.pathname.includes('login.html')) {
                 window.location.href = '/auth/login.html';
             }
@@ -51,7 +49,6 @@ export const initAuthState = () => {
     });
 };
 
-// Handle logout
 export const handleLogout = async () => {
     try {
         const result = await logoutUser();
@@ -69,12 +66,10 @@ export const handleLogout = async () => {
     }
 };
 
-// Check if user is logged in
 export const isUserLoggedIn = () => {
     return getCookie('userLoggedIn') === 'true';
 };
 
-// Get current user data
 export const getCurrentUserData = () => {
     return {
         email: getCookie('userEmail'),
@@ -83,26 +78,23 @@ export const getCurrentUserData = () => {
     };
 };
 
-// Initialize auth UI elements
+
 export const initAuthUI = () => {
-    // Set up logout button
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
     }
 
-    // Display user info if logged in
     const userData = getCurrentUserData();
     if (userData.username) {
         updateUserInterface(userData);
     }
 };
 
-// Update user interface with user data
+
 const updateUserInterface = (userData) => {
     const userInfoElement = document.getElementById('userEmail');
     if (userInfoElement) {
-        // The nationality is already stored as a country code
         const countryCode = userData.nationality.toLowerCase();
         userInfoElement.innerHTML = `
             <a href="/auth/profile.html" class="user-profile-link">

@@ -101,7 +101,9 @@ export class GatlingTower extends Tower {
             let foundTarget = false;
             
             enemies.forEach(enemy => {
-                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                if (Math.abs(enemy.y - this.y) < 10 && 
+                    enemy.x > this.x && 
+                    Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = this.animationExtend;
                     const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
                     bullet.bulletDamage = this.damage;

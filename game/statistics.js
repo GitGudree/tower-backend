@@ -44,8 +44,8 @@ export function recordBossStage() {
 
 async function updateGameStats() {
     if (auth.currentUser) {
-        console.log("Updating stats:", gameStats); // Debug log
         const result = await updateUserStats(auth.currentUser.uid, gameStats);
+ 
         if (!result.success) {
             console.error("Failed to update stats:", result.error);
         }

@@ -84,7 +84,6 @@
             }
         });
 
-        // Password reset modal functionality
         forgotPasswordLink.addEventListener('click', (e) => {
             e.preventDefault();
             resetPasswordModal.style.display = 'flex';
@@ -102,7 +101,6 @@
             }
         });
 
-        // Password reset functionality
         resetPasswordBtn.addEventListener('click', async () => {
             const email = resetEmail.value.trim();
             
@@ -120,7 +118,7 @@
                 resetMessage.style.display = 'block';
                 resetEmail.value = '';
                 
-                // Close the modal after 3 seconds
+                
                 setTimeout(() => {
                     resetPasswordModal.style.display = 'none';
                 }, 3000);
@@ -131,7 +129,6 @@
             }
         });
 
-        // Enter key functionality
         passwordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 loginBtn.click();

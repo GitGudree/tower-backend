@@ -26,7 +26,7 @@ export async function spawnWave() {
     wave++;
     isWaveStarted = true;
 
-    // Record wave and boss stage
+    
     recordWaveReached(wave);
     if (wave % 5 === 0) {
         recordBossStage();

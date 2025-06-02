@@ -144,7 +144,7 @@ export const loginUser = async (emailOrUsername, password) => {
   try {
     let email = emailOrUsername;
     
-    // If input doesn't look like an email, try to find the email by username
+   
     if (!emailOrUsername.includes('@')) {
       const usersRef = collection(db, "users");
       const usernameQuery = query(usersRef, where("username", "==", emailOrUsername));
@@ -157,17 +157,17 @@ export const loginUser = async (emailOrUsername, password) => {
       email = querySnapshot.docs[0].data().email;
     }
 
-    // Sign in with email and password
+    
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     
-    // Get additional user data from Firestore
+    
     const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
     const userData = userDoc.data();
 
     return { 
       success: true, 
       user: userCredential.user,
-      userData: userData // Include the Firestore user data in the response
+      userData: userData 
     };
   } catch (error) {
     console.error("Login error:", error);
@@ -215,7 +215,7 @@ export const updateUserStats = async (uid, stats) => {
       totalBossStagesReached: 0
     };
 
-    // Update stats with new values if they are higher
+    
     const newStats = {
       totalTowerDamage: Math.max(currentStats.totalTowerDamage, stats.totalTowerDamage || 0),
       totalResourcesGathered: Math.max(currentStats.totalResourcesGathered, stats.totalResourcesGathered || 0),

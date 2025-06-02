@@ -74,19 +74,18 @@
 
         async function testFirestore() {
             try {
-                // Simple read test first
                 const testRef = collection(db, 'test');
                 const snapshot = await getDocs(testRef);
                 addResult('Successfully read from Firestore!', true);
 
-                // Try writing
+                
                 const docRef = await addDoc(testRef, {
                     test: true,
                     timestamp: new Date().toISOString()
                 });
                 addResult('Successfully wrote to Firestore!', true);
 
-                // Cleanup
+                
                 await deleteDoc(docRef);
                 addResult('Successfully cleaned up test document!', true);
             } catch (error) {
@@ -125,7 +124,7 @@
             }
         }
 
-        // Add event listeners to buttons
+        
         document.getElementById('testConnection').addEventListener('click', testFirebaseConnection);
         document.getElementById('testFirestore').addEventListener('click', testFirestore);
         document.getElementById('testAuth').addEventListener('click', testAuthentication);

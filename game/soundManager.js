@@ -21,7 +21,6 @@ export class SoundManager {
             pendingPlay: null
         };
         this.hasUserInteracted = false;
-        console.log("SoundManager initialized");
 
         document.addEventListener('click', () => {
             if (!this.hasUserInteracted) {
@@ -35,7 +34,6 @@ export class SoundManager {
     }
 
     loadSound(name, path) {
-        console.log(`Loading sound: ${name} from ${path}`);
         return new Promise((resolve, reject) => {
             const audio = new Audio(path);
             audio.volume = this.volume;
@@ -51,7 +49,6 @@ export class SoundManager {
             this.sounds.set(name, audio);
             
             audio.addEventListener('canplaythrough', () => {
-                console.log(`Sound ${name} loaded successfully`);
                 resolve();
             }, { once: true });
             
@@ -70,7 +67,6 @@ export class SoundManager {
 
         if (!this.hasUserInteracted) {
             this.music.pendingPlay = type;
-            console.log('Music will start after user interaction');
             return;
         }
         
@@ -90,7 +86,6 @@ export class SoundManager {
                 }, 1000);
             });
             this.music.current = track;
-            console.log(`Started playing ${trackName}`);
         }
     }
 
@@ -103,14 +98,10 @@ export class SoundManager {
     }
 
     play(name) {
-        if (this.muted) {
-            console.log(`Sound ${name} not played - sound is muted`);
-            return;
-        }
+        if (this.muted) return;
         
         const sound = this.sounds.get(name);
         if (sound) {
-            console.log(`Playing sound: ${name}`);
             const soundClone = sound.cloneNode();
             
             const baseVolume = name === 'rocket' || name === 'artillery_fire' ? 0.12 : 1.0;
@@ -119,8 +110,6 @@ export class SoundManager {
             soundClone.play().catch(error => {
                 console.error(`Error playing sound ${name}:`, error);
             });
-        } else {
-            console.warn(`Sound ${name} not found in sound manager`);
         }
     }
 
@@ -179,15 +168,12 @@ export class SoundManager {
             this.music.current.volume = this.volume;
         }
         
-        
         this.soundVolumes.forEach((customVolume, name) => {
             if (name !== 'background_music' && name !== 'gameplay_music') {
                 const baseVolume = name === 'rocket' || name === 'artillery_fire' ? 0.12 : 1.0;
                 this.soundVolumes.set(name, baseVolume * this.volume);
             }
         });
-        
-        console.log(`Master volume set to: ${this.volume}`);
     }
 
     toggleMute() {
@@ -195,7 +181,6 @@ export class SoundManager {
         this.loops.forEach(loopAudio => {
             loopAudio.muted = this.muted;
         });
-        console.log(`Sound ${this.muted ? 'muted' : 'unmuted'}`);
     }
 
     fadeOutMusic(trackName, duration = 800, callback) {

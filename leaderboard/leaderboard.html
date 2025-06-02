@@ -146,7 +146,6 @@
     </div>
 
     <script type="module">
-        // Import Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC4BuxypZ2hZymL4XofVxHjzCIvbXorD8s",
             authDomain: "bop3000-7cd12.firebaseapp.com",
@@ -156,29 +155,24 @@
             appId: "1:388606687101:web:0895edb33a8ae5679f7e14"
         };
 
-        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Function to format large numbers
         function formatNumber(num) {
             if (!num || isNaN(num)) return '0';
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        // Function to handle unauthorized access
         function handleUnauthorized() {
             console.log("User not authenticated, redirecting to login...");
             window.location.href = "../auth/login.html";
         }
 
-        // Function to show player stats modal
         async function showPlayerStats(username) {
             try {
                 const usersRef = collection(db, "users");
@@ -189,15 +183,12 @@
                     const userData = querySnapshot.docs[0].data();
                     const stats = userData.stats || {};
                     
-                    // Update modal content
                     document.getElementById('modal-player-name').textContent = userData.username;
                     
-                    // Handle flag image with error fallback
                     const flagImg = document.getElementById('modal-player-flag');
                     flagImg.src = `https://flagcdn.com/w20/${(userData.nationality || 'xx').toLowerCase()}.png`;
                     flagImg.onerror = () => flagImg.src = 'https://flagcdn.com/w20/xx.png';
                     
-                    // Update stats with proper null handling
                     document.getElementById('modal-tower-damage').textContent = formatNumber(stats.totalTowerDamage);
                     document.getElementById('modal-resources').textContent = formatNumber(stats.totalResourcesGathered);
                     document.getElementById('modal-enemies').textContent = formatNumber(stats.totalEnemiesKilled);
@@ -205,7 +196,6 @@
                     document.getElementById('modal-wave').textContent = formatNumber(stats.highestWaveReached);
                     document.getElementById('modal-bosses').textContent = formatNumber(stats.totalBossStagesReached);
                     
-                    // Show the modal
                     const modal = document.getElementById('player-stats-modal');
                     modal.style.display = 'flex';
                 }
@@ -214,9 +204,7 @@
             }
         }
 
-        // Function to update player rankings based on sort criteria
         function updatePlayerRankings(players, sortBy) {
-            // Update active button state
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-sort') === sortBy) {
@@ -263,7 +251,6 @@
             });
         }
 
-        // Function to update leaderboard stats
         async function updateLeaderboardStats() {
             try {
                 console.log("Fetching leaderboard data...");
@@ -286,7 +273,6 @@
                     const userData = doc.data();
                     const stats = userData.stats || {};
                     
-                    // Always include users, even with zero stats
                     const playerStats = {
                         totalTowerDamage: stats.totalTowerDamage || 0,
                         totalResourcesGathered: stats.totalResourcesGathered || 0,
@@ -296,7 +282,6 @@
                         totalBossStagesReached: stats.totalBossStagesReached || 0
                     };
 
-                    // Update top stats
                     if (playerStats.totalTowerDamage > topStats.totalTowerDamage.value) {
                         topStats.totalTowerDamage = { value: playerStats.totalTowerDamage, holder: userData.username };
                     }
@@ -316,7 +301,6 @@
                         topStats.totalBossStagesReached = { value: playerStats.totalBossStagesReached, holder: userData.username };
                     }
 
-                    // Add to player rankings
                     currentPlayerRankings.push({
                         username: userData.username,
                         nationality: userData.nationality || 'xx',
@@ -327,7 +311,6 @@
                     });
                 });
 
-                // Update the global stats display
                 document.getElementById('top-tower-damage').textContent = formatNumber(topStats.totalTowerDamage.value);
                 document.getElementById('top-tower-damage-holder').textContent = topStats.totalTowerDamage.holder;
                 
@@ -346,25 +329,21 @@
                 document.getElementById('top-bosses').textContent = formatNumber(topStats.totalBossStagesReached.value);
                 document.getElementById('top-bosses-holder').textContent = topStats.totalBossStagesReached.holder;
 
-                // Get the currently active sort button
                 const activeSortButton = document.querySelector('.sort-btn.active');
                 const currentSort = activeSortButton ? activeSortButton.getAttribute('data-sort') : 'wave';
 
-                // Update player rankings with current sort
                 updatePlayerRankings(currentPlayerRankings, currentSort);
             } catch (error) {
                 console.error("Error fetching leaderboard data:", error);
             }
         }
 
-        // Initialize leaderboard and set up auto-refresh
         let refreshInterval;
         let currentPlayerRankings = [];
         
         document.addEventListener('DOMContentLoaded', () => {
             console.log("Page loaded, waiting for auth state...");
             
-            // Set up sorting button event listeners
             document.querySelectorAll('.sort-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     const sortBy = button.getAttribute('data-sort');
@@ -372,13 +351,11 @@
                 });
             });
 
-            // Listen for auth state changes
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     console.log("User authenticated, fetching leaderboard data...");
                     updateLeaderboardStats();
                     
-                    // Set up auto-refresh every 30 seconds
                     clearInterval(refreshInterval);
                     refreshInterval = setInterval(updateLeaderboardStats, 30000);
                 } else {
@@ -387,12 +364,10 @@
             });
         });
 
-        // Clean up interval when leaving the page
         window.addEventListener('beforeunload', () => {
             clearInterval(refreshInterval);
         });
 
-        // Modal close functionality
         const modal = document.getElementById('player-stats-modal');
         const closeButton = document.querySelector('.close-button');
 
@@ -406,11 +381,9 @@
             }
         });
 
-        // Theme switcher functionality
         const themeToggle = document.getElementById('theme-toggle');
         const themeLabel = document.querySelector('.theme-label');
 
-        // Check for saved theme preference
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.body.classList.toggle('light-theme', savedTheme === 'light');
