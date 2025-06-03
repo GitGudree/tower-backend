@@ -146,22 +146,9 @@
     </div>
 
     <script type="module">
-        const firebaseConfig = {
-            apiKey: "AIzaSyC4BuxypZ2hZymL4XofVxHjzCIvbXorD8s",
-            authDomain: "bop3000-7cd12.firebaseapp.com",
-            projectId: "bop3000-7cd12",
-            storageBucket: "bop3000-7cd12.firebasestorage.app",
-            messagingSenderId: "388606687101",
-            appId: "1:388606687101:web:0895edb33a8ae5679f7e14"
-        };
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        import { auth, db } from '../auth/firebase-config.js';
+        import { getFirestore, collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
+        import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
         function formatNumber(num) {
             if (!num || isNaN(num)) return '0';

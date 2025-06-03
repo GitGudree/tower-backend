@@ -1,5 +1,5 @@
 import { auth } from './firebase-config.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { onAuthStateChanged } from "firebase/auth";
 import { logoutUser, getUserData } from './auth-service.js';
 
 // Cookie management functions
