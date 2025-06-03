@@ -16,6 +16,7 @@
 
 </head>
 <body>
+    <a href="auth/profile.html" class="profile-button" id="profileButton">👤 Profile</a>
     <main>
         <canvas id="gameCanvas"></canvas>
         <div class="menu">
@@ -174,4 +175,30 @@
             </div>     
         </main> 
     </body>
-    </html>
+    <script type="module">
+        import { auth } from './auth/firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getUserData } from './auth/auth-service.js';
+
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = '/auth/login.html';
+            } else {
+                const result = await getUserData(user.uid);
+                if (result.success) {
+                    const userData = result.data;
+                    const profileButton = document.getElementById('profileButton');
+                    const countryCode = userData.nationality.toLowerCase();
+                    profileButton.innerHTML = `
+                        <img src="https://flagcdn.com/w20/${countryCode}.png" 
+                             alt="${countryCode.toUpperCase()}" 
+                             style="vertical-align: middle; margin-right: 8px; border-radius: 3px;">
+                        ${userData.username}
+                    `;
+                }
+            }
+        });
+
+    </script>
+</html>

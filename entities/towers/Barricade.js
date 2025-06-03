@@ -26,6 +26,7 @@ export class Barricade extends Tower {
         this.baseRange = 0;
         this.baseDamage = 0;
         this.baseFireRate = 0;
+        this.maxHealth = this.baseHealth;
         this.health = this.baseHealth;
         this.range = this.baseRange;
         this.damage = this.baseDamage;
@@ -39,7 +40,7 @@ export class Barricade extends Tower {
         this.deathTimer = this.deathDuration;
         this.isDead;
 
-        this.animatorLive = new SpriteAnimator (sprites.barricade, 0, 50, 50, 1); // image, startY, width, height, amount of frames, frame interval
+        this.animatorLive = new SpriteAnimator (sprites.barricade, 0, 50, 50, 1); 
         this.animatorDead = new SpriteAnimator (sprites.barricade, 50, 50, 50, 1);
     }
 
@@ -47,7 +48,6 @@ export class Barricade extends Tower {
     
     destroy() {
         console.log("Barricade destroyed!");
-        // Remove barricade from the game board
         Barricade.splice(Barricade.indexOf(this), 1);
     }
 
@@ -73,9 +73,7 @@ export class Barricade extends Tower {
 
         */
 
-        //  Draw mine
         this.drawSprite(ctx);
-        // Draw synergy effects
         this.drawSynergyEffects(ctx);
     }
     

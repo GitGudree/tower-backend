@@ -1,5 +1,6 @@
 import { cellSize } from "../../game/grid.js";
 import { resources } from "../../game/game.js";
+import { recordTowerDamage } from "../../game/statistics.js";
 
 /**
  * Base Bullet class implementing core projectile functionality.
@@ -58,8 +59,10 @@ export class Bullet {
     dealDamage(enemy) {
         if (typeof enemy.takeDamage === 'function') {
             enemy.takeDamage(this.bulletDamage);
+            recordTowerDamage(this.bulletDamage);
         } else {
             enemy.health -= this.bulletDamage;
+            recordTowerDamage(this.bulletDamage);
         }
         this.pierceAmount --
         this.hitEnemies.add(enemy)
