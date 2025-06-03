@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - BOP3000 Tower Defense</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <a href="../index.html" class="back-button">← Back to Game</a>
+    <a href="../leaderboard/leaderboard.html" class="leaderboard-button">🏆 Leaderboard</a>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <img id="profileFlag" class="profile-flag" src="" alt="Nationality flag">
+                <h1 id="profileUsername" class="profile-username"></h1>
+                <button id="logoutButton" class="auth-button" style="margin-left: auto;">Logout</button>
+            </div>
+            <div class="profile-info">
+                <div class="info-group">
+                    <span class="info-label">Email</span>
+                    <span id="profileEmail" class="info-value"></span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Nationality</span>
+                    <span id="profileNationality" class="info-value"></span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Account Created</span>
+                    <span id="profileDateCreated" class="info-value"></span>
+                </div>
+            </div>
+            <div class="stats-section">
+                <h2 class="stats-title">Game Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalDamage">0</h3>
+                        <p>Total Tower Damage</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalResources">0</h3>
+                        <p>Resources Gathered</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalEnemies">0</h3>
+                        <p>Enemies Killed</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalMoney">0</h3>
+                        <p>Money Spent</p>
+                    </div>
+                </div>
+                <div class="stats-grid second-row">
+                    <div class="stat-card">
+                        <h3 id="highestWave">0</h3>
+                        <p>Highest Wave</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalBosses">0</h3>
+                        <p>Boss Stages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { getUserData, logoutUser } from './auth-service.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+        const countries = [
+            { code: 'af', name: 'Afghanistan' },
+            { code: 'al', name: 'Albania' },
+            
+        ];
+
+        const getCountryName = (code) => {
+            const country = countries.find(c => c.code === code);
+            return country ? country.name : code.toUpperCase();
+        };
+
+        const formatNumber = (num) => {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        };
+
+        let currentStats = {
+            totalTowerDamage: 0,
+            totalResourcesGathered: 0,
+            totalEnemiesKilled: 0,
+            totalMoneySpent: 0,
+            highestWaveReached: 0,
+            totalBossStagesReached: 0
+        };
+
+        function updateStatsDisplay(stats) {
+            const elements = {
+                'totalDamage': { current: currentStats.totalTowerDamage, new: stats.totalTowerDamage },
+                'totalResources': { current: currentStats.totalResourcesGathered, new: stats.totalResourcesGathered },
+                'totalEnemies': { current: currentStats.totalEnemiesKilled, new: stats.totalEnemiesKilled },
+                'totalMoney': { current: currentStats.totalMoneySpent, new: stats.totalMoneySpent },
+                'highestWave': { current: currentStats.highestWaveReached, new: stats.highestWaveReached },
+                'totalBosses': { current: currentStats.totalBossStagesReached, new: stats.totalBossStagesReached }
+            };
+
+            for (const [elementId, values] of Object.entries(elements)) {
+                const element = document.getElementById(elementId);
+                if (values.new > values.current) {
+                    const card = element.closest('.stat-card');
+                    card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
+                    card.style.backgroundColor = '#4CAF50';
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 8px 16px rgba(76, 175, 80, 0.3)';
+                    
+                    setTimeout(() => {
+                        card.style.backgroundColor = '';
+                        card.style.transform = '';
+                        card.style.boxShadow = '';
+                    }, 1000);
+                }
+                element.textContent = formatNumber(values.new);
+            }
+
+            currentStats = { ...stats };
+        }
+
+        async function refreshUserData(uid) {
+            const result = await getUserData(uid);
+            if (result.success) {
+                const userData = result.data;
+                updateStatsDisplay(userData.stats || {
+                    totalTowerDamage: 0,
+                    totalResourcesGathered: 0,
+                    totalEnemiesKilled: 0,
+                    totalMoneySpent: 0,
+                    highestWaveReached: 0,
+                    totalBossStagesReached: 0
+                });
+            }
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', async () => {
+            const result = await logoutUser();
+            if (result.success) {
+                window.location.href = './login.html';
+            } else {
+                console.error('Logout failed:', result.error);
+            }
+        });
+
+        let refreshInterval;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const result = await getUserData(user.uid);
+                if (result.success) {
+                    const userData = result.data;
+                    document.getElementById('profileUsername').textContent = userData.username;
+                    document.getElementById('profileEmail').textContent = userData.email;
+                    
+                    const countryCode = userData.nationality.toLowerCase();
+                    document.getElementById('profileNationality').textContent = getCountryName(countryCode);
+                    document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${countryCode}.png`;
+                    
+                    const date = new Date(userData.dateCreated.seconds * 1000);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    document.getElementById('profileDateCreated').textContent = formattedDate;
+
+                    updateStatsDisplay(userData.stats || {
+                        totalTowerDamage: 0,
+                        totalResourcesGathered: 0,
+                        totalEnemiesKilled: 0,
+                        totalMoneySpent: 0,
+                        highestWaveReached: 0,
+                        totalBossStagesReached: 0
+                    });
+
+                    clearInterval(refreshInterval); 
+                    refreshInterval = setInterval(() => refreshUserData(user.uid), 30000);
+                }
+            } else {
+                clearInterval(refreshInterval); 
+                window.location.href = './login.html';
+            }
+        });
+
+        window.addEventListener('unload', () => {
+            clearInterval(refreshInterval);
+        });
+    </script>
+</body>
+</html> 

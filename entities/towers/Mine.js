@@ -4,6 +4,7 @@ import { collision } from "../../game/hitreg.js";
 import { soundManager } from "../../game/soundManager.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { recordTowerDamage } from "../../game/statistics.js";
 
 /**
  * Mine tower class implementing explosive trap functionality.
@@ -65,6 +66,7 @@ export class Mine extends Tower {
                     soundManager.play('mine_trigger');
                     
                     enemy.health -= this.damage;
+                    recordTowerDamage(this.damage);
                     this.hitEnemies.add(enemy);
 
                     enemies.forEach(nearbyEnemy => {
@@ -76,6 +78,7 @@ export class Mine extends Tower {
                             
                             if (distance <= this.aoe) {
                                 nearbyEnemy.health -= this.damage;
+                                recordTowerDamage(this.damage);
                                 this.hitEnemies.add(nearbyEnemy);
                             }
                         }

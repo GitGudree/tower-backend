@@ -60,7 +60,9 @@ export class ArtilleryTower extends Tower {
             let foundTarget = false;
             
             enemies.forEach(enemy => {
-                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                if (Math.abs(enemy.y - this.y) < 10 && 
+                    enemy.x > this.x && 
+                    Math.abs(enemy.x - this.x) < this.range) {
                     const bullet = new ArtilleryShell(this.x + 18, this.y - 4, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
                     bullets.push(bullet);

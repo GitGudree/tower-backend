@@ -8,6 +8,7 @@ import { getWave, tryEndWave } from "./wave.js";
 import { GatlingTower } from "../entities/towers/GatlingTower.js";
 import { getTowerPrice } from "./towerUnlockSystem.js";
 import { soundManager } from './soundManager.js';
+import { recordResourcesGathered, recordEnemyKilled, recordMoneySpent, recordWaveReached, recordBossStage } from './statistics.js';
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -94,21 +95,21 @@ export function updateGameState(deltaTime) {
         enemy.move(deltaTime);
 
         if (enemy.health <= 0) {
-            // Resource rewards based on enemy type
+            recordEnemyKilled();
+            let resourceAmount = 5; 
             switch(enemy.type) {
                 case "fast":
-                    updateResources('increase', 3);
+                    resourceAmount = 3;
                     break;
                 case "tank":
-                    updateResources('increase', 8);
+                    resourceAmount = 8;
                     break;
                 case "boss":
-                    updateResources('increase', 10);
-                    break;
-                default: // normal enemy
-                    updateResources('increase', 5);
+                    resourceAmount = 10;
                     break;
             }
+            updateResources('increase', resourceAmount);
+            recordResourcesGathered(resourceAmount);
             updateMoney('increase', 20);
             continue;
         }
@@ -155,29 +156,26 @@ export function updateGameState(deltaTime) {
  * Updates the player's money balance.
  * 
  * @function updateMoney
- * @param {string} action - Type of update ("increase" or "decrease")
+ * @param {string} operation - Type of update ("increase" or "decrease")
  * @param {number} amount - Amount to modify
  * @author Anarox
  * @date 2025-01-25
  */
-export function updateMoney(action, amount) {
+export function updateMoney(operation, amount) {
     if (typeof amount !== "number" || isNaN(amount)) {
         console.error("Invalid amount:", amount);
         return;
     }
 
-    switch (action) {
-        case "increase":
-            money += amount;
-            break;
-        case "decrease":
-            money -= amount;
-            break;
-        default:
-            console.warn(`Unknown action: "${action}". No changes made.`);
-            return;
+    if (operation === 'increase') {
+        money += amount;
+    } else if (operation === 'decrease') {
+        money -= amount;
+        recordMoneySpent(amount);
+    } else {
+        console.warn(`Unknown operation: "${operation}". No changes made.`);
+        return;
     }
-
 }
 
 
@@ -450,4 +448,15 @@ export function initGame() {
         console.log("All sounds loaded");
         soundManager.playMusic('background');
     });
+}
+
+export function startWave() {
+    if (currentWave > highestWave) {
+        highestWave = currentWave;
+        recordWaveReached(currentWave);
+    }
+}
+
+export function spawnBoss() {
+    recordBossStage();
 }

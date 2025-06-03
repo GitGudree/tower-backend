@@ -76,13 +76,14 @@ export class Tower {
         this.fireAnimationTime = 500;
         this.frameInterval = 100;
         
+        this.deathAnimationPlayed = false;
 
         this.animatorLive = new SpriteAnimator (sprites.default, 0, 50, 50, 3); 
         this.animatorDead = new SpriteAnimator (sprites.default, 50, 50, 50, 2, 200);
     }
     
     stopEnemyMovement(enemies) { 
-        if (this.stopEnemy <= 0){
+        if (this.stopEnemy <= 0 && !this.isDead){
             for (let enemy of enemies){
                 if (collision(this, enemy)) {
                     this.isColliding = true;
@@ -90,32 +91,39 @@ export class Tower {
                 }
             }
         } else if (this.stopEnemy > 0){
-            this.stopEnemy --
+            this.stopEnemy--;
         }
-            
     }
 
     updateTowerCollision(enemies, towerIndex) {
+        if (this.isDead) {
+            enemies.forEach(enemy => {
+                enemy.resumeMove();
+                enemy.isStopped = false;
+            });
+            return;
+        }
+
         if (this.iFrames <= 0) {
             for (let enemy of enemies) {
                 if (collision(this, enemy, "test")) {
                     enemy.stopMove();
                     enemy.attack(this);
-                        
+                    
                     if (this.health <= 0) {
                         this.isDead = true;
                         this.deathTimer = this.deathDuration;
                         this.isColliding = false;
                         soundManager.play('tower_destroy');
                         
-                        for (let enemy of enemies) {
-                            enemy.resumeMove();
-                        }
+                        enemies.forEach(e => {
+                            e.resumeMove();
+                            e.isStopped = false;
+                        });
                     }
                 }
                 this.iFrames += enemy.attackspeed;
             }
-               
         } else {
             this.iFrames--;
         }
@@ -124,9 +132,14 @@ export class Tower {
        
     update(deltaTime) {
         if (this.isDead) {
-            this.animatorDead.update(deltaTime)
-            if (this.deathTimer >= 0){
-                this.deathDuration -= deltaTime;
+            if (!this.deathAnimationPlayed) {
+                this.animatorDead.update(deltaTime);
+                if (this.animatorDead.currentFrame === this.animatorDead.totFrames - 1) {
+                    this.deathAnimationPlayed = true;
+                }
+            }
+            if (this.deathTimer > 0) {
+                this.deathTimer -= deltaTime;
             }
         } else {
             if (this.fireAnimation > 0) {
@@ -223,7 +236,9 @@ export class Tower {
                 let foundTarget = false;
                 
                 enemies.forEach(enemy => {
-                    if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                    if (Math.abs(enemy.y - this.y) < 10 && 
+                        enemy.x > this.x && 
+                        Math.abs(enemy.x - this.x) < this.range) {
                         this.animationExtend = this.animationExtend;
                         const bullet = new Bullet(this.x + 18, this.y - 4, this.bulletType, this.laneIndex);
                         bullet.bulletDamage = this.damage;
@@ -240,7 +255,6 @@ export class Tower {
                 } else if (!foundTarget) {
                     this.fireAnimation = 0;
                     this.animatorLive.reset();
-                    
                 }
                 
                 this.timer = this.fireRate;
@@ -250,7 +264,7 @@ export class Tower {
         }
 
     upgrade() {
-        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; // Costs for levels 2-6
+        const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         if (this.upgrades >= 5) {
             return false;
         }
@@ -260,10 +274,8 @@ export class Tower {
             return false;
         }
         
-        // Deduct money first
         updateMoney('decrease', cost);
         
-        // Then apply upgrades
         this.baseHealth += 50;
         this.maxHealth += 50;
         this.health += 50;

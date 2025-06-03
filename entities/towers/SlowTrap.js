@@ -5,6 +5,7 @@ import { collision } from "../../game/hitreg.js";
 import { soundManager } from "../../game/soundManager.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { recordTowerDamage } from "../../game/statistics.js";
 
 /**
  * Slow Trap tower class implementing enemy movement reduction functionality.
@@ -88,6 +89,7 @@ export class SlowTrap extends Tower {
                     });
 
                     this.health -= 25;  
+                    recordTowerDamage(25);
                     soundManager.play('slow_trap');
                     console.log("Slow trap activated!");
                 }

@@ -2,6 +2,7 @@ import { rows } from "./grid.js";
 import { enemies, getRandomEnemyType } from "../entities/enemies/enemy.js";
 import { createEnemy } from "../entities/enemies/enemyFactory.js";
 import { soundManager } from "./soundManager.js";
+import { recordBossStage, recordWaveReached } from "./statistics.js";
 
 let wave = 0;
 let isWaveStarted = false;
@@ -24,6 +25,12 @@ export async function spawnWave() {
     
     wave++;
     isWaveStarted = true;
+
+    
+    recordWaveReached(wave);
+    if (wave % 5 === 0) {
+        recordBossStage();
+    }
 
     soundManager.fadeOutMusic('background_music', 800, () => soundManager.playMusic('gameplay'));
 

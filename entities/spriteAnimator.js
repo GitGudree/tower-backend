@@ -18,18 +18,38 @@ export class SpriteAnimator {
 
         this.currentFrame = 0;
         this.frameTimer = 0;
+        this.lastUpdate = performance.now();
+        this.isAnimating = false;
+        
+        this.frameCache = new Map(); 
+        this.lastDrawnFrame = -1;
+        this.updateThreshold = 32; 
+        this.shouldUpdate = true;
     }
 
-    update (deltaTime) {
+    update(deltaTime) {
+        const now = performance.now();
+        
+        if (now - this.lastUpdate < 33) {
+            return;
+        }
+
         this.frameTimer += deltaTime;
-        if (this.frameTimer >= this.frameInterval){
-            this.currentFrame = (this.currentFrame + 1) % this.totFrames
-            this.frameTimer = 0;
+        if (this.frameTimer >= this.frameInterval) {
+            const framesToAdvance = Math.min(
+                Math.floor(this.frameTimer / this.frameInterval),
+                2 
+            );
+            this.currentFrame = (this.currentFrame + framesToAdvance) % this.totFrames;
+            this.frameTimer = this.frameTimer % this.frameInterval;
+            this.isAnimating = true;
+            this.lastUpdate = now;
         }
     }
 
     draw(ctx, x, y, width = this.frameWidth, height = this.frameHeight) {
         if (!this.image || !this.image.complete) { return; }
+
         ctx.drawImage(
             this.image,
             this.currentFrame * this.frameWidth, this.startY,
@@ -38,9 +58,16 @@ export class SpriteAnimator {
             width, height
         );
     }
+
     reset() {
         this.currentFrame = 0;
         this.frameTimer = 0;
+        this.isAnimating = false;
+        this.lastUpdate = performance.now();
     }
 
+    setUpdateFrequency(enabled, threshold = 32) {
+        this.shouldUpdate = enabled;
+        this.updateThreshold = threshold;
+    }
 }

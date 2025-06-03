@@ -28,8 +28,6 @@ export function createEnemy(row, wave, type) {
             break;
     }
 
-    console.log("Spawned enemy:", enemy); 
-
     return enemy;
 }
 

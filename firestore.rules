@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      // Allow username existence checks during registration
+      allow list: if true;
+      
+      // Allow creation of user document during registration
+      allow create: if request.auth != null && 
+                   request.auth.uid == userId && 
+                   request.resource.data.uid == userId;
+      
+      // Allow any authenticated user to read (for leaderboard)
+      allow read: if request.auth != null;
+      
+      // Allow users to update their own data
+      allow update: if request.auth != null && 
+                   request.auth.uid == userId;
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

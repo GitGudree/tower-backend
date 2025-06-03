@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .test-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: var(--ui-background);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2>Firebase Connection Test</h2>
+        <div id="test-results"></div>
+        <button id="testConnection">Test Firebase Connection</button>
+        <button id="testFirestore">Test Firestore</button>
+        <button id="testAuth">Test Authentication</button>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { registerUser, loginUser, logoutUser } from './auth-service.js';
+        import { 
+            collection, 
+            addDoc, 
+            deleteDoc,
+            getDocs 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        function addResult(message, success) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultElement = document.createElement('div');
+            resultElement.className = `test-result ${success ? 'success' : 'error'}`;
+            resultElement.textContent = message;
+            resultsDiv.prepend(resultElement);
+        }
+
+        async function testFirebaseConnection() {
+            try {
+                if (auth && db) {
+                    addResult('Firebase SDK loaded successfully!', true);
+                } else {
+                    addResult('Firebase initialization failed', false);
+                }
+            } catch (error) {
+                addResult(`Firebase connection error: ${error.message}`, false);
+            }
+        }
+
+        async function testFirestore() {
+            try {
+                const testRef = collection(db, 'test');
+                const snapshot = await getDocs(testRef);
+                addResult('Successfully read from Firestore!', true);
+
+                
+                const docRef = await addDoc(testRef, {
+                    test: true,
+                    timestamp: new Date().toISOString()
+                });
+                addResult('Successfully wrote to Firestore!', true);
+
+                
+                await deleteDoc(docRef);
+                addResult('Successfully cleaned up test document!', true);
+            } catch (error) {
+                console.error('Firestore test error:', error);
+                addResult(`Firestore test error: ${error.message}`, false);
+            }
+        }
+
+        async function testAuthentication() {
+            try {
+                const testEmail = `test${Date.now()}@test.com`;
+                const testPassword = 'Test123!';
+                const testUsername = `testuser${Date.now()}`;
+                
+                const registerResult = await registerUser(testEmail, testUsername, testPassword, 'US');
+                if (registerResult.success) {
+                    addResult('User registration successful!', true);
+                    
+                    const loginResult = await loginUser(testEmail, testPassword);
+                    if (loginResult.success) {
+                        addResult('User login successful!', true);
+                        
+                        const logoutResult = await logoutUser();
+                        if (logoutResult.success) {
+                            addResult('User logout successful!', true);
+                        }
+                    }
+                    
+                    await registerResult.user.delete();
+                    addResult('Test user cleanup successful!', true);
+                } else {
+                    addResult(`Registration failed: ${registerResult.error}`, false);
+                }
+            } catch (error) {
+                addResult(`Authentication test error: ${error.message}`, false);
+            }
+        }
+
+        
+        document.getElementById('testConnection').addEventListener('click', testFirebaseConnection);
+        document.getElementById('testFirestore').addEventListener('click', testFirestore);
+        document.getElementById('testAuth').addEventListener('click', testAuthentication);
+    </script>
+</body>
+</html> 

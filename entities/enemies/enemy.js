@@ -20,8 +20,8 @@ export class Enemy {
         this.x = canvas.width;
         this.y = row * cellSize;
         this.type = "normal";
-        this.health = 100 + (wave - 1) * 15;
-        this.speed = 0.8;
+        this.health = 120 + (wave - 1) * 20;
+        this.speed = 0.9;
         this.background = "red";
         this.laneIndex = row;
         this.width = cellSize;
@@ -29,9 +29,11 @@ export class Enemy {
         this.isStopped = false;
         this.laneIndex = row;
         
-        this.damage = 2;
-        this.attackspeed  = 15;
+        this.damage = 2 + Math.floor(wave / 5);
+        this.attackspeed = Math.max(8, 15 - Math.floor(wave / 8));
         this.lastHitSoundTime = 0;
+        this.isAttacking = false;
+        this.deathAnimationPlayed = false;
 
         this.setAnimations();
     }
@@ -45,11 +47,20 @@ export class Enemy {
     move(deltaTime) {
         if (!this.isStopped) {
             this.x -= this.speed;
-            this.animatorMove.update(deltaTime);
+            if (this.speed > 0) {
+                this.animatorMove.update(deltaTime);
+            }
         } else if (this.isStopped) {
-            this.animatorShoot.update(deltaTime);
+            if (this.isAttacking) {
+                this.animatorShoot.update(deltaTime);
+            }
         } else if (this.health <= 0) {
-            this.animatorDead.update(deltaTime);
+            if (!this.deathAnimationPlayed) {
+                this.animatorDead.update(deltaTime);
+                if (this.animatorDead.currentFrame === this.animatorDead.totFrames - 1) {
+                    this.deathAnimationPlayed = true;
+                }
+            }
         }
     }
 
@@ -86,7 +97,11 @@ export class Enemy {
     }
     
     attack(tower) {
+        this.isAttacking = true;
         tower.health -= this.damage;
+        setTimeout(() => {
+            this.isAttacking = false;
+        }, 100);
     }
 
     takeDamage(amount) {
@@ -106,20 +121,26 @@ export function setEnemies(enemiesArray) {
 }
 
 const enemyTypes = [
-    { type: "fast", weight: 0.3 },
-    { type: "tank", weight: 0.3 },
-    { type: "normal", weight: 0.4 }
+    { type: "fast", weight: 0.35, minWave: 3 },  // Fast enemies appear from wave 3
+    { type: "tank", weight: 0.35, minWave: 5 },  // Tank enemies appear from wave 5
+    { type: "normal", weight: 0.3, minWave: 1 }  // Normal enemies are always available
 ];
 
 export function getRandomEnemyType(wave) {
-    if (wave % 5 === 0) {
+    if (wave % 10 === 0) {  
         return "boss";
     }
     
-    let rand = Math.random();
+    const availableTypes = enemyTypes.filter(enemy => wave >= enemy.minWave);
+    
+    const totalWeight = availableTypes.reduce((sum, enemy) => sum + enemy.weight, 0);
+    
+    let rand = Math.random() * totalWeight;
     let sum = 0;
-    for (let enemy of enemyTypes) {
+    for (let enemy of availableTypes) {
         sum += enemy.weight;
         if (rand < sum) return enemy.type;
     }
+    
+    return "normal"; 
 }

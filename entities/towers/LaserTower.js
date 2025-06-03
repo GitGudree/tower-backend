@@ -29,10 +29,6 @@ export class LaserTower extends Tower {
         this.fireRate = this.baseFireRate;
         this.width = 5;
         this.height = 5;
-        this.health = 50; 
-        this.range = 1000;
-        this.damage = 0.5;
-        this.fireRate = 5;
         this.projectiles = [];
         this.bulletType = type;
         this.background = "purple";
@@ -42,45 +38,85 @@ export class LaserTower extends Tower {
         this.deathDuration = 50;
         this.deathTimer = this.deathDuration;
         this.isDead = false;
-
-        this.animatorLive = new SpriteAnimator (sprites.laser, 0, 50, 50, 10, 200); 
-        this.animatorDead = new SpriteAnimator (sprites.laser, 50, 50, 50, 2, 200);
-
+        this.deathAnimationPlayed = false;
+        this.isFiring = false;
         this.isLoopingSound = false;
         this.wasFiringLastTick = false;
+        this.bulletUpdateCounter = 0;
+
+        this.animatorLive = new SpriteAnimator(sprites.laser, 0, 50, 50, 4, 150); 
+        this.animatorDead = new SpriteAnimator(sprites.laser, 50, 50, 50, 2, 200);
+
+        this.animatorLive.setUpdateFrequency(true, 64);
+        this.animatorDead.setUpdateFrequency(true, 100);
     }
 
     update(deltaTime) {
-        super.update(deltaTime);
-        if (!this.isDead) {
+        if (this.isDead) {
+            if (!this.deathAnimationPlayed) {
+                this.animatorDead.update(deltaTime);
+                if (this.animatorDead.currentFrame === this.animatorDead.totFrames - 1) {
+                    this.deathAnimationPlayed = true;
+                }
+            }
+            if (this.deathTimer > 0) {
+                this.deathTimer -= deltaTime;
+            }
+            if (this.isLoopingSound) {
+                soundManager.stopLoop('laser');
+                this.isLoopingSound = false;
+            }
+            return;
+        }
+
+        if (this.isFiring) {
+            this.bulletUpdateCounter++;
             this.animatorLive.update(deltaTime);
         }
         
         if (this.health <= 0 && !this.isDead) {
             this.isDead = true;
+            this.deathAnimationPlayed = false;
+            this.deathTimer = this.deathDuration;
+            if (this.isLoopingSound) {
+                soundManager.stopLoop('laser');
+                this.isLoopingSound = false;
+            }
+            // Clear any collision state
+            this.isColliding = false;
+            // Make sure all nearby enemies can move again
+            const enemies = window.enemies || [];
+            enemies.forEach(enemy => {
+                if (collision(this, enemy, "test")) {
+                    enemy.resumeMove();
+                    enemy.isStopped = false;
+                }
+            });
         }
-            
     }
     
     attack(enemies, bullets) {
         if (this.isDead) return;
 
-        const target = enemies.find(enemy =>
-            Math.abs(enemy.y - this.y) < 10 &&
-            Math.abs(enemy.x - this.x) < this.range
-        );
+        const target = enemies.find(enemy => {
+            const yDiff = Math.abs(enemy.y - this.y);
+            if (yDiff >= 10 || enemy.x < this.x) return false;
+            return Math.abs(enemy.x - this.x) < this.range;
+        });
 
         if (target && !this.wasFiringLastTick) {
             soundManager.playLoop('laser');
             this.isLoopingSound = true;
+            this.isFiring = true;
             this.animatorLive.reset();
         } else if (!target && this.wasFiringLastTick) {
             soundManager.stopLoop('laser');
             this.isLoopingSound = false;
+            this.isFiring = false;
             this.animatorLive.reset();
         }
 
-        if (target) {
+        if (target && this.bulletUpdateCounter % 3 === 0) {
             const bullet = new LaserBullet(this.x + 16, this.y - 1, target.x, target.y, this);
             bullet.bulletDamage = this.damage;
             bullets.push(bullet);

@@ -53,7 +53,9 @@ export class RocketTower extends Tower {
             let foundTarget = false;
             
             for (let enemy of enemies) {
-                if (Math.abs(enemy.y - this.y) < 10 && Math.abs(enemy.x - this.x) < this.range) {
+                if (Math.abs(enemy.y - this.y) < 10 && 
+                    enemy.x > this.x && 
+                    Math.abs(enemy.x - this.x) < this.range) {
                     this.animationExtend = 5;
                     const bullet = new RocketBullet(this.x, this.y, enemy, this.laneIndex);
                     bullet.bulletDamage = this.damage;
@@ -70,7 +72,6 @@ export class RocketTower extends Tower {
             } else if (!foundTarget) {
                 this.fireAnimation = 0;
                 this.animatorLive.reset();
-                
             }
             
             this.timer = this.fireRate;
