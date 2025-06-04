@@ -44,9 +44,9 @@
     </div>
 
     <script type="module">
-        import { loginUser } from './auth-service.js';
         import { auth } from './firebase-config.js';
-        import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { sendPasswordResetEmail } from "firebase/auth";
+        import { loginUser } from './auth-service.js';
 
         const loginBtn = document.getElementById('loginBtn');
         const emailOrUsernameInput = document.getElementById('emailOrUsername');
