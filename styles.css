@@ -53,13 +53,16 @@ canvas {
     /* border: 2px solid black; */
     display: block;
     margin: 1rem auto auto;
-    background-color: #333333; 
+    background-color: #333333;
+    border-radius: 12px 12px 0 0;
 }
 
 .menu {
     text-align: center;
     background-color: var(--background-color);
     border: 1px solid var(--border-color);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
 }
 
 .tabs {
@@ -111,6 +114,7 @@ canvas {
     width: 900px;
     padding: 1rem;
     box-sizing: border-box;
+    border-radius: 0 0 12px 12px;
 }
 
 .tab.game-tab {

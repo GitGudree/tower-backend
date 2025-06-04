@@ -24,6 +24,16 @@ let refundRate = 0.5;
  */
 function updateInventory() {
     const inventorySlots = [];
+    const inventoryCards = document.getElementById('inventoryCards');
+
+    
+    if (inventory.length === 0) {
+        inventoryCards.style.display = 'none';
+        return;
+    }
+
+    
+    inventoryCards.style.display = 'grid';
 
     for (let item of inventory) {
         const itemSlot = document.createElement('div');
@@ -40,7 +50,6 @@ function updateInventory() {
         inventorySlots.push(itemSlot);
     }
 
-    const inventoryCards = document.getElementById('inventoryCards');
     inventoryCards.replaceChildren(...inventorySlots);
 }
 
