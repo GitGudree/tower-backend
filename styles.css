@@ -113,12 +113,7 @@ canvas {
     box-sizing: border-box;
 }
 
-.tab-content.grid-split {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: start;
-    gap: 1rem;
-}
+
 
 .game-content {
     display: flex;
@@ -250,13 +245,7 @@ canvas {
     font-weight: bold;
 }
 
-.tab.grid-split, 
-.grid-split {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: start;
-    gap: 1rem;
-}
+
 
 /* Make sure tabs keep their grid layout when open */
 .tab.grid-split.open {
@@ -1087,9 +1076,7 @@ div[style*="background: orange"],
     border-bottom: 1px solid var(--border-color);
 }
 
-.tab {
-    background-color: var(--ui-background);
-}
+
 
 .tower-unlock-price-title,
 .item-price {
