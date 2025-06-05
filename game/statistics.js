@@ -69,5 +69,5 @@ export function resetGameStats() {
     updateStatsDisplay();
 }
 
-// Export gameStats for the display module
+
 export { gameStats }; 

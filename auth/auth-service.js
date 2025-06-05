@@ -25,7 +25,7 @@ export const registerUser = async (email, username, password, nationality) => {
   try {
     console.log("Starting registration process...");
     
-    // First check if username already exists
+    
     const usersRef = collection(db, "users");
     const usernameQuery = query(usersRef, where("username", "==", username));
     const usernameSnapshot = await getDocs(usernameQuery);
@@ -37,16 +37,16 @@ export const registerUser = async (email, username, password, nationality) => {
 
     console.log("Username is available, creating auth user...");
 
-    // Create the user with email and password in Authentication
+    
     userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     console.log("Auth user created successfully:", user.uid);
 
-    // Get the ID token
+    
     const idToken = await user.getIdToken();
     console.log("Got ID token");
 
-    // Prepare user data for Firestore
+    
     const userData = {
       username: username,
       email: email,
@@ -65,7 +65,7 @@ export const registerUser = async (email, username, password, nationality) => {
 
     console.log("Attempting to create Firestore document...");
 
-    // Wait for auth state to be fully updated
+    
     await new Promise((resolve, reject) => {
       const unsubscribe = onAuthStateChanged(auth, 
         (user) => {
@@ -81,16 +81,16 @@ export const registerUser = async (email, username, password, nationality) => {
       );
     });
 
-    // Try to create the user document with retries
+    
     let retries = 3;
     let lastError = null;
 
     while (retries > 0) {
       try {
-        // Force token refresh before attempting to write
+        
         await user.getIdToken(true);
         
-        // Add user to Firestore using their auth UID as the document ID
+        
         await setDoc(doc(db, "users", user.uid), userData);
         console.log("User document created successfully in Firestore");
         return { success: true, user: user };
@@ -99,19 +99,19 @@ export const registerUser = async (email, username, password, nationality) => {
         lastError = error;
         retries--;
         if (retries > 0) {
-          // Wait before retrying
+          
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
     }
 
-    // If we get here, all retries failed
+    
     throw lastError;
 
   } catch (error) {
     console.error("Registration error:", error);
     
-    // Clean up auth user if it was created but Firestore failed
+    
     if (userCredential && userCredential.user) {
       try {
         await deleteUser(userCredential.user);
@@ -121,7 +121,7 @@ export const registerUser = async (email, username, password, nationality) => {
       }
     }
 
-    // Provide specific error messages
+    
     if (error.code === 'auth/email-already-in-use') {
       return { success: false, error: "This email is already registered" };
     } else if (error.code === 'auth/invalid-email') {

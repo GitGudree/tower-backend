@@ -11,8 +11,6 @@ function updateStatsDisplay() {
     document.getElementById('bossesReachedValue').textContent = gameStats.totalBossStagesReached.toLocaleString();
 }
 
-// Export the update function to be called from statistics.js
 export { updateStatsDisplay };
 
-// Start periodic updates
-setInterval(updateStatsDisplay, 1000); // Update every second 
+setInterval(updateStatsDisplay, 1000); 
