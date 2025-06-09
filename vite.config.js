@@ -17,12 +17,6 @@ export default defineConfig({
     target: 'esnext',
     commonjsOptions: {
       include: [/node_modules/]
-    },
-    rollupOptions: {
-      input: {
-        main: 'index.html',
-        login: 'auth/login.html'
-      }
     }
   }
 }) 
