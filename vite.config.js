@@ -18,12 +18,12 @@ export default defineConfig({
     target: 'esnext',
     commonjsOptions: {
       include: [/node_modules/]
-    }
-  },
-  rollupOptions: {
-    input: {
-      main: path.resolve(__dirname, 'index.html'),
-      login: path.resolve(__dirname, 'login.html'),
     },
-  },
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        login: path.resolve(__dirname, 'login.html'),
+      }
+    }
+  }
 });
