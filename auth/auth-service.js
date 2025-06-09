@@ -4,7 +4,7 @@ import {
   signOut,
   deleteUser,
   onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+} from "firebase/auth";
 import { 
   getFirestore, 
   collection, 
@@ -16,11 +16,8 @@ import {
   setDoc,
   getDoc,
   updateDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { auth } from "./firebase-config.js";
-
-// Initialize Firestore
-const db = getFirestore();
+} from "firebase/firestore";
+import { auth, db } from "./firebase-config.js";
 
 export const registerUser = async (email, username, password, nationality) => {
   let userCredential = null;

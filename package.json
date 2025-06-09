@@ -25,5 +25,8 @@
   "homepage": "https://github.com/Anarox1111/BOP3000-Tower-Defense#readme",
   "devDependencies": {
     "vite": "^6.3.3"
+  },
+  "dependencies": {
+    "firebase": "^11.8.1"
   }
 }

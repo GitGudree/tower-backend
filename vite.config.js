@@ -1,19 +1,22 @@
-export default {
+import { defineConfig } from 'vite'
+
+export default defineConfig({
   server: {
     port: 5173,
     open: true
   },
   resolve: {
     alias: {
-      '@': '/src',
-      'firebase/auth': '/node_modules/firebase/auth/dist/index.esm.js',
-      'firebase/app': '/node_modules/firebase/app/dist/index.esm.js'
+      '@': '/src'
     }
   },
   optimizeDeps: {
-    include: ['firebase/app', 'firebase/auth']
+    include: ['firebase/app', 'firebase/auth', 'firebase/firestore']
   },
   build: {
-    target: 'esnext'
+    target: 'esnext',
+    commonjsOptions: {
+      include: [/node_modules/]
+    }
   }
-} 
+}) 
