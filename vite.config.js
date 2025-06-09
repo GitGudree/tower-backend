@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import path from 'path'
 
 export default defineConfig({
   server: {
@@ -21,8 +22,8 @@ export default defineConfig({
   },
   rollupOptions: {
     input: {
-      main: 'index.html',
-      login: 'auth/login.html'
+      main: path.resolve(__dirname, 'index.html'),
+      login: path.resolve(__dirname, 'auth/login.html')
     }
   }
 }) 
