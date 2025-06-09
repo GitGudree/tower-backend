@@ -18,5 +18,11 @@ export default defineConfig({
     commonjsOptions: {
       include: [/node_modules/]
     }
+  },
+  rollupOptions: {
+    input: {
+      main: 'index.html',
+      login: 'auth/login.html'
+    }
   }
 }) 
