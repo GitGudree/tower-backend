@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - BOP3000 Tower Defense</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="auth-container">
@@ -43,10 +43,12 @@
         </div>
     </div>
 
+    <script type="module" src="/login.js"></script>
+
     <script type="module">
-        import { auth } from './firebase-config.js';
+        import { auth } from './auth/firebase-config.js';
         import { sendPasswordResetEmail } from "firebase/auth";
-        import { loginUser } from './auth-service.js';
+        import { loginUser } from './auth/auth-service.js';
 
         const loginBtn = document.getElementById('loginBtn');
         const emailOrUsernameInput = document.getElementById('emailOrUsername');
@@ -73,7 +75,7 @@
             try {
                 const result = await loginUser(emailOrUsername, password);
                 if (result.success) {
-                    window.location.href = '../index.html';
+                    window.location.href = './index.html';
                 } else {
                     authError.style.display = 'block';
                     authError.textContent = result.error;
@@ -141,5 +143,7 @@
             }
         });
     </script>
+
+
 </body>
 </html> 
