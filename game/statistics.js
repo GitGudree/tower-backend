@@ -1,5 +1,6 @@
 import { auth } from '../auth/firebase-config.js';
 import { updateUserStats } from '../auth/auth-service.js';
+import { updateStatsDisplay } from './statsDisplay.js';
 
 let gameStats = {
     totalTowerDamage: 0,
@@ -43,6 +44,10 @@ export function recordBossStage() {
 }
 
 async function updateGameStats() {
+    // Update the display
+    updateStatsDisplay();
+    
+    // Update the database
     if (auth.currentUser) {
         const result = await updateUserStats(auth.currentUser.uid, gameStats);
  
@@ -61,4 +66,8 @@ export function resetGameStats() {
         highestWaveReached: 0,
         totalBossStagesReached: 0
     };
-} 
+    updateStatsDisplay();
+}
+
+
+export { gameStats }; 
