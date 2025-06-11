@@ -206,24 +206,24 @@
     import { onAuthStateChanged } from 'firebase/auth';
     import { getUserData } from './auth/auth-service.js';
         
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = '/login.html';
-            } else {
-                const result = await getUserData(user.uid);
-                if (result.success) {
-                    const userData = result.data;
-                    const profileButton = document.getElementById('profileButton');
-                    const countryCode = userData.nationality.toLowerCase();
-                    profileButton.innerHTML = `
-                        <img src="https://flagcdn.com/w20/${countryCode}.png" 
-                             alt="${countryCode.toUpperCase()}" 
-                             style="vertical-align: middle; margin-right: 8px; border-radius: 3px;">
-                        ${userData.username}
-                    `;
-                }
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = '/login.html';
+        } else {
+            const result = await getUserData(user.uid);
+            if (result.success) {
+                const userData = result.data;
+                const profileButton = document.getElementById('profileButton');
+                const countryCode = userData.nationality.toLowerCase();
+                profileButton.innerHTML = `
+                    <img src="https://flagcdn.com/w20/${countryCode}.png" 
+                        alt="${countryCode.toUpperCase()}" 
+                        style="vertical-align: middle; margin-right: 8px; border-radius: 3px;">
+                    ${userData.username}
+                `;
             }
         }
+        
     });
 
 </script>
