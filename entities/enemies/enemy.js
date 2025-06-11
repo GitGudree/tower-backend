@@ -121,9 +121,9 @@ export function setEnemies(enemiesArray) {
 }
 
 const enemyTypes = [
-    { type: "fast", weight: 0.35, minWave: 3 },  // Fast enemies appear from wave 3
-    { type: "tank", weight: 0.35, minWave: 5 },  // Tank enemies appear from wave 5
-    { type: "normal", weight: 0.3, minWave: 1 }  // Normal enemies are always available
+    { type: "fast", weight: 0.35, minWave: 3 },
+    { type: "tank", weight: 0.35, minWave: 5 },
+    { type: "normal", weight: 0.3, minWave: 1 }
 ];
 
 export function getRandomEnemyType(wave) {
