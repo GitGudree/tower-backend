@@ -1,4 +1,4 @@
-﻿# BOP3000-Tower-Defense
+# BOP3000-Tower-Defense
 
 ## Overview
 
@@ -13,6 +13,8 @@ Game mechanics: Implementing enemy waves, tower placement, attack logic, and bul
 Performance optimization: Ensuring smooth rendering and gameplay within the HTML Canvas.
 
 Web-based interaction: Making the game accessible without requiring additional installations.
+
+User-base: An authentication system that has registrstion and login. Users will be able to track stats which are tied up to the player and shown on a leaderboard.
 
 Scalability: Designing a codebase that allows easy expansion of features.
 

@@ -13,6 +13,7 @@
     <script src="./entities/inventory.js" type="module"></script>
     <script src="./game/towerHandler.js" type="module"></script>
     <script src="./game/towerUnlockSystem.js" type="module"></script>
+    <script src="./game/statsDisplay.js" type="module"></script>
 
 </head>
 <body>
@@ -27,22 +28,42 @@
                 <span onclick="openTab(this)" data-tab="shop-tab">SHOP</span>
             </div>
             <div class="tab game-tab">
-                <div class="game-tab-container">
-                    <div class="game-controls">
-                        <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
-                        <button class="settings-btn">⚙️ Settings</button>
-                    </div>
-                    
-                    <div class="game-stats">
-                        <div class="auto-wave-control">
-                            <label for="autoWaveCheckbox">Auto Wave</label>
-                            <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                <div class="game-content">
+                    <div class="left-controls">
+                        <div class="top-controls">
+                            <button class="start-wave-btn" onclick="startWaveButton()">Start Wave</button>
+                            <div class="auto-wave-control">
+                                <label for="autoWaveCheckbox">Auto Wave</label>
+                                <input type="checkbox" id="autoWaveCheckbox" onclick="toggleAutoWave()" onload="toggleAutoWave()">
+                            </div>
                         </div>
-                        
-                        <p>Tower damage: <span id="towerDamageTotal">0</span></p>
+                        <button class="settings-btn"><span class="settings-icon">⚙️</span> Settings</button>
+                    </div>
+
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Damage:</span>
+                            <span id="totalDamageValue" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Enemies Killed:</span>
+                            <span id="enemiesKilledValue" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Money Spent:</span>
+                            <span id="moneySpentValue" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Wave Reached:</span>
+                            <span id="waveReachedValue" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Boss Stages:</span>
+                            <span id="bossesReachedValue" class="stat-value">0</span>
+                        </div>
                     </div>
                 </div>
-            
+
                 <!-- Settings popup menu -->
                 <div id="settingsPopup" class="popup hidden">
                     <div class="popup-content">
@@ -134,13 +155,14 @@
                     </div>
                 </div>
             </div>
-                <div class="tab inventory-tab grid-split">
-                    <div class="grid grid-split">
+            <div class="tab inventory-tab">
+                <div class="tab-content grid-split">
+                    <div class="grid">
                         <h2 class="tab-title grid-full-width">Inventory</h2>
-                        <div id=inventoryCards class="slots grid grid-full-width grid-split">
+                        <div id="inventoryCards" class="slots grid grid-full-width">
                         </div>
                     </div>
-                    <div class="grid grid-split">
+                    <div class="grid">
                         <h2 class="tab-title grid-full-width">Selected Item:</h2>
                         <div class="itemdesc grid grid-full-width">
                             <div class="desc">
@@ -153,18 +175,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab shop-tab grid-split">
-                    <div class="grid grid-split">
+            </div>
+            <div class="tab shop-tab">
+                <div class="tab-content grid-split">
+                    <div class="grid">
                         <h2 class="tab-title grid-full-width">Available Items</h2>
-                        <div class="shop-items grid grid-full-width grid-split">
+                        <div class="shop-items grid grid-full-width">
                             <!-- Dynamically generated item cards here -->
                         </div>
                     </div>              
-                    <div class="grid grid-split">
+                    <div class="grid">
                         <h2 class="tab-title grid-full-width">Item Details</h2>
                         <div class="itemdesc grid grid-full-width">
                             <div class="desc">
-                                <img id="item-image" src="images/item.png" alt="Item">
+                                <img id="item-image" src="" alt="Item">
                                 <h1 id="item-name">Select an item to purchase!</h1>
                                 <p id="item-description">Choose an item from the Available Items section.</p>
                                 <p id="price-display" class="hidden">Price: <span id="item-price"></span></p>
@@ -172,33 +196,35 @@
                             </div>
                         </div>
                     </div>               
-            </div>     
-        </main> 
-    </body>
-    <script type="module">
-        import { auth } from './auth/firebase-config.js';
-        import { onAuthStateChanged } from 'firebase/auth';
-        import { getUserData } from './auth/auth-service.js';
+                </div>
+            </div>
+        </div> 
+    </main> 
+</body>
+<script type="module">
+    import { auth } from './auth/firebase-config.js';
+    import { onAuthStateChanged } from 'firebase/auth';
+    import { getUserData } from './auth/auth-service.js';
 
-        
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = '/auth/login.html';
-            } else {
-                const result = await getUserData(user.uid);
-                if (result.success) {
-                    const userData = result.data;
-                    const profileButton = document.getElementById('profileButton');
-                    const countryCode = userData.nationality.toLowerCase();
-                    profileButton.innerHTML = `
-                        <img src="https://flagcdn.com/w20/${countryCode}.png" 
-                             alt="${countryCode.toUpperCase()}" 
-                             style="vertical-align: middle; margin-right: 8px; border-radius: 3px;">
-                        ${userData.username}
-                    `;
-                }
+    
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = '/auth/login.html';
+        } else {
+            const result = await getUserData(user.uid);
+            if (result.success) {
+                const userData = result.data;
+                const profileButton = document.getElementById('profileButton');
+                const countryCode = userData.nationality.toLowerCase();
+                profileButton.innerHTML = `
+                    <img src="https://flagcdn.com/w20/${countryCode}.png" 
+                         alt="${countryCode.toUpperCase()}" 
+                         style="vertical-align: middle; margin-right: 8px; border-radius: 3px;">
+                    ${userData.username}
+                `;
             }
-        });
+        }
+    });
 
-    </script>
+</script>
 </html>

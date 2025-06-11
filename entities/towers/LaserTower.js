@@ -82,9 +82,7 @@ export class LaserTower extends Tower {
                 soundManager.stopLoop('laser');
                 this.isLoopingSound = false;
             }
-            // Clear any collision state
             this.isColliding = false;
-            // Make sure all nearby enemies can move again
             const enemies = window.enemies || [];
             enemies.forEach(enemy => {
                 if (collision(this, enemy, "test")) {

@@ -2,7 +2,7 @@ import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "firebase/auth";
 import { logoutUser, getUserData } from './auth-service.js';
 
-// Cookie management functions
+
 const setCookie = (name, value, days = 7) => {
     const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
     document.cookie = `${name}=${value}; expires=${expires}; path=/`;
