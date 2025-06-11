@@ -424,7 +424,7 @@ canvas {
     filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
 }
 
-.display-card img[src="public/sprites/emptyicon.png"] {
+.display-card img[src="/sprites/emptyicon.png"] {
     display: none;
 }
 

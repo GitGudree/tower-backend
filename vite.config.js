@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import path from 'path'
+import path from 'path';
 
 export default defineConfig({
   server: {
@@ -18,12 +18,16 @@ export default defineConfig({
     target: 'esnext',
     commonjsOptions: {
       include: [/node_modules/]
-    }
-  },
-  rollupOptions: {
-    input: {
-      main: path.resolve(__dirname, 'index.html'),
-      login: path.resolve(__dirname, 'auth/login.html')
+    },
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        login: path.resolve(__dirname, 'login.html'),
+        register: path.resolve(__dirname, 'register.html'),
+        profile: path.resolve(__dirname, 'profile.html'),
+        testConnection: path.resolve(__dirname, 'test-connection.html'),
+        leaderboard: path.resolve(__dirname, 'leaderboard.html')
+      }
     }
   }
-}) 
+});

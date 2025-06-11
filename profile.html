@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - BOP3000 Tower Defense</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <a href="../index.html" class="back-button">← Back to Game</a>
-    <a href="../leaderboard/leaderboard.html" class="leaderboard-button">🏆 Leaderboard</a>
+    <a href="/index.html" class="back-button">← Back to Game</a>
+    <a href="/leaderboard.html" class="leaderboard-button">🏆 Leaderboard</a>
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-header">
@@ -64,8 +64,8 @@
         </div>
     </div>
     <script type="module">
-        import { auth } from './firebase-config.js';
-        import { getUserData, logoutUser } from './auth-service.js';
+        import { auth } from './auth/firebase-config.js';
+        import { getUserData, logoutUser } from './auth/auth-service.js';
         import { onAuthStateChanged } from 'firebase/auth';
 
         const countries = [

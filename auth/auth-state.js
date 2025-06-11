@@ -43,7 +43,7 @@ export const initAuthState = () => {
             deleteCookie('username');
             deleteCookie('nationality');
             if (!window.location.pathname.includes('login.html')) {
-                window.location.href = '/auth/login.html';
+                window.location.href = '/login.html';
             }
         }
     });
@@ -57,7 +57,7 @@ export const handleLogout = async () => {
             deleteCookie('userEmail');
             deleteCookie('username');
             deleteCookie('nationality');
-            window.location.href = '/auth/login.html';
+            window.location.href = '/login.html';
         } else {
             console.error('Logout failed:', result.error);
         }
@@ -97,7 +97,7 @@ const updateUserInterface = (userData) => {
     if (userInfoElement) {
         const countryCode = userData.nationality.toLowerCase();
         userInfoElement.innerHTML = `
-            <a href="/auth/profile.html" class="user-profile-link">
+            <a href="/profile.html" class="user-profile-link">
                 <img src="https://flagcdn.com/w20/${countryCode}.png" 
                      alt="${countryCode.toUpperCase()}" 
                      class="user-flag">
