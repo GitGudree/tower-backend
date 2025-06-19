@@ -13,28 +13,28 @@ let gameStats = {
 
 export function recordTowerDamage(damage) {
     gameStats.totalTowerDamage += damage;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordResourcesGathered(amount) {
     gameStats.totalResourcesGathered += amount;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordEnemyKilled() {
     gameStats.totalEnemiesKilled += 1;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordMoneySpent(amount) {
     gameStats.totalMoneySpent += amount;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordWaveReached(wave) {
     if (wave > gameStats.highestWaveReached) {
         gameStats.highestWaveReached = wave;
-        updateGameStats();
+        updateStatsDisplay();
     }
 }
 
@@ -69,5 +69,4 @@ export function resetGameStats() {
     updateStatsDisplay();
 }
 
-
-export { gameStats }; 
+export { gameStats, updateGameStats }; 
