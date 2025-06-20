@@ -1,6 +1,7 @@
 import { auth } from '../auth/firebase-config.js';
 import { updateUserStats } from '../auth/auth-service.js';
 import { updateStatsDisplay } from './statsDisplay.js';
+import { toastInfo } from './toast-message.js';
 
 let gameStats = {
     totalTowerDamage: 0,
@@ -40,6 +41,7 @@ export function recordWaveReached(wave) {
 
 export function recordBossStage() {
     gameStats.totalBossStagesReached += 1;
+    toastInfo("Saving stats to leaderboard");
     updateGameStats();
 }
 
@@ -50,6 +52,7 @@ async function updateGameStats() {
     // Update the database
     if (auth.currentUser) {
         const result = await updateUserStats(auth.currentUser.uid, gameStats);
+        console.log("Stats updated " + result);
  
         if (!result.success) {
             console.error("Failed to update stats:", result.error);

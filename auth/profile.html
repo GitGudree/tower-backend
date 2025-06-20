@@ -67,6 +67,7 @@
         import { auth } from './firebase-config.js';
         import { getUserData, logoutUser } from './auth-service.js';
         import { onAuthStateChanged } from 'firebase/auth';
+        import { updateGameStats } from '../game/statistics.js';
 
         const countries = [
             { code: 'af', name: 'Afghanistan' },
@@ -157,9 +158,12 @@
                     document.getElementById('profileUsername').textContent = userData.username;
                     document.getElementById('profileEmail').textContent = userData.email;
                     
-                    const countryCode = userData.nationality.toLowerCase();
+                    const countryCode = (userData.nationality || 'xx').toLowerCase();
                     document.getElementById('profileNationality').textContent = getCountryName(countryCode);
                     document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${countryCode}.png`;
+                    document.getElementById('profileFlag').onerror = function() {
+                        this.src = 'https://flagcdn.com/w40/xx.png';
+                    };
                     
                     const date = new Date(userData.dateCreated.seconds * 1000);
                     const formattedDate = date.toLocaleDateString('en-US', {
@@ -179,7 +183,6 @@
                     });
 
                     clearInterval(refreshInterval); 
-                    refreshInterval = setInterval(() => refreshUserData(user.uid), 30000);
                 }
             } else {
                 clearInterval(refreshInterval); 
@@ -187,9 +190,6 @@
             }
         });
 
-        window.addEventListener('unload', () => {
-            clearInterval(refreshInterval);
-        });
     </script>
 </body>
 </html> 
