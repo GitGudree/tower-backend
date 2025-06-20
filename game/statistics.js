@@ -48,7 +48,8 @@ export function recordBossStage() {
 async function updateGameStats() {
     // Update the display
     updateStatsDisplay();
-    
+    // Save to localStorage for cross-page persistence
+    localStorage.setItem('latestGameStats', JSON.stringify(gameStats));
     // Update the database
     if (auth.currentUser) {
         const result = await updateUserStats(auth.currentUser.uid, gameStats);
@@ -56,6 +57,18 @@ async function updateGameStats() {
  
         if (!result.success) {
             console.error("Failed to update stats:", result.error);
+        }
+    }
+}
+
+export function loadGameStatsFromStorage() {
+    const saved = localStorage.getItem('latestGameStats');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            Object.assign(gameStats, parsed);
+        } catch (e) {
+            console.error('Failed to parse saved game stats:', e);
         }
     }
 }
