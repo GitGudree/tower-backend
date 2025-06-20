@@ -68,7 +68,6 @@ const Settings = {
         }
 
         if (volumeSlider) {
-            this.volume = 1.0;
             volumeSlider.value = this.volume;
             soundManager.setVolume(this.volume);
             volumeSlider.addEventListener('input', (e) => {

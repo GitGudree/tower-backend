@@ -1,6 +1,7 @@
 import { auth } from '../auth/firebase-config.js';
 import { updateUserStats } from '../auth/auth-service.js';
 import { updateStatsDisplay } from './statsDisplay.js';
+import { toastInfo } from './toast-message.js';
 
 let gameStats = {
     totalTowerDamage: 0,
@@ -13,46 +14,61 @@ let gameStats = {
 
 export function recordTowerDamage(damage) {
     gameStats.totalTowerDamage += damage;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordResourcesGathered(amount) {
     gameStats.totalResourcesGathered += amount;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordEnemyKilled() {
     gameStats.totalEnemiesKilled += 1;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordMoneySpent(amount) {
     gameStats.totalMoneySpent += amount;
-    updateGameStats();
+    updateStatsDisplay();
 }
 
 export function recordWaveReached(wave) {
     if (wave > gameStats.highestWaveReached) {
         gameStats.highestWaveReached = wave;
-        updateGameStats();
+        updateStatsDisplay();
     }
 }
 
 export function recordBossStage() {
     gameStats.totalBossStagesReached += 1;
+    toastInfo("Saving stats to leaderboard");
     updateGameStats();
 }
 
 async function updateGameStats() {
     // Update the display
     updateStatsDisplay();
-    
+    // Save to localStorage for cross-page persistence
+    localStorage.setItem('latestGameStats', JSON.stringify(gameStats));
     // Update the database
     if (auth.currentUser) {
         const result = await updateUserStats(auth.currentUser.uid, gameStats);
+        console.log("Stats updated " + result);
  
         if (!result.success) {
             console.error("Failed to update stats:", result.error);
+        }
+    }
+}
+
+export function loadGameStatsFromStorage() {
+    const saved = localStorage.getItem('latestGameStats');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            Object.assign(gameStats, parsed);
+        } catch (e) {
+            console.error('Failed to parse saved game stats:', e);
         }
     }
 }
@@ -69,5 +85,4 @@ export function resetGameStats() {
     updateStatsDisplay();
 }
 
-
-export { gameStats }; 
+export { gameStats, updateGameStats }; 

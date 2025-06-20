@@ -67,6 +67,8 @@
         import { auth } from './firebase-config.js';
         import { getUserData, logoutUser } from './auth-service.js';
         import { onAuthStateChanged } from 'firebase/auth';
+        import { updateGameStats, gameStats, loadGameStatsFromStorage } from '../game/statistics.js';
+        import { updateUserStats } from './auth-service.js';
 
         const countries = [
             { code: 'af', name: 'Afghanistan' },
@@ -151,15 +153,24 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Load latest stats from localStorage and update Firestore if needed
+                loadGameStatsFromStorage();
+                await updateUserStats(user.uid, gameStats);
+                localStorage.removeItem('latestGameStats');
+
+                // Now fetch the latest stats from Firestore and display them
                 const result = await getUserData(user.uid);
                 if (result.success) {
                     const userData = result.data;
                     document.getElementById('profileUsername').textContent = userData.username;
                     document.getElementById('profileEmail').textContent = userData.email;
                     
-                    const countryCode = userData.nationality.toLowerCase();
+                    const countryCode = (userData.nationality || 'xx').toLowerCase();
                     document.getElementById('profileNationality').textContent = getCountryName(countryCode);
                     document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${countryCode}.png`;
+                    document.getElementById('profileFlag').onerror = function() {
+                        this.src = 'https://flagcdn.com/w40/xx.png';
+                    };
                     
                     const date = new Date(userData.dateCreated.seconds * 1000);
                     const formattedDate = date.toLocaleDateString('en-US', {
@@ -179,7 +190,6 @@
                     });
 
                     clearInterval(refreshInterval); 
-                    refreshInterval = setInterval(() => refreshUserData(user.uid), 30000);
                 }
             } else {
                 clearInterval(refreshInterval); 
@@ -188,7 +198,7 @@
         });
 
         window.addEventListener('unload', () => {
-            clearInterval(refreshInterval);
+            // clearInterval(refreshInterval); // No longer needed since interval is removed
         });
     </script>
 </body>
