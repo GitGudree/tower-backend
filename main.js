@@ -74,10 +74,6 @@ window.printCounters = e => {
         console.log(timer + ':', performanceTimers[timer]);
     }
 }
-<<<<<<< HEAD
-window.openTab = openTab;
-// setInterval(printCounters, 2e3);
-=======
 
 // setInterval(printCounters, 2e3);
 
@@ -93,4 +89,3 @@ window.addEventListener('beforeunload', (event) => {
         updateGameStats();
     }
 });
->>>>>>> upstream/master
