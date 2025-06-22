@@ -8,7 +8,8 @@ import { getWave, tryEndWave } from "./wave.js";
 import { GatlingTower } from "../entities/towers/GatlingTower.js";
 import { getTowerPrice } from "./towerUnlockSystem.js";
 import { soundManager } from './soundManager.js';
-import { recordResourcesGathered, recordEnemyKilled, recordMoneySpent, recordWaveReached, recordBossStage } from './statistics.js';
+import { recordResourcesGathered, recordEnemyKilled, recordMoneySpent, recordWaveReached, recordBossStage, updateGameStats } from './statistics.js';
+import { toastInfo } from './toast-message.js';
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -147,6 +148,8 @@ export function updateGameState(deltaTime) {
     
     if (resources <= 0) {
         gameOver = true;
+        toastInfo("Saving stats to leaderboard");
+        updateGameStats();
     }
 
     updateTowerStats(selectedTower);

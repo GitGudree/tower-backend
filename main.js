@@ -6,6 +6,8 @@ import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
 import { towers} from "./entities/towers/tower.js"
 import { soundManager } from "./game/soundManager.js";
+import { updateGameStats } from './game/statistics.js';
+import { initAuthState } from './auth/auth-state.js';
 
 /**
  * Main game loop and initialization              
@@ -13,6 +15,8 @@ import { soundManager } from "./game/soundManager.js";
  * @contributor: Randomfevva, Quetzalcoatl
  * Created:   11.02.2025
 **/
+
+initAuthState();
 
 initGame().then(() => {
     gameLoop();
@@ -70,5 +74,23 @@ window.printCounters = e => {
         console.log(timer + ':', performanceTimers[timer]);
     }
 }
+<<<<<<< HEAD
 window.openTab = openTab;
 // setInterval(printCounters, 2e3);
+=======
+
+// setInterval(printCounters, 2e3);
+
+/*
+ * Save game stats before the tab closes
+ * @author:    Anarox
+ * @contributor: Randomfevva
+ * Created:   19.06.2025
+*/
+window.addEventListener('beforeunload', (event) => {
+    // Attempt to write stats before the tab closes
+    if (typeof updateGameStats === 'function') {
+        updateGameStats();
+    }
+});
+>>>>>>> upstream/master
