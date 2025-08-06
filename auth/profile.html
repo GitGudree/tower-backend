@@ -197,8 +197,10 @@
             }
         });
 
+        // Saves the user's data to the database when the page is closed.
         window.addEventListener('unload', () => {
-            // clearInterval(refreshInterval); // No longer needed since interval is removed
+            refreshUserData(user.uid);
+            console.log('User data saved to database');
         });
     </script>
 </body>
