@@ -15,9 +15,9 @@ export const TOWER_DATA = {
         unlockPrice: 0
     },
     sniper: {
-        price: 130,
+        price: 230,
         unlocked: false,
-        unlockPrice: 150
+        unlockPrice: 350
     },
     gatling: {
         price: 100,
@@ -25,17 +25,17 @@ export const TOWER_DATA = {
         unlockPrice: 100
     },
     rocket: {
-        price: 180,
+        price: 200,
         unlocked: false,
         unlockPrice: 250
     },
     laser: {
-        price: 200,
+        price: 300,
         unlocked: false,
         unlockPrice: 400
     },
     artillery: {
-        price: 200,
+        price: 250,
         unlocked: false,
         unlockPrice: 500
     }

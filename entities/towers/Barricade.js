@@ -1,8 +1,11 @@
-import { Tower } from "./tower.js";
+import { Tower, towers } from "./tower.js";
 import { cellSize} from "../../game/grid.js";
 import { money, updateMoney } from "../../game/game.js";
 import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
+import { getTowerPrice } from "../../game/towerUnlockSystem.js";
+import { toastSuccess } from "../../game/toast-message.js";
+
 /**
  * Barricade tower class implementing defensive blocking functionality.
  * 
@@ -54,25 +57,6 @@ export class Barricade extends Tower {
     attack() {};
 
     draw(ctx) {
-        // Draw barricade base
-        /*
-        ctx.fillStyle = this.background;
-        ctx.fillRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4);
-
-        if (this.selected) {
-            ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(this.x + 2, this.y + 2, 50 - 4, 50 - 4)
-        } else {
-            ctx.fillStyle = this.textColor;
-        }
-        ctx.font = '20px Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
-
-        */
-
         this.drawSprite(ctx);
         this.drawSynergyEffects(ctx);
     }
@@ -83,9 +67,8 @@ export class Barricade extends Tower {
         } else{
             this.animatorLive.draw(ctx, this.x, this.y);
         }
-
-        
     }
+
     upgrade() {
         const UPGRADE_COSTS = [150, 300, 500, 750, 1000]; 
         if (this.upgrades >= 5 || money < UPGRADE_COSTS[this.upgrades]) return;
@@ -93,6 +76,39 @@ export class Barricade extends Tower {
         this.maxHealth += 50;
         this.health += 50;
         this.upgrades++;
+    }
+
+    /**
+     * Override the scrap method to implement barricade-specific sell logic
+     * @returns {boolean} Whether the scrap was successful
+     */
+    scrap() {
+        const basePrice = getTowerPrice(this.bulletType);
+        const healthPercentage = this.health / this.maxHealth;
+        
+        let refundAmount;
+        
+        if (healthPercentage >= 0.7) {
+            // 70% money back if health is 70% or higher
+            refundAmount = Math.ceil(basePrice * 0.7);
+        } else {
+            // Less money back if health is below 70%
+            refundAmount = Math.ceil(basePrice * 0.7 * healthPercentage);
+        }
+        
+        // Add 20% bonus for each upgrade level
+        const upgradeBonus = this.upgrades * 0.2;
+        refundAmount = Math.ceil(refundAmount * (1 + upgradeBonus));
+        
+        updateMoney("increase", refundAmount);
+        
+        const towerIndex = towers.findIndex(t => t === this);
+        if (towerIndex !== -1) {
+            towers.splice(towerIndex, 1);
+        }
+
+        toastSuccess(`Barricade scrapped for ${refundAmount}💶`);
+        return true;
     }
             
     /**

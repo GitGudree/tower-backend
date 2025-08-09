@@ -8,10 +8,21 @@
  */
 
 import { soundManager } from './soundManager.js';
+import { openTab } from './eventhandler.js';
 
 const Settings = {
     speedMultiplier: 1,
     volume: 1,
+    
+    // Default keybindings
+    keybindings: {
+        startWave: 'S',
+        autoWave: 'A',
+        gameTab: 'Q',
+        towerTab: 'W',
+        inventoryTab: 'E',
+        shopTab: 'R'
+    },
 
     /**
      * Initializes settings module.
@@ -22,6 +33,7 @@ const Settings = {
         this.loadSettings();
         this.setupUI();
         this.setupPopupControls();
+        this.setupKeybindings();
     },
 
     /**
@@ -33,9 +45,13 @@ const Settings = {
     loadSettings() {
         const savedSpeed = localStorage.getItem('gameSpeed');
         const savedVolume = localStorage.getItem('gameVolume');
+        const savedKeybindings = localStorage.getItem('gameKeybindings');
         
         if (savedSpeed) this.speedMultiplier = parseFloat(savedSpeed);
         if (savedVolume) this.volume = parseFloat(savedVolume);
+        if (savedKeybindings) {
+            this.keybindings = { ...this.keybindings, ...JSON.parse(savedKeybindings) };
+        }
     },
 
     /**
@@ -47,6 +63,7 @@ const Settings = {
     saveSettings() {
         localStorage.setItem('gameSpeed', this.speedMultiplier);
         localStorage.setItem('gameVolume', this.volume);
+        localStorage.setItem('gameKeybindings', JSON.stringify(this.keybindings));
     },
 
     /**
@@ -76,6 +93,41 @@ const Settings = {
                 this.saveSettings();
             });
         }
+
+        // Setup keybinding inputs
+        this.setupKeybindingInputs();
+    },
+
+    /**
+     * Sets up keybinding input fields in settings.
+     * 
+     * @method setupKeybindingInputs
+     * @private
+     */
+    setupKeybindingInputs() {
+        const keybindingInputs = {
+            'startWave': 'startWaveKey',
+            'autoWave': 'autoWaveKey', 
+            'gameTab': 'gameTabKey',
+            'towerTab': 'towerTabKey',
+            'inventoryTab': 'inventoryTabKey',
+            'shopTab': 'shopTabKey'
+        };
+
+        for (const [key, inputId] of Object.entries(keybindingInputs)) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = this.keybindings[key];
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                    if (value.length > 0) {
+                        this.keybindings[key] = value;
+                        this.saveSettings();
+                        e.target.value = value;
+                    }
+                });
+            }
+        }
     },
 
     /**
@@ -89,29 +141,120 @@ const Settings = {
         const settingsButton = document.querySelector(".settings-btn");
         const closeButton = document.querySelector("#settingsPopup button");
 
-        console.log("settingsPopup:", settingsPopup);
-        console.log("settingsButton:", settingsButton);
-        console.log("closeButton:", closeButton);
-
         if (settingsButton && settingsPopup) {
             settingsButton.addEventListener("click", () => {
-                console.log("Settings button clicked!");
                 settingsPopup.classList.remove('hidden');
             });
         }
 
         if (closeButton) {
             closeButton.addEventListener("click", () => {
-                console.log("Close button clicked!");
                 settingsPopup.classList.add('hidden');
             });
         }
 
-        settingsPopup.addEventListener("click", (e) => {
-            if (e.target === settingsPopup) {
-                settingsPopup.classList.add('hidden');
+        if (settingsPopup) {
+            settingsPopup.addEventListener("click", (e) => {
+                if (e.target === settingsPopup) {
+                    settingsPopup.classList.add('hidden');
+                }
+            });
+        }
+    },
+
+    /**
+     * Sets up global keybindings.
+     * 
+     * @method setupKeybindings
+     * @private
+     */
+    setupKeybindings() {
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toUpperCase();
+            
+            // Ignore if user is typing in an input field
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            switch (key) {
+                case this.keybindings.startWave:
+                    e.preventDefault();
+                    this.triggerStartWave();
+                    break;
+                case this.keybindings.autoWave:
+                    e.preventDefault();
+                    this.triggerAutoWave();
+                    break;
+                case this.keybindings.gameTab:
+                    e.preventDefault();
+                    this.switchToTab('game-tab');
+                    break;
+                case this.keybindings.towerTab:
+                    e.preventDefault();
+                    this.switchToTab('tower-tab');
+                    break;
+                case this.keybindings.inventoryTab:
+                    e.preventDefault();
+                    this.switchToTab('inventory-tab');
+                    break;
+                case this.keybindings.shopTab:
+                    e.preventDefault();
+                    this.switchToTab('shop-tab');
+                    break;
             }
         });
+    },
+
+    /**
+     * Triggers start wave action.
+     * 
+     * @method triggerStartWave
+     * @private
+     */
+    triggerStartWave() {
+        const startWaveBtn = document.querySelector('.start-wave-btn');
+        if (startWaveBtn && !startWaveBtn.disabled) {
+            startWaveBtn.click();
+        }
+    },
+
+    /**
+     * Triggers auto wave toggle.
+     * 
+     * @method triggerAutoWave
+     * @private
+     */
+    triggerAutoWave() {
+        const autoWaveCheckbox = document.getElementById('autoWaveCheckbox');
+        if (autoWaveCheckbox) {
+            autoWaveCheckbox.checked = !autoWaveCheckbox.checked;
+            autoWaveCheckbox.dispatchEvent(new Event('change'));
+        }
+    },
+
+    /**
+     * Switches to a specific tab.
+     * 
+     * @method switchToTab
+     * @param {string} tabName - The tab to switch to
+     * @private
+     */
+    switchToTab(tabName) {
+        const tabButton = document.querySelector(`[data-tab="${tabName}"]`);
+        if (tabButton) {
+            openTab(tabButton);
+        }
+    },
+
+    /**
+     * Gets the current keybindings.
+     * 
+     * @method getKeybindings
+     * @returns {Object} Current keybindings
+     */
+    getKeybindings() {
+        return { ...this.keybindings };
     }
 };
 

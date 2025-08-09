@@ -460,7 +460,6 @@ canvas {
 
 .tower-upgrade-btn,
 .start-wave-btn,
-.usebtn,
 .deletebtn,
 .unlock-btn {
     padding: 0.5rem 1rem;
@@ -603,15 +602,14 @@ canvas {
 }
 
 .popup-content {
-    background: var(--ui-background);
+    background-color: var(--ui-background);
     padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
     border: 1px solid var(--border-color);
-    color: var(--text-color);
-    width: 300px;
-    transform: translateY(0);
-    animation: popupSlideIn 0.3s ease-out;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 @keyframes popupSlideIn {
@@ -670,6 +668,53 @@ canvas {
 .popup-content label {
     display: block;
     margin-bottom: 5px;
+}
+
+.keybindings-section {
+    margin: 1rem 0;
+}
+
+.keybinding-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.keybinding-row:last-child {
+    border-bottom: none;
+}
+
+.keybinding-row label {
+    font-weight: bold;
+    color: var(--text-color);
+    flex: 1;
+}
+
+.keybinding-row input {
+    background-color: var(--ui-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 0.5rem;
+    border-radius: 4px;
+    width: 60px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.keybinding-row input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(80, 80, 80, 0.5);
+}
+
+.keybinding-row input::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
 }
 
 
@@ -847,7 +892,6 @@ canvas {
 }
 
 .buybtn,
-.usebtn,
 .deletebtn {
     background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
     color: var(--text-color);
@@ -860,7 +904,6 @@ canvas {
     box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
 }
 
-.usebtn:hover,
 .deletebtn:hover,
 .buybtn:hover {
     transform: translateY(-2px);
@@ -1002,7 +1045,6 @@ canvas {
     border: 1px solid var(--border-color);
   }
   
-.usebtn,
 .deletebtn {
     font-weight: bold;
     border: none;
@@ -1016,15 +1058,7 @@ canvas {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.usebtn {
-    background-color: #28a745;
-    color: white;
-}
 
-.usebtn:hover {
-    background-color: #45c164;
-    transform: scale(1.05);
-}
 
 .deletebtn {
     background-color: #dc3545;
@@ -1118,7 +1152,7 @@ div[style*="background: orange"],
     margin-right: -2px;
 }
 
-.buybtn, .usebtn {
+.buybtn {
     background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
     color: var(--text-color);
     border: 1px solid var(--border-color);
@@ -1129,7 +1163,7 @@ div[style*="background: orange"],
     box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
 }
 
-.buybtn:hover, .usebtn:hover {
+.buybtn:hover {
     background: linear-gradient(145deg, #4a4a4a, #3d3d3d);
     transform: translateY(-2px);
     box-shadow: 4px 4px 15px rgba(0,0,0,0.4);

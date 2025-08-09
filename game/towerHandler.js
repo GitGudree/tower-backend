@@ -1,8 +1,9 @@
 import { toastSuccess, toastError, toastWarning, toastInfo, TOAST_MESSAGES } from "./toast-message.js";
-import { money, updateMoney } from "./game.js";
+import { money, updateMoney, updateTowerStats } from "./game.js";
 import { isTowerUnlocked, unlockTower, TOWER_DATA } from "./towerUnlockSystem.js";
 import { setChosenTower } from "../entities/towers/towerState.js";
 import { towers } from "../entities/towers/tower.js";
+import { openTab } from "./eventhandler.js";
 
 /**
  * Tower Handler module implementing tower management functionality.
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const towerType = event.detail?.towerType;
         if (towerType) {
             const towerName = TOWER_NAMES[towerType.toLowerCase()] || 'Unknown tower';
+            openTab(document.querySelector('[data-tab="tower-tab"]'));
             toastSuccess(`${towerName} placed`);
         }
     });
@@ -112,13 +114,13 @@ function updateTowerInfo(towerType) {
             towerTitle.textContent = TOWER_NAMES.basic;
             towerDescription.textContent = 'A reliable tower with balanced stats.';
             break;
-        case 'sniper':
-            towerTitle.textContent = TOWER_NAMES.sniper;
-            towerDescription.textContent = 'Long range tower with high single-target damage.';
-            break;
         case 'gatling':
             towerTitle.textContent = TOWER_NAMES.gatling;
             towerDescription.textContent = 'Rapid-fire tower with high attack speed.';
+            break;
+        case 'sniper':
+            towerTitle.textContent = TOWER_NAMES.sniper;
+            towerDescription.textContent = 'Long range tower with high single-target damage.';
             break;
         case 'laser':
             towerTitle.textContent = TOWER_NAMES.laser;

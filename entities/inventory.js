@@ -1,7 +1,8 @@
 import { money, updateMoney } from "../game/game.js";
 import { toastSuccess, toastError, toastWarning, TOAST_MESSAGES } from "../game/toast-message.js";
 import { items } from "./items.js";
-import { setChosenTower } from "./towers/towerState.js"; // Import setChosenTower
+import { setChosenTower, getChosenTower } from "./towers/towerState.js"; // Import setChosenTower and getChosenTower
+import { openTab } from "../game/eventhandler.js";
 
 /**
  * Inventory module implementing item management functionality.
@@ -39,9 +40,16 @@ function updateInventory() {
         const itemSlot = document.createElement('div');
         itemSlot.classList.add('slot');
         itemSlot.setAttribute('data-item-name', item.name);
+        
+        // Show quantity for stackable items
+        const quantityText = item.quantity && item.quantity > 1 ? ` (${item.quantity})` : '';
+        
+        // Use key symbol for keys
+        const displayName = item.name === 'Key' ? '🔑 Key' : item.name;
+        
         itemSlot.innerHTML = `
             <img src="${item.image}" alt="${item.name}"/>
-            <h3>${item.name}</h3>
+            <h3>${displayName}${quantityText}</h3>
         `;
         if (selectedItem && selectedItem.name === item.name) {
             itemSlot.classList.add('select');
@@ -54,6 +62,19 @@ function updateInventory() {
 }
 
 function selectItem(item) {
+    // If clicking on the same item that's already selected, deselect it
+    if (selectedItem && selectedItem.name === item.name) {
+        selectedItem = null;
+        clearSelectedDisplay();
+        // Automatically select the currently chosen tower when deselecting an item
+        const currentTower = getChosenTower();
+        if (currentTower && currentTower !== "basic") {
+            setChosenTower(currentTower);
+        }
+        return;
+    }
+
+    // Select the new item
     document.querySelectorAll('.slot').forEach(slot => {
         slot.classList.remove('select');
     });
@@ -65,8 +86,24 @@ function selectItem(item) {
 
     selectedItem = item;
     document.getElementById("selected-item-image").src = item.image;
-    document.getElementById("selected-item-name").textContent = item.name;
+    
+    // Use key symbol for keys
+    const displayName = item.name === 'Key' ? '🔑 Key' : item.name;
+    document.getElementById("selected-item-name").textContent = displayName;
     document.getElementById("selected-item-description").textContent = item.description;
+
+    // If this is a placeable item (tower), set it as the chosen tower
+    const itemToTowerType = {
+        'Barricade': 'barricade',
+        'Mine': 'mine',
+        'Slow Trap': 'slowtrap'
+    };
+
+    const towerType = itemToTowerType[item.name];
+    if (towerType) {
+        setChosenTower(towerType);
+        console.log("Ready to place:", towerType);
+    }
 }
 
 /**
@@ -76,9 +113,26 @@ function selectItem(item) {
  * @param {Object} item - Item to add to inventory
  */
 function addInventoryItem(item) {
+    // Check if item is stackable (like keys)
+    if (item.name === 'Key') {
+        const existingKey = inventory.find(invItem => invItem.name === 'Key');
+        if (existingKey) {
+            // Stack the key
+            existingKey.quantity = (existingKey.quantity || 1) + 1;
+            updateInventory();
+            return true;
+        }
+    }
+    
+    // For non-stackable items, check inventory space
     if (inventory.length >= 9) {
         toastError(TOAST_MESSAGES.SHOP.INVENTORY_FULL);
         return false;
+    }
+    
+    // Add quantity property for stackable items
+    if (item.name === 'Key') {
+        item.quantity = 1;
     }
     
     inventory.push(item);
@@ -92,17 +146,9 @@ function useItem(gameState) {
         return;
     }
 
-    const itemToTowerType = {
-        'Barricade': 'barricade',
-        'Mine': 'mine',
-        'Slow Trap': 'slowtrap'
-    };
-
-    const towerType = itemToTowerType[selectedItem.name];
-    if (towerType) {
-        setChosenTower(towerType);
-        console.log("Ready to place:", towerType);
-    } else if (typeof selectedItem.effect === "function") {
+    // For placeable items (towers), they are already set as chosen tower when selected
+    // For consumable items, apply their effect
+    if (typeof selectedItem.effect === "function") {
         selectedItem.effect(gameState);
         const index = inventory.indexOf(selectedItem);
         if (index !== -1 && !selectedItem.reusable) {
@@ -119,11 +165,61 @@ function removeSelectedItem() {
     if (!selectedItem) return;
     
     const index = inventory.indexOf(selectedItem);
-    if (index !== -1 && !selectedItem.reusable) {
-        inventory.splice(index, 1);
-        updateInventory();
-        clearSelectedDisplay();
-        toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
+    if (index !== -1) {
+        const itemName = selectedItem.name;
+        
+        // Handle stackable items
+        if (selectedItem.quantity && selectedItem.quantity > 1) {
+            selectedItem.quantity--;
+            updateInventory();
+            toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
+            // Keep the same item selected since it still has quantity
+            return;
+        } else {
+            inventory.splice(index, 1);
+            
+            // Check if we're in inventory tab for auto-selection
+            const inventoryTab = document.querySelector('.tabs .selected[data-tab="inventory-tab"]');
+            const isInInventoryTab = inventoryTab !== null;
+            
+            if (isInInventoryTab) {
+                // Auto-select next item of the same type
+                const nextSameTypeItem = inventory.find(item => item.name === itemName);
+                if (nextSameTypeItem) {
+                    selectedItem = nextSameTypeItem;
+                    updateInventory();
+                    // Update the selection display
+                    const displayName = selectedItem.name === 'Key' ? '🔑 Key' : selectedItem.name;
+                    document.getElementById("selected-item-image").src = selectedItem.image;
+                    document.getElementById("selected-item-name").textContent = displayName;
+                    document.getElementById("selected-item-description").textContent = selectedItem.description;
+                    
+                    // Set as chosen tower if it's a placeable item
+                    const itemToTowerType = {
+                        'Mine': 'mine',
+                        'Barricade': 'barricade',
+                        'Slow Trap': 'slowtrap'
+                    };
+                    const towerType = itemToTowerType[selectedItem.name];
+                    if (towerType) {
+                        setChosenTower(towerType);
+                    }
+                    
+                    toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
+                    return;
+                } else {
+                    // No more items of the same type, redirect to tower tab
+                    const towerTab = document.querySelector('.tabs [data-tab="tower-tab"]');
+                    if (towerTab) {
+                        openTab(towerTab);
+                    }
+                }
+            }
+            
+            updateInventory();
+            clearSelectedDisplay();
+            toastSuccess(TOAST_MESSAGES.INVENTORY.ITEM_USED);
+        }
     }
     selectedItem = null;
 }
@@ -155,9 +251,8 @@ function clearSelectedDisplay() {
     });
 }
 
-export { addInventoryItem, useItem, deleteButton, inventory, removeSelectedItem };
+export { addInventoryItem, useItem, deleteButton, inventory, removeSelectedItem, selectedItem };
 
-window.useItem = useItem;
 window.deleteButton = deleteButton;
 
 document.addEventListener('DOMContentLoaded', updateInventory);

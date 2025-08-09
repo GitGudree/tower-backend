@@ -24,10 +24,6 @@ class Item {
         this.description = description;
         this.image = image;
     }
-
-    attack(target) {
-        console.log(`${this.name} attacks ${target}!`);
-    }
 }
 
 /**
@@ -36,7 +32,7 @@ class Item {
  */
 class MineInfo extends Item {
     constructor() {
-        super("Mine", 150, "Explodes when enemies step on it, dealing high damage.", "/sprites/landmine.png");
+        super("Mine", 180, "Explodes when enemies step on it, dealing high damage.", "/sprites/landmine.png");
     }
 }
 
@@ -46,7 +42,7 @@ class MineInfo extends Item {
  */
 class SlowTrapInfo extends Item {
     constructor() {
-        super("Slow Trap", 120, "Slows down enemies that step on it for a short duration.", "/sprites/slowtrap.png");
+        super("Slow Trap", 160, "Slows down enemies that step on it for a short duration.", "/sprites/slowtrap.png");
     }
 }
 
@@ -56,14 +52,26 @@ class SlowTrapInfo extends Item {
  */
 class BarricadeInfo extends Item {
     constructor() {
-        super("Barricade", 100, "Blocks enemy movement but does no damage.", "/sprites/barricade.png");
+        super("Barricade", 150, "Blocks enemy movement but does no damage.", "/sprites/barricade.png");
+    }
+}
+
+/**
+ * Key item class for unlocking special content.
+ * @extends Item
+ */
+class KeyInfo extends Item {
+    constructor() {
+        super("Key", 1000, "A mysterious key for upcoming purposes.", "/sprites/emptyicon.png");
+        this.resourceCost = 2500; // Additional resource cost
     }
 }
 
 const items = {
     barricade: new BarricadeInfo(),
     mine: new MineInfo(),
-    slowTrap: new SlowTrapInfo()
+    slowTrap: new SlowTrapInfo(),
+    key: new KeyInfo()
 };
 
 export { items };
