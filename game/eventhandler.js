@@ -2,10 +2,11 @@ import { Tower, towers } from "../entities/towers/tower.js";
 import { createTower } from "../entities/towers/towerFactory.js";
 import { canvas, money, updateMoney, updateResources, updateTowerStats } from "./game.js";
 import { cellSize } from "./grid.js";
-import { getChosenTower, setChosenTower } from "../entities/towers/towerState.js";
+import { getChosenTower, setChosenTower, getLastSelectedTower, setLastSelectedTower } from "../entities/towers/towerState.js";
 import { getTowerPrice, isTowerUnlocked } from "./towerUnlockSystem.js";
 import { toastError } from "./toast-message.js";
-import { removeSelectedItem } from "../entities/inventory.js";
+import { removeSelectedItem, inventory, selectedItem } from "../entities/inventory.js";
+
 
 /**
  * Mouse position tracking object.
@@ -19,22 +20,27 @@ export const mouse = {
 }
 
 /**
- * Handles click events on the game canvas.
+ * Handles canvas click events for tower placement and selection.
  * 
  * @function handleCanvasClick
- * @description Processes tower placement and selection on canvas click
+ * @description Handles tower placement, selection, and tab switching logic
  * @author Anarox
- * @contributor Randomfevva, Quetzalcoatl
- * @date 2025-01-23
+ * @date 2025-02-27
  */
 export function handleCanvasClick() {
-    
     const gridMousePosX = mouse.x - (mouse.x % cellSize);
     const gridMousePosY = mouse.y - (mouse.y % cellSize);
 
     if (gridMousePosY < cellSize) {
         return;
     }
+
+    // Check if we're in tower tab or inventory tab
+    const towerTab = document.querySelector('.tabs [data-tab="tower-tab"]');
+    const isInTowerTab = towerTab.classList.contains('selected');
+    
+    const inventoryTab = document.querySelector('.tabs [data-tab="inventory-tab"]');
+    const isInInventoryTab = inventoryTab.classList.contains('selected');
 
     if (towers) {
         const selectedTower = towers.find(tower => tower.selected);
@@ -44,14 +50,42 @@ export function handleCanvasClick() {
         }
     }
 
+    // Check for existing tower selection first
     for (let tower of towers) {
         if (tower.x === gridMousePosX && tower.y === gridMousePosY) {
             tower.selected = true;
             tower.checkSynergies(towers, true);
             updateTowerStats(tower);
+            // Switch to tower tab when selecting a tower
+            if (!isInTowerTab) {
+                openTab(towerTab);
+            }
             return;
         }
     }
+
+    // If clicking on empty grid and not in tower or inventory tab, redirect to tower tab
+    if (!isInTowerTab && !isInInventoryTab) {
+        openTab(towerTab);
+        // Restore the last selected tower
+        const lastTower = getLastSelectedTower();
+        if (lastTower) {
+            setChosenTower(lastTower);
+        }
+        return;
+    }
+
+    // If in inventory tab but no item is selected, redirect to tower tab
+    if (isInInventoryTab && !selectedItem) {
+        openTab(towerTab);
+        // Restore the last selected tower
+        const lastTower = getLastSelectedTower();
+        if (lastTower) {
+            setChosenTower(lastTower);
+        }
+        return;
+    }
+    
 
     const type = getChosenTower();
     if (type) {
@@ -74,7 +108,12 @@ export function handleCanvasClick() {
                 tower.selected = true;
                 
                 if (isInventoryItem) {
+                    // If placing from inventory, stay in inventory tab and auto-select next item
                     removeSelectedItem();
+                    // Stay in inventory tab after placing
+                    if (isInInventoryTab) {
+                        openTab(inventoryTab);
+                    }
                 } else {
                     updateMoney("decrease", towerPrice);
                 }
@@ -128,13 +167,22 @@ export function gridRectColission(first, second) {
     if (    !(  first.x > second.x + second.width ||
                 first.x + first.width < second.x ||
                 first.y > second.y + second.height ||
-                first.y + first.height < second.y )
-    ) {
+                first.y + first.height < second.y)) {
         return true;
     }
+    return false;
 }
 
-function openTab(btn) {
+/**
+ * Opens a tab and closes others.
+ * 
+ * @function openTab
+ * @param {HTMLElement} btn - The tab button element
+ * @description Handles tab switching and updates the last selected tower
+ * @author Anarox
+ * @date 2025-02-27
+ */
+export function openTab(btn) {
     document.querySelectorAll('.tabs>.selected').forEach(tab => {
         tab.classList.remove('selected');
     });
@@ -146,6 +194,14 @@ function openTab(btn) {
 
     const tabName = btn.getAttribute('data-tab');
     document.querySelector(`.tab.${tabName}`).classList.add('open');
+
+    // Store the last selected tower when switching to tower tab
+    if (tabName === 'tower-tab') {
+        const currentTower = getChosenTower();
+        if (currentTower) {
+            setLastSelectedTower(currentTower);
+        }
+    }
 }
 
 window.upgradeTower = () => {
@@ -186,6 +242,7 @@ document.querySelectorAll('[tower-type]').forEach(button => {
     });
 });
 
+// Make openTab available globally
 window.openTab = openTab;
 
 

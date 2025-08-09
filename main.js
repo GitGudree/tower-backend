@@ -1,6 +1,6 @@
 import { gameGrid, createGrid, handleGameGrid } from "./game/grid.js";
 import { drawGame, projectileHandler, updateGameState, initGame } from "./game/game.js";
-import { handleCanvasClick, mouseLeave, mouseMove } from "./game/eventhandler.js";
+import { handleCanvasClick, mouseLeave, mouseMove, openTab } from "./game/eventhandler.js";
 import { canvas, gameOver } from "./game/game.js";
 import { projectiles } from "./entities/projectiles/projectiles.js";
 import { enemies } from "./entities/enemies/enemy.js";
@@ -8,6 +8,7 @@ import { towers} from "./entities/towers/tower.js"
 import { soundManager } from "./game/soundManager.js";
 import { updateGameStats } from './game/statistics.js';
 import { initAuthState } from './auth/auth-state.js';
+import Settings from './game/settings.js';
 
 /**
  * Main game loop and initialization              
@@ -17,6 +18,9 @@ import { initAuthState } from './auth/auth-state.js';
 **/
 
 initAuthState();
+
+// Make openTab available globally
+window.openTab = openTab;
 
 initGame().then(() => {
     gameLoop();

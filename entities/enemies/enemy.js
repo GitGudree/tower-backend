@@ -4,7 +4,6 @@ import { sprites } from "../spriteLoader.js";
 import { SpriteAnimator } from "../spriteAnimator.js";
 import { soundManager } from "../../game/soundManager.js";
 
-
 /**
  * Base Enemy class implementing core enemy functionality.
  * 
@@ -22,11 +21,10 @@ export class Enemy {
         this.type = "normal";
         this.health = 120 + (wave - 1) * 20;
         this.speed = 0.9;
-        this.background = "red";
-        this.laneIndex = row;
         this.width = cellSize;
         this.height = cellSize;
         this.isStopped = false;
+        this.isSlowed = false;
         this.laneIndex = row;
         
         this.damage = 2 + Math.floor(wave / 5);
@@ -39,28 +37,33 @@ export class Enemy {
     }
 
     setAnimations(){
-        this.animatorMove = new SpriteAnimator (sprites.enemy, 0, 50, 50, 4); 
-        this.animatorShoot = new SpriteAnimator (sprites.enemy, 50, 50, 50, 2);
-        this.animatorDead = new SpriteAnimator (sprites.enemy, 100, 50, 50, 1, 300);
+        this.animatorMove = new SpriteAnimator(sprites.enemy, 0, 50, 50, 4); 
+        this.animatorShoot = new SpriteAnimator(sprites.enemy, 50, 50, 50, 2);
+        this.animatorDead = new SpriteAnimator(sprites.enemy, 100, 50, 50, 1, 300);
     }
 
     move(deltaTime) {
-        if (!this.isStopped) {
-            this.x -= this.speed;
-            if (this.speed > 0) {
-                this.animatorMove.update(deltaTime);
-            }
-        } else if (this.isStopped) {
-            if (this.isAttacking) {
-                this.animatorShoot.update(deltaTime);
-            }
-        } else if (this.health <= 0) {
+        if (this.health <= 0) {
+            // Handle death animation
             if (!this.deathAnimationPlayed) {
                 this.animatorDead.update(deltaTime);
                 if (this.animatorDead.currentFrame === this.animatorDead.totFrames - 1) {
                     this.deathAnimationPlayed = true;
                 }
             }
+            return;
+        }
+
+        if (!this.isStopped) {
+            // Moving
+            this.x -= this.speed;
+            this.animatorMove.update(deltaTime);
+        } else {
+            // Stopped - handle attacking or slowed animations
+            if (this.isAttacking) {
+                this.animatorShoot.update(deltaTime);
+            }
+            // Note: animatorSlow was commented out, so removed this condition
         }
     }
 
@@ -74,26 +77,17 @@ export class Enemy {
     }
 
     draw(ctx) {
-        /*
-        ctx.fillStyle = this.background;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = "black";
-        ctx.font = '20px Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText(Math.floor(this.health), this.x + cellSize / 2, this.y + cellSize / 2);
-        */
-       this.drawSprite(ctx);
+        this.drawSprite(ctx);
     }
 
     drawSprite(ctx){
-        if (!this.health <= 0 && !this.isStopped){
-            this.animatorMove.draw(ctx, this.x, this.y);
-        } else if (!this.health <= 0 && this.isStopped){
-            this.animatorShoot.draw(ctx, this.x, this.y);
-        }else {
+        if (this.health <= 0) {
             this.animatorDead.draw(ctx, this.x, this.y);
+        } else if (this.isStopped && this.isAttacking) {
+            this.animatorShoot.draw(ctx, this.x, this.y);
+        } else {
+            this.animatorMove.draw(ctx, this.x, this.y);
         }
-
     }
     
     attack(tower) {
@@ -107,7 +101,7 @@ export class Enemy {
     takeDamage(amount) {
         this.health -= amount;
         const now = Date.now();
-        if (!this.lastHitSoundTime || now - this.lastHitSoundTime > 1000) { // 1000ms = 1 second
+        if (!this.lastHitSoundTime || now - this.lastHitSoundTime > 1000) {
             soundManager.play('enemy_hit');
             this.lastHitSoundTime = now;
         }

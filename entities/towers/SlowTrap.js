@@ -25,8 +25,8 @@ export class SlowTrap extends Tower {
         this.name = "SlowTrap";
         this.x = x;
         this.y = y;
-        this.slowFactor = 0.5; 
-        this.slowDuration = 3000; 
+        this.slowFactor = 0.5; // Changed from 1 to 0.5 (50% slower)
+        this.slowDuration = 5000; // Changed from 2000 to 5000 (5 seconds)
         this.background = '#4682B4'; 
         this.textColor = 'white';
         this.selected = false;
@@ -50,7 +50,7 @@ export class SlowTrap extends Tower {
 
     update(deltaTime) {
         for (const [enemy, data] of this.affectedEnemies.entries()) {
-            if (enemy.isDead) {
+            if (enemy.health <= 0) {
                 this.affectedEnemies.delete(enemy);
                 continue;
             }
@@ -65,7 +65,7 @@ export class SlowTrap extends Tower {
 
         if (this.health <= 0) {
             for (const [enemy, data] of this.affectedEnemies.entries()) {
-                if (!enemy.isDead) {
+                if (enemy.health > 0) {
                     enemy.speed = data.originalSpeed;
                     enemy.isSlowed = false;
                 }
@@ -99,16 +99,6 @@ export class SlowTrap extends Tower {
 
     draw(ctx) {
         if (this.health > 0) {
-            
-         
-            /*
-            if (this.selected) {
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }*/
-
-
             if (this.affectedEnemies.size > 0) {
                 ctx.strokeStyle = 'rgba(70, 130, 180, 1)';
                 ctx.beginPath();
@@ -116,7 +106,6 @@ export class SlowTrap extends Tower {
                 ctx.stroke();
             }
                 
-
             this.drawSynergyEffects(ctx);
             this.drawSprite(ctx);
         }

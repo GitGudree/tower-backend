@@ -5,11 +5,12 @@ import { createGrid, handleGameGrid, topBar } from "./grid.js";
 import { startWaveButton } from "./wave.js";
 import { collision } from "./hitreg.js";
 import { getWave, tryEndWave } from "./wave.js";
-import { GatlingTower } from "../entities/towers/GatlingTower.js";
+
 import { getTowerPrice } from "./towerUnlockSystem.js";
 import { soundManager } from './soundManager.js';
 import { recordResourcesGathered, recordEnemyKilled, recordMoneySpent, recordWaveReached, recordBossStage, updateGameStats } from './statistics.js';
 import { toastInfo } from './toast-message.js';
+
 
 
 export const canvas = document.getElementById("gameCanvas");
@@ -77,6 +78,8 @@ export function drawGame() {
     for (let projectile of projectiles){
         projectile.draw(ctx);
     }
+
+
 }
 
 /**
@@ -247,7 +250,7 @@ export function updateTowerStats(tower) {
     const scrapBtn = document.querySelector('.tower-scrap-btn');
 
     if (!tower) {
-        towerImage.src = 'public/sprites/emptyicon.png';
+        towerImage.src = '/sprites/emptyicon.png';
         towerTitle.textContent = 'Select a tower!';
         towerDescription.textContent = 'Choose a tower to view its stats.';
         towerStats.classList.add('hidden');
@@ -259,7 +262,7 @@ export function updateTowerStats(tower) {
 
     const UPGRADE_COSTS = [150, 300, 500, 750, 1000];
 
-    towerImage.src = tower.sprite || 'public/sprites/emptyicon.png';
+    towerImage.src = tower.sprite || '/sprites/emptyicon.png';
     towerTitle.textContent = `${tower.name}, Level ${tower.upgrades + 1}`;
     
     let upgradeCost = UPGRADE_COSTS[tower.upgrades] || -1;
@@ -454,10 +457,8 @@ export function initGame() {
 }
 
 export function startWave() {
-    if (currentWave > highestWave) {
-        highestWave = currentWave;
-        recordWaveReached(currentWave);
-    }
+    // This function is called when a wave starts
+    // Wave tracking is handled in wave.js
 }
 
 export function spawnBoss() {
